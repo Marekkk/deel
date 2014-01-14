@@ -48,7 +48,7 @@ public class UserControllerTest {
     @Test
     public void simpleTest() throws Exception {
     	this.mockMvc.perform(get("/user/new"))
-    	.andExpect(status().isBadRequest());
+    	.andExpect(status().isOk());
     }
     
 }

@@ -23,7 +23,6 @@ public class UserController {
 		return userService;
 	}
 
-	@Autowired
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
