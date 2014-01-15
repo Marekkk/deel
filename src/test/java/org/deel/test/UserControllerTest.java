@@ -55,7 +55,7 @@ public class UserControllerTest {
     	this.mockMvc.perform(get("/user/new"))
     	.andExpect(status().isOk());
     	
-    	when(userService.userExist(any(User.class))).thenReturn(true);
+    	//when(userService.userExist(any(User.class))).thenReturn(true);
     	
     	this.mockMvc.perform(post("/user/new")
     			.param("name", "Marek")

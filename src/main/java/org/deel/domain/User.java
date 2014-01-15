@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
@@ -33,7 +34,7 @@ public class User {
 	@Column(name="surname")
 	private String surname;
 	
-	@Column(name="username")
+	@Column(name="username", unique=true)
 	private String username;
 	
 	@Column(name="password")
@@ -103,12 +104,11 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(String name, String surname, String username, String password, Company company, Category category) {
+	public User(String name, String surname, String username, String password, Category category) {
 		this.name = name;
 		this.surname = surname;
 		this.username = username;
 		this.password = password;
-		this.company = company;
 		this.category = category;
 	}
 	
