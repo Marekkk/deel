@@ -7,7 +7,7 @@
           http://www.springframework.org/schema/security/spring-security.xsd">
 
 
-	<bean id="userValidator" class="org.deel.validator.UserValidator" />
+	
 	<!-- <bean id="userService" class="org.mockito.Mockito" factory-method="mock"> -->
 	<!-- <constructor-arg value="org.deel.service.UserService" /> -->
 	<!-- </bean> -->
@@ -44,7 +44,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
+<!-- 				<prop key="hibernate.hbm2ddl.auto">create</prop> -->
 			</props>
 		</property>
 	</bean>

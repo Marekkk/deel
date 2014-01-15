@@ -14,9 +14,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name="User")
@@ -28,12 +30,16 @@ public class User {
 	private Long id;
 	
 	@Column(name="name")
+	@NotEmpty
 	private String name;
 	
 	@Column(name="surname")
+	@NotEmpty
 	private String surname;
 	
 	@Column(name="username")
+	@NotEmpty
+	@Size(min=4, max=10)
 	private String username;
 	
 	@Column(name="password")
