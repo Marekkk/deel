@@ -1,5 +1,9 @@
 package org.deel.controllers;
 
+import java.util.List;
+
+import javax.servlet.jsp.jstl.core.Config;
+
 import org.deel.domain.User;
 import org.deel.service.UserService;
 import org.deel.validator.UserValidator;
@@ -7,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +23,7 @@ public class UserController {
 
 	private UserValidator userValidator;
 	private UserService userService;
-	
-	
+
 	public UserService getUserService() {
 		return userService;
 	}
@@ -28,7 +33,6 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	
 	public UserValidator getUserValidator() {
 		return userValidator;
 	}
@@ -44,23 +48,28 @@ public class UserController {
 		map.addAttribute("user", user);
 		return "newUser";
 	}
-	
+
 	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
-	public String onSubmit(@ModelAttribute("user") User user, Errors errors, ModelMap map) {
-		
+	public String onSubmit(@ModelAttribute("user") User user, Errors errors,
+			ModelMap map) {
+
 		userValidator.validate(user, errors);
 		
 		if (errors.hasErrors()) {
-			//TODO stub
+
+		
 			map.addAttribute("Error", "You insert incorrect values");
 			return "newUser";
 		}
-		
-		if(!userService.userExist(user)) {
+
+		if (!userService.userExist(user)) {
 			userService.addUser(user);
+		} else {
+			map.addAttribute("Error", "Username already exist");
+			return "newUser";
 		}
-		
+
 		return "home";
 	}
-	
+
 }

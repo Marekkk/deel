@@ -7,55 +7,59 @@
           http://www.springframework.org/schema/security/spring-security.xsd">
 
 
-		<bean id="userValidator" class="org.deel.validator.UserValidator"/>
-		
-<!-- 	<security:http> -->
-<!-- 		<security:intercept-url pattern="/login*" -->
-<!-- 			access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-<!-- 		<security:intercept-url pattern="/**" access="ROLE_USER" /> -->
-<!-- 		<security:form-login login-page='/login' -->
-<!-- 			login-processing-url="/loginP" /> -->
-<!-- 		<security:logout logout-url="/logout" /> -->
-<!-- 	</security:http> -->
+	<bean id="userValidator" class="org.deel.validator.UserValidator" />
+	<bean id="userService" class="org.mockito.Mockito" factory-method="mock">
+		<constructor-arg value="org.deel.service.UserService" />
+	</bean>
 
-<!-- 	<security:authentication-manager> -->
-<!-- 		<security:authentication-provider -->
-<!-- 			ref="daoAuthenticationProvider" /> -->
-<!-- 	</security:authentication-manager> -->
+	<!-- <security:http> -->
+	<!-- <security:intercept-url pattern="/login*" -->
+	<!-- access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
+	<!-- <security:intercept-url pattern="/**" access="ROLE_USER" /> -->
+	<!-- <security:form-login login-page='/login' -->
+	<!-- login-processing-url="/loginP" /> -->
+	<!-- <security:logout logout-url="/logout" /> -->
+	<!-- </security:http> -->
 
-<!-- 	<bean id="daoAuthenticationProvider" -->
-<!-- 		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"> -->
-<!-- 		<property name="userDetailsService" ref="inMemoryDaoImpl" /> -->
-<!-- 		<property name="passwordEncoder" ref="passwordEncoder" /> -->
-<!-- 	</bean> -->
+	<!-- <security:authentication-manager> -->
+	<!-- <security:authentication-provider -->
+	<!-- ref="daoAuthenticationProvider" /> -->
+	<!-- </security:authentication-manager> -->
 
-<!-- 	<bean id="passwordEncoder" -->
-<!-- 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" /> -->
+	<!-- <bean id="daoAuthenticationProvider" -->
+	<!-- class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"> -->
+	<!-- <property name="userDetailsService" ref="inMemoryDaoImpl" /> -->
+	<!-- <property name="passwordEncoder" ref="passwordEncoder" /> -->
+	<!-- </bean> -->
 
-<!-- 	<security:user-service id="inMemoryDaoImpl"> -->
-<!-- 		<security:user name="asd" -->
-<!-- 			password="$2a$10$iy.hJkQwifCDS9P85qgoHOfLZp4yVopZ/LFq9DslLVvTUgJArKK9e" -->
-<!-- 			authorities="ROLE_USER" /> -->
-<!-- 	</security:user-service> -->
+	<!-- <bean id="passwordEncoder" -->
+	<!-- class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" 
+		/> -->
 
-<!-- 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
-<!-- 		destroy-method="close"> -->
-<!-- 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
-<!-- 		<property name="url" value="jdbc:hsqldb:hsql://localhost:9001" /> -->
-<!-- 		<property name="username" value="sa" /> -->
-<!-- 		<property name="password" value="" /> -->
-<!-- 	</bean> -->
+	<!-- <security:user-service id="inMemoryDaoImpl"> -->
+	<!-- <security:user name="asd" -->
+	<!-- password="$2a$10$iy.hJkQwifCDS9P85qgoHOfLZp4yVopZ/LFq9DslLVvTUgJArKK9e" -->
+	<!-- authorities="ROLE_USER" /> -->
+	<!-- </security:user-service> -->
 
-<!-- 	<bean id="mySessionFactory" -->
-<!-- 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"> -->
-<!-- 		<property name="dataSource" ref="myDataSource" /> -->
+	<!-- <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
+	<!-- destroy-method="close"> -->
+	<!-- <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
+	<!-- <property name="url" value="jdbc:hsqldb:hsql://localhost:9001" /> -->
+	<!-- <property name="username" value="sa" /> -->
+	<!-- <property name="password" value="" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="mySessionFactory" -->
+	<!-- class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"> -->
+	<!-- <property name="dataSource" ref="myDataSource" /> -->
 
 
-<!-- 		<property name="hibernateProperties"> -->
-<!-- 			<value> -->
-<!-- 				hibernate.dialect=org.hibernate.dialect.HSQLDialect -->
-<!-- 			</value> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	
+	<!-- <property name="hibernateProperties"> -->
+	<!-- <value> -->
+	<!-- hibernate.dialect=org.hibernate.dialect.HSQLDialect -->
+	<!-- </value> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
 </beans>
