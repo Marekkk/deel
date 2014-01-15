@@ -10,10 +10,13 @@
             http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-	<mvc:annotation-driven/>
-	<mvc:resources mapping="/resources/**" location="classpath:/"/>
-
 	<context:component-scan base-package="org.deel" />
+	<context:component-scan base-package="org.deel.service.impl" />
+	<context:annotation-config />
+	<mvc:annotation-driven />
+	<mvc:resources mapping="/resources/**" location="classpath:/" />
+
+
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">

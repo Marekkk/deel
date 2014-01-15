@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -42,6 +43,9 @@ public class User {
 	@Size(min=4, max=10)
 	private String username;
 	
+	/* TODO make constrain with top level domain */
+	@Email
+	@NotEmpty
 	@Column(name="email")
 	private String email;
 	

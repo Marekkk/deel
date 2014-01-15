@@ -1,19 +1,26 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:security="http://www.springframework.org/schema/security"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
           http://www.springframework.org/schema/security
-          http://www.springframework.org/schema/security/spring-security.xsd">
+          http://www.springframework.org/schema/security/spring-security.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
-	
+
+
+
 	<!-- <bean id="userService" class="org.mockito.Mockito" factory-method="mock"> -->
 	<!-- <constructor-arg value="org.deel.service.UserService" /> -->
 	<!-- </bean> -->
-	<bean id="userService" class="org.deel.service.impl.UserServiceImpl" />
-	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" />
+
+	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
 	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
+	<bean id="userService" class="org.deel.service.impl.UserServiceImpl"
+		autowire="byName" />
 	<bean id="companyService" class="org.deel.service.impl.CompanyServiceImpl" />
 
 
@@ -44,11 +51,13 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
-<!-- 				<prop key="hibernate.hbm2ddl.auto">create</prop> -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
 	</bean>
 
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
@@ -56,54 +65,34 @@
 	</bean>
 
 
-	<!-- <security:http> -->
-	<!-- <security:intercept-url pattern="/login*" -->
-	<!-- access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-	<!-- <security:intercept-url pattern="/**" access="ROLE_USER" /> -->
-	<!-- <security:form-login login-page='/login' -->
-	<!-- login-processing-url="/loginP" /> -->
-	<!-- <security:logout logout-url="/logout" /> -->
-	<!-- </security:http> -->
+	<security:http>
+		<security:intercept-url pattern="/login**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/user/new*"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/resources/**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER" />
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:form-login login-page='/login'
+			login-processing-url="/loginprocess" />
+		<security:logout logout-url="/logout" />
+		<security:form-login />
+	</security:http>
 
-	<!-- <security:authentication-manager> -->
-	<!-- <security:authentication-provider -->
-	<!-- ref="daoAuthenticationProvider" /> -->
-	<!-- </security:authentication-manager> -->
+	<security:authentication-manager>
+		<security:authentication-provider
+			ref="daoAuthenticationProvider" />
+	</security:authentication-manager>
 
-	<!-- <bean id="daoAuthenticationProvider" -->
-	<!-- class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"> -->
-	<!-- <property name="userDetailsService" ref="inMemoryDaoImpl" /> -->
-	<!-- <property name="passwordEncoder" ref="passwordEncoder" /> -->
-	<!-- </bean> -->
+	<bean id="daoAuthenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService" />
+		<property name="passwordEncoder" ref="passwordEncoder" />
+	</bean>
 
-	<!-- <bean id="passwordEncoder" -->
-	<!-- class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" 
-		/> -->
+	<bean id="passwordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
-	<!-- <security:user-service id="inMemoryDaoImpl"> -->
-	<!-- <security:user name="asd" -->
-	<!-- password="$2a$10$iy.hJkQwifCDS9P85qgoHOfLZp4yVopZ/LFq9DslLVvTUgJArKK9e" -->
-	<!-- authorities="ROLE_USER" /> -->
-	<!-- </security:user-service> -->
-
-	<!-- <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
-	<!-- destroy-method="close"> -->
-	<!-- <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
-	<!-- <property name="url" value="jdbc:hsqldb:hsql://localhost:9001" /> -->
-	<!-- <property name="username" value="sa" /> -->
-	<!-- <property name="password" value="" /> -->
-	<!-- </bean> -->
-
-	<!-- <bean id="mySessionFactory" -->
-	<!-- class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"> -->
-	<!-- <property name="dataSource" ref="myDataSource" /> -->
-
-
-	<!-- <property name="hibernateProperties"> -->
-	<!-- <value> -->
-	<!-- hibernate.dialect=org.hibernate.dialect.HSQLDialect -->
-	<!-- </value> -->
-	<!-- </property> -->
-	<!-- </bean> -->
+	<bean id="customUserDetailsService" class="org.deel.service.CustomUserDetailsService" autowire="byName"/>
 
 </beans>

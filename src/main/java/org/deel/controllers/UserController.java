@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.deel.domain.User;
 import org.deel.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,6 +23,7 @@ public class UserController {
 		return userService;
 	}
 
+	@Autowired
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -58,10 +60,10 @@ public class UserController {
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
 		user.setPassword(pwdEncoder.encode(user.getPassword()));
 
-		if (false) {
+		if (userService.findUserByUsername(user.getUsername()) == null) {
 			userService.addUser(user);
 		} else {
-			map.addAttribute("Error", "Username already exist");
+			result.reject("Username already taken");
 			return "newUser";
 		}
 
