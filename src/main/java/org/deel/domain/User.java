@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,12 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Proxy;
 
 @Entity
 @Table(name="User")
-@Proxy(lazy=false) // Using this for not use lazy load (with lazy load there are a wrong loading of collections!
 public class User {
 
 	@Id
@@ -39,82 +39,103 @@ public class User {
 	@Column(name="password")
 	private String password;
 	
-//	@ManyToOne(cascade=CascadeType.ALL)
-//	private Category category;
-//	
-//	@OneToMany(cascade=CascadeType.ALL)
-//	@JoinTable(name="user_file",
-//				joinColumns = {@JoinColumn(name="user_id")},
-//				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-//		      )
-//	private Set<FilePath> files = new HashSet<FilePath>(0);
-//	
-//	/*
-//	 * In a company can work multiple user, using CascadeType.ALL when we insert a new user with a new company 
-//	 * automatically the new company will be added to the DB
-//	 */
-//	@ManyToOne(cascade= {})
-//	private Company company;
-//	
-//	@ManyToMany(cascade=CascadeType.ALL)
-//	@JoinTable(name="User_Team", joinColumns = {@JoinColumn(name="user_id")},
-//								 inverseJoinColumns = {@JoinColumn(name="team_id")})
-//	private Set<Team> teams = new HashSet<Team>(0);
-//	
-//	public Set<Team> getTeams() {
-//		return this.teams;
-//	}
-//	
-//	public void setTeams(Set<Team> teams) {
-//		this.teams = teams;
-//	}
-//
-//	public Set<FilePath> getFiles() {
-//		return files;
-//	}
-//
-//	public void setFiles(Set<FilePath> files) {
-//		this.files = files;
-//	}
-//
-//	public User() {
-//		// TODO Auto-generated constructor stub
-//	}
-//	
-//	public User(String name, String surname, String username, String password, Company company, Set<Team> teams, Category category) {
-//		this.name = name;
-//		this.surname = surname;
-//		this.username = username;
-//		this.password = password;
-//		this.company = company;
-//		this.teams = teams;
-//		this.category = category;
-//	}
-//	
-//	public Category getCategory() {
-//		return category;
-//	}
-//	
-//	public void setCategory(Category category) {
-//		this.category = category;
-//	}
-//	
-//	public Company getCompany() {
-//		return company;
-//	}
-//
-//	public void setCompany(Company company) {
-//		this.company = company;
-//	}
-//
-//	public Long getId() {
-//		return id;
-//	}
-//
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
-//
+	@ManyToOne()
+	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	private Category category;
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="user_filepath",
+				joinColumns = {@JoinColumn(name="user_id")},
+				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
+		      )
+	private Set<FilePath> paths = new HashSet<FilePath>(0);
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="user_file",
+				joinColumns = {@JoinColumn(name="user_id")},
+				inverseJoinColumns = {@JoinColumn(name="file_id")}
+		      )
+	private Set<File> files = new HashSet<File>(0);
+	
+	/*
+	 * In a company can work multiple user, using CascadeType.ALL when we insert a new user with a new company 
+	 * automatically the new company will be added to the DB
+	 */
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	private Company company;
+	
+	@ManyToMany(cascade={}, fetch=FetchType.EAGER)
+	@JoinTable(name="User_Team", joinColumns = {@JoinColumn(name="user_id")},
+								 inverseJoinColumns = {@JoinColumn(name="team_id")})
+	private Set<Team> teams = new HashSet<Team>(0);
+	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="User_Folder", joinColumns = {@JoinColumn(name="user_id")},
+								 inverseJoinColumns = {@JoinColumn(name="folder_id")})
+	public Set<Folder> folders = new HashSet<Folder>(0);
+	
+	public Set<Team> getTeams() {
+		return this.teams;
+	}
+	
+	public void setTeams(Set<Team> teams) {
+		this.teams = teams;
+	}
+
+	public Set<FilePath> getPaths() {
+		return paths;
+	}
+
+	public void setPaths(Set<FilePath> paths) {
+		this.paths = paths;
+	}
+
+	public void setFiles(Set<File> files) {
+		this.files = files;
+	}
+	
+	public Set<File> getFiles() {
+		return this.files;
+	}
+
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public User(String name, String surname, String username, String password, Company company, Category category) {
+		this.name = name;
+		this.surname = surname;
+		this.username = username;
+		this.password = password;
+		this.company = company;
+		this.category = category;
+	}
+	
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -146,5 +167,12 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-//	
+
+	public Set<Folder> getFolders() {
+		return folders;
+	}
+
+	public void setFolders(Set<Folder> folders) {
+		this.folders = folders;
+	}
 }

@@ -4,7 +4,11 @@
     <property name="context-root" value="deel"/>
     <wb-resource deploy-path="/" source-path="src/main/webapp"/>
     <property name="java-output-path" value="/target/classes"/>
+<<<<<<< HEAD
     <dependent-module archiveName="mockito-all-1.9.5.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/mockito/mockito-all/1.9.5/mockito-all-1.9.5.jar">
+=======
+    <dependent-module archiveName="mysql-connector-java-5.1.6.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar">
+>>>>>>> a6ad05d45f4d34ca33c9567092e60cc068adac7f
       <dependency-type>uses</dependency-type>
     </dependent-module>
     <dependent-module archiveName="spring-core-4.0.0.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/org/springframework/spring-core/4.0.0.RELEASE/spring-core-4.0.0.RELEASE.jar">

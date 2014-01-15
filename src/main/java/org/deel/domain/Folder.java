@@ -1,0 +1,100 @@
+package org.deel.domain;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name="Folder")
+public class Folder {
+	
+	@Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy="increment")
+	private Long id;
+	
+	@Column(name="name")
+	private String name;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	private Folder father;
+	
+	@ManyToOne(cascade={})
+	private User user;
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="folderInFolder",
+				joinColumns = {@JoinColumn(name="Father")},
+				inverseJoinColumns = {@JoinColumn(name="Child")}
+		      )
+	private Set<Folder> inFolder = new HashSet<Folder>(0); // Other folder in folder
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="filepathsInFolder",
+				joinColumns = {@JoinColumn(name="folder_id")},
+				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
+		      )
+	private Set<FilePath> filepaths = new HashSet<FilePath>(0);
+	
+	public Folder() {}
+	
+	public Folder(String name, Folder father, User user) {
+		this.name = name;
+		this.father = father;
+		this.user = user;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Folder getFather() {
+		return father;
+	}
+
+	public void setFather(Folder father) {
+		this.father = father;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Set<Folder> getInFolder() {
+		return inFolder;
+	}
+
+	public void setInFolder(Set<Folder> inFolder) {
+		this.inFolder = inFolder;
+	}
+
+	public Set<FilePath> getFilepaths() {
+		return filepaths;
+	}
+
+	public void setFilepaths(Set<FilePath> filepaths) {
+		this.filepaths = filepaths;
+	}
+	
+}
