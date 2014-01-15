@@ -42,6 +42,9 @@ public class User {
 	@Size(min=4, max=10)
 	private String username;
 	
+	@Column(name="email")
+	private String email;
+	
 	@Column(name="password")
 	private String password;
 	
@@ -109,7 +112,8 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(String name, String surname, String username, String password, Category category) {
+	public User(String email, String name, String surname, String username, String password, Category category) {
+		this.email = email;
 		this.name = name;
 		this.surname = surname;
 		this.username = username;
@@ -179,5 +183,13 @@ public class User {
 
 	public void setFolders(Set<Folder> folders) {
 		this.folders = folders;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
