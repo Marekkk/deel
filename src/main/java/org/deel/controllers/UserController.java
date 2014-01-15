@@ -58,7 +58,7 @@ public class UserController {
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
 		user.setPassword(pwdEncoder.encode(user.getPassword()));
 
-		if (!userService.userExist(user)) {
+		if (false) {
 			userService.addUser(user);
 		} else {
 			map.addAttribute("Error", "Username already exist");

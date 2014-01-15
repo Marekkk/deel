@@ -12,13 +12,11 @@ public class CompanyDaoImpl implements CompanyDao{
 	private SessionFactory sessionFactory;
 
 	@Override
-	@Transactional
 	public void insertCompany(Company c) {
 		sessionFactory.getCurrentSession().saveOrUpdate(c);
 	}
 
 	@Override
-	@Transactional
 	public void deleteCompany(Company c) {
 		sessionFactory.getCurrentSession().delete(c);
 	}

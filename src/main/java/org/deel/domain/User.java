@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -37,7 +36,8 @@ public class User {
 	@NotEmpty
 	private String surname;
 	
-	@Column(name="username")
+
+	@Column(name="username", unique=true)
 	@NotEmpty
 	@Size(min=4, max=10)
 	private String username;
@@ -109,12 +109,11 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(String name, String surname, String username, String password, Company company, Category category) {
+	public User(String name, String surname, String username, String password, Category category) {
 		this.name = name;
 		this.surname = surname;
 		this.username = username;
 		this.password = password;
-		this.company = company;
 		this.category = category;
 	}
 	

@@ -22,9 +22,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public boolean userExist(User user) {
-		// TODO Auto-generated method stub
-		return false;
+	public User findUserByUsername(String username) {
+		return userDAO.findUserByUsername(username);
 	}
 
 }
