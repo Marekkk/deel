@@ -18,7 +18,7 @@
 	</header>
 
 	<div id="loginContainer">
-		<c:url value="loginP" var="loginUrl" />
+		<c:url value="loginprocess" var="loginUrl" />
 		<form action="${loginUrl}" method="post">
 			<c:if test="${param.error != null}">
 				<p>Invalid username and password.</p>
