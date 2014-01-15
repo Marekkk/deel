@@ -42,12 +42,18 @@ function checkpsw() {
 	if (psw1.value != psw2.value) {
 		var message = document.getElementById("checkpass");
 		message.innerHTML = "<p>" + "No matching between passwords!" + "</p>";
+		psw2.value = "";
 	}
 	if (psw1.value == psw2.value) {
 		var message = document.getElementById("checkpass");
 		message.innerHTML = "<p>" + "OK!" + "</p>";
 	}
 	//alert(psw1.value + " " + psw2.value);
+}
+
+function cleanRetype() {
+	var psw2 = document.getElementById("psw2");
+	psw2.value = "";
 }
 </script>
 </head>
@@ -66,13 +72,13 @@ function checkpsw() {
 			<form:input path="username" />
 			<br>
 			<label for="password">Password:</label>
-			<form:input path="password" type="password" />
+			<form:input path="password" type="password" onchange="cleanRetype()" />
 			<br>
 			<label for="password">Re-type Password:</label>
 			<input id="psw2" name="psw2" type="password" onchange="checkpsw()">
 			<br>
 			<div id="checkpass"
-				style="position: fixed; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%;"
+				style="position: fixed; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;"
 			>
 			</div>
 			<br>
