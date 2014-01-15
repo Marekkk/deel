@@ -8,9 +8,53 @@
 
 
 	<bean id="userValidator" class="org.deel.validator.UserValidator" />
-	<bean id="userService" class="org.mockito.Mockito" factory-method="mock">
-		<constructor-arg value="org.deel.service.UserService" />
+	<!-- <bean id="userService" class="org.mockito.Mockito" factory-method="mock"> -->
+	<!-- <constructor-arg value="org.deel.service.UserService" /> -->
+	<!-- </bean> -->
+	<bean id="userService" class="org.deel.service.impl.UserServiceImpl" />
+	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" />
+	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
+	<bean id="companyService" class="org.deel.service.impl.CompanyServiceImpl" />
+
+
+	<bean name="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/ea_dropbox" />
+		<property name="username" value="root" />
+		<property name="password" value="asdrubale" />
 	</bean>
+
+	<!-- Session Factory to use for mapping -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>org.deel.domain.Company</value>
+				<value>org.deel.domain.User</value>
+				<value>org.deel.domain.Team</value>
+				<value>org.deel.domain.FilePath</value>
+				<value>org.deel.domain.File</value>
+				<value>org.deel.domain.Folder</value>
+				<value>org.deel.domain.Category</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
 
 	<!-- <security:http> -->
 	<!-- <security:intercept-url pattern="/login*" -->
