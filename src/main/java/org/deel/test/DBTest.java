@@ -25,7 +25,7 @@ public class DBTest {
 	private UserService userService;
 
 	@Before
-	public void init() throws Exception {
+	public void init() {
 		
 	}
 	
