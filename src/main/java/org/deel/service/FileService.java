@@ -16,7 +16,7 @@ public interface FileService {
 	
 	public InputStream getFile(User currentUser, String path);
 	
-	public List<FilePath> listFile(User curretUser, String Path);
+	public List<FilePath> listFile(User currentUser, String Path);
 
 
 	public void saveNewFile(User curr, String originalFilename, String path,

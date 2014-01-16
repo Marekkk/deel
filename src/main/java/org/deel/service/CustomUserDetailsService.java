@@ -46,6 +46,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		List<GrantedAuthority> authList = new LinkedList<GrantedAuthority>();
 		authList.add(new SimpleGrantedAuthority("ROLE_USER"));
 
+		
+		
 		User u1 = new User(domainUser.getUsername(), domainUser.getPassword(),
 				enabled, accountNonExpired, credentialsNonExpired,
 				accountNonLocked, authList);
