@@ -67,7 +67,7 @@ public class UserController {
 			return "newUser";
 		}
 
-		return "home";
+		return "redirect:homes";
 	}
 
 }

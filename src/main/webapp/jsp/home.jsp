@@ -10,12 +10,22 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
-<<<<<<< Updated upstream
    		function runEffect() {
-   			$("#uploadContainer").toggle();
+   			$("#uploadContainer").toggle("slow");
    		}
    		
    		$(document).ready(function (){
+
+   		function getFiles() {
+   			$.get("file/list?path=" + sessionStorage.getItem("dir"), function(data, success) {
+   				console.log(success);
+   				alert(data);
+   			});
+   		}
+   		
+   		$(document).ready(function (){
+   			getFiles();
+   			
    			$("form#ajaxForm").submit(function(event) {
    				event.preventDefault();
    				console.log(this);

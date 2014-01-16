@@ -96,5 +96,13 @@ public class Folder {
 	public void setFilepaths(Set<FilePath> filepaths) {
 		this.filepaths = filepaths;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 }
