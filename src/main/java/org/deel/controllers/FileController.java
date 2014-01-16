@@ -6,14 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.deel.domain.FilePath;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,13 +49,28 @@ public class FileController {
 	
 		Map<String,Object> m = new HashMap<String, Object>();
 		m.put("test", "asd");
-		m.put("principal", principal);
 		
+		String username = principal.getName();
+		
+		User curr = userService.findUserByUsername(username);
+		
+		m.put("principal", curr);
 		return m;
+	}
+	
+	@RequestMapping("/file/list")
+	public @ResponseBody List<FilePath> getFilesListJSON(@RequestParam String path, Principal principal) {
+		String username = principal.getName();
+		
+		User curr = userService.findUserByUsername(username);
+		
+		return fileService.listFile(curr, path);
 	}
 
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> fileUploadJSON(FileForm files, Principal principal, ModelMap model) {
+	public @ResponseBody Map<String, Object> fileUploadJSON(@RequestParam("files") MultipartFile files, 
+			BindingResult result,
+			Principal principal, ModelMap model) {
 		/* TODO fix security.getPrincipal return our UserClass */
 //		//Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //		String username;
@@ -62,29 +80,29 @@ public class FileController {
 //		  username = principal.toString();
 //		}
 		
-		//String username = principal.getName();
+		String username = principal.getName();
 		
-		User curr = userService.findUserByUsername("nick");
+		User curr = userService.findUserByUsername(username);
 		Map<String, Object> jsonReturn = new HashMap<String, Object>();
-		 
-		List<MultipartFile> mFiles = files.getFiles();
-		
-		for (MultipartFile multipartFile : mFiles) {
-			try {
-				fileService.saveNewFile(curr, 
-						multipartFile.getOriginalFilename(), 
-						files.getPath(), 
-						multipartFile.getBytes());
-				
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"success");
-				
-			} catch (IOException e) {
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"failed");
-				e.printStackTrace();
-			}
-		}
+//		 
+//		List<MultipartFile> mFiles = files.getFiles();
+//		
+//		for (MultipartFile multipartFile : mFiles) {
+//			try {
+//				fileService.saveNewFile(curr, 
+//						multipartFile.getOriginalFilename(), 
+//						files.getPath(), 
+//						multipartFile.getBytes());
+//				
+//				jsonReturn.put(multipartFile.getOriginalFilename(), 
+//						"success");
+//				
+//			} catch (IOException e) {
+//				jsonReturn.put(multipartFile.getOriginalFilename(), 
+//						"failed");
+//				e.printStackTrace();
+//			}
+//		}
 
 		/* TODO real message codes */
 		return jsonReturn;

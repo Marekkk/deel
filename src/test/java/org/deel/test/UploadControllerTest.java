@@ -17,6 +17,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.deel.controllers.FileController;
+import org.deel.domain.File;
+import org.deel.domain.FilePath;
+import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
@@ -56,7 +59,7 @@ public class UploadControllerTest {
 		fileController = new FileController();
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(fileController).build();
-		
+		when(principal.getName()).thenReturn("nick");
         fis = new FileInputStream("/home/garulf/info/esami/AE/code/random0");
         multipartFile1 = new MockMultipartFile("files[0]", "random0", "multipart/form-data", fis);
         multipartFile1.getOriginalFilename();
@@ -76,9 +79,37 @@ public class UploadControllerTest {
 	                    .file(multipartFile1)
 	                    .file(multipartFile2)
 	                    .param("path", "/my/path")
+	                    .principal(principal)
 	                    )
 	                    .andExpect(status().isOk());
 	            
+	}
+	
+	@Test
+	public void listFilesTest() throws Exception {
+		User u = new User();
+		u.setUsername("nick");
+		when(userService.findUserByUsername("nick")).thenReturn(u);
+		
+		when(principal.getName()).thenReturn("nick");
+		
+		List<FilePath> files = new LinkedList<FilePath>();
+		
+		files.add(new FilePath("file0", u, new File("realName", u), new Folder("/home", null, u)));
+		files.add(new FilePath("file1", u, new File("realName", u), new Folder("/home", null, u)));
+		files.add(new FilePath("file2", u, new File("realName", u), new Folder("/home", null, u)));
+
+		when(fileService.listFile(any(User.class), anyString())).thenReturn(files);
+		
+		mockMvc.perform(get("/file/list")
+				.principal(principal)
+				.param("path", "/home")
+				).andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$[0].path").value("file0"));
+		
+		
+		
+		
 	}
 	
 	@Test
@@ -92,7 +123,10 @@ public class UploadControllerTest {
 		when(principal.getName()).thenReturn("nick");
 		
 		 mockMvc.perform(get("/test")
-                 ).andExpect(status().isOk());
+				 .principal(principal)
+                 )
+                 .andDo(print())
+                 .andExpect(status().isOk());
 		 
 		 verify(userService, times(1)).findUserByUsername(any(String.class));
 

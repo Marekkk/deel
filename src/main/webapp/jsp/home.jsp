@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib  uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -13,7 +14,7 @@
    			$("#uploadContainer").toggle();
    		}
    		
-   		$(document).ready(function (){
+   		$(document).ready(function (){return;
    			$("form#ajaxForm").submit(function(event) {
    				event.preventDefault();
    				console.log(this);
@@ -66,11 +67,11 @@
 			<li><a href="login.html">logout</a></li>
 			<li><a href="javascript:runEffect()" id="toggle">Upload</a>
 				<div id="uploadContainer">
-					<form name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
-						<input type="file" value="Choose file" name="files[0]" /> <input
+					<form:form method="POST" commandName="fileForm" action="file/upload" name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
+						<input type="file" value="Choose file" name="files" /> <input
 							type="hidden" value="/home/" name="path" /> <input type="submit"
 							value="Invia!">
-					</form>
+					</form:form>
 				</div></li>
 		</ul>
 		</nav>
