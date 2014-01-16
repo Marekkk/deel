@@ -6,7 +6,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
 public class UserDaoImpl implements UserDao{
@@ -38,5 +37,18 @@ public class UserDaoImpl implements UserDao{
 			return null;
 		User user = (User) session.get(User.class, id);
 		return user;
+	}
+
+	@Override
+	public void updateUser(User u) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(u);
+		return;
+	}
+
+	@Override
+	public void deleteUser(User u) {
+		Session session = sessionFactory.getCurrentSession();
+		session.delete(u);
 	}	
 }
