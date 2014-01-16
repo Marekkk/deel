@@ -2,13 +2,17 @@ package org.deel.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.io.FileInputStream;
+import java.security.Principal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +20,6 @@ import org.deel.controllers.FileController;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
-import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -37,6 +40,9 @@ public class UploadControllerTest {
 	
 	@Mock 
 	private UserService userService;
+	
+	@Mock Principal principal;
+	
 	
 	@InjectMocks
 	private FileController fileController;
@@ -76,11 +82,27 @@ public class UploadControllerTest {
 	}
 	
 	@Test
-	public void fileUploadAsd() throws Exception {
-
+	public void principalMockTest() throws Exception {
+		
 		User u = new User();
 		u.setName("nick");
 		when(userService.findUserByUsername("nick")).thenReturn(u);
+		
+
+		when(principal.getName()).thenReturn("nick");
+		
+		 mockMvc.perform(get("/test")
+                 ).andExpect(status().isOk());
+		 
+		 verify(userService, times(1)).findUserByUsername(any(String.class));
+
+	}
+	
+	@Test
+	public void fileUploadAsd() throws Exception {
+
+		
+		when(userService.findUserByUsername("nick")).thenReturn(new User());
 		
 		List<SimpleGrantedAuthority> auth = new LinkedList<SimpleGrantedAuthority>();
 		auth.add(new SimpleGrantedAuthority("ROLE_USER"));
@@ -91,7 +113,9 @@ public class UploadControllerTest {
                  .param("path", "/my/path")
                  .principal(new PrincipalImpl("nick"))                 )
                  .andExpect(status().isOk())
-                 .andExpect(model().attribute("random0", "success"));
+                 .andDo(print())
+                 .andExpect(jsonPath("$.random0").exists());
+
          
 
 		verify(fileService, times(2)).saveNewFile(any(User.class), 
@@ -99,7 +123,6 @@ public class UploadControllerTest {
 				anyString(), 
 				any(byte[].class));
 	
-		
         
 	}
 }

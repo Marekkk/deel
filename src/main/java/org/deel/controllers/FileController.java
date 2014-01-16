@@ -42,12 +42,13 @@ public class FileController {
 	}
 	
 	@RequestMapping("/test")
-	public @ResponseBody void test(Principal principal, ModelMap map){
+	public @ResponseBody Map<String, Object> test(Principal principal, ModelMap map){
 	
 		Map<String,Object> m = new HashMap<String, Object>();
 		m.put("test", "asd");
-		map.addAttribute("test", "asd");
-		return ;
+		m.put("principal", principal);
+		
+		return m;
 	}
 
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
