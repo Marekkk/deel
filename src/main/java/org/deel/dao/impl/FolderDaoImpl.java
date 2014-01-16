@@ -33,12 +33,18 @@ public class FolderDaoImpl implements FolderDao {
 	@Override
 	public Folder getFolder(String name, User user) {
 		Long id = null;
-		Query query = sessionFactory.getCurrentSession().createQuery("select f.id from folder f where f.name = :name and f.user_id = :usr");
+		Query query = sessionFactory.getCurrentSession().createQuery("select f.id from Folder f where f.name = :name and f.user_id = :usr");
 		query.setParameter("name", name);
 		query.setParameter("usr", user.getId());
 		id = (Long) query.uniqueResult();
 		Folder f = (Folder) sessionFactory.getCurrentSession().get(Folder.class, id);
 		return f;
+	}
+
+	@Override
+	public Folder loadFolderByPath(String path, User user) {
+		
+		return null;
 	}
 
 }

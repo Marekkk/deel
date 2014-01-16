@@ -8,4 +8,5 @@ public interface FolderDao {
 	public void deleteFolder(Folder f);
 	public void updateFolder(Folder f);
 	public Folder getFolder(String name, User user);
+	public Folder loadFolderByPath (String path, User user);
 }

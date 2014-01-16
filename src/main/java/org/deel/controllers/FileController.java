@@ -1,5 +1,6 @@
 package org.deel.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -105,6 +107,16 @@ public class FileController {
 		return "success";
 	}
 	
+	@ExceptionHandler(RuntimeException.class)
+	public @ResponseBody Map<String,Object> exceptionHandler(Exception e) {
+		Map<String, Object> json = new HashMap<String, Object>();
+		RuntimeException re = (RuntimeException) e;
+		
+		json.put("error", e.getMessage());
+		
+		return json;
+	}
+	
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm, 
 			BindingResult result,
@@ -130,8 +142,8 @@ public class FileController {
 				fileService.saveNewFile(curr, 
 						multipartFile.getOriginalFilename(), 
 						fileForm.getPath(), 
-						multipartFile.getBytes());
-				System.out.println(multipartFile.getInputStream().read());
+						multipartFile.getInputStream());
+				
 				
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"success");
@@ -139,8 +151,17 @@ public class FileController {
 			} catch (IOException e) {
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"failed");
+				jsonReturn.put(multipartFile.getOriginalFilename(), 
+						"error: " + e.getMessage());
+				
 				e.printStackTrace();
+			} catch (RuntimeException e) {
+				jsonReturn.put(multipartFile.getOriginalFilename(), 
+						"failed");
+				jsonReturn.put(multipartFile.getOriginalFilename(), 
+						"error: " + e.getMessage());
 			}
+			
 		}
 
 		/* TODO real message codes */

@@ -13,7 +13,10 @@
 
 	<bean id="folderService" class="org.deel.service.impl.FolderServiceImpl" autowire="byName"></bean>
 	<bean id="filePathService" class="org.deel.service.impl.FilePathServiceImpl" autowire="byName" />
-	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" />
+	
+	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" >
+		<property name="storagePath" value="/home/garulf/info/esami/AE/code/storage"/>
+	</bean>
 	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl" autowire="byName"></bean>
 	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl" autowire="byName" />
 	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />

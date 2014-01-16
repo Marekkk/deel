@@ -1,5 +1,6 @@
 package org.deel.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface FileService {
+	public String storagePath = "/home/garulf/info/esami/AE/code/storage/";
 	
 	@Transactional
 	public void eraseFile(User owner, String path);
@@ -26,5 +28,5 @@ public interface FileService {
 
 	@Transactional
 	public void saveNewFile(User curr, String originalFilename, String path,
-			byte[] bytes);
+			InputStream inputStream) throws IOException;
 }

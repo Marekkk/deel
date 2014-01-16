@@ -3,11 +3,14 @@ package org.deel.dao.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.deel.dao.FilePathDao;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,8 +21,10 @@ public class FilePathDaoImpl implements FilePathDao {
 	SessionFactory sessionFactory;
 
 	@Override
+	@Transactional
 	public void insertFilePath(FilePath fp) {
-		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		session.save(fp);
 		
 	}
 
