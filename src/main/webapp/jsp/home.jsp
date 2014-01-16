@@ -12,16 +12,32 @@
    		function runEffect() {
    			$("#uploadContainer").toggle();
    		}
-   		function sendWithAjax() {
-   			var data = new FormData($("#ajaxForm")[0]);
-   			$.ajax({
-   				url : "file/new",
-   				success : function() {alert("Success!");},
-   				error : function() {alert("Error please retry!");},
-   				type : "POST",
-   				data : data
+   		
+   		$(document).ready(function (){
+   			$("form#ajaxForm").submit(function(event) {
+   				event.preventDefault();
+   				console.log(this);
+   				alert("Uploading...");
+   				
+   			  //grab all form data  
+   			  var formData = new FormData($(this)[0]);
+   			 
+   			  $.ajax({
+   			    url: 'file/upload',
+   			    type: 'POST',
+   			    data: formData,
+   			    async: false,
+   			    cache: false,
+   			    contentType: false,
+   			    processData: false,
+   			    success: function (returndata) {
+   			      alert(returndata);
+   			      console.log(returndata);
+   			    }
+   			  });
+   			  return false;
    			});
-   		}
+   		});
     </script>
 <title>Home</title>
 </head>
@@ -50,15 +66,12 @@
 			<li><a href="login.html">logout</a></li>
 			<li><a href="javascript:runEffect()" id="toggle">Upload</a>
 				<div id="uploadContainer">
-					<form name="ajaxForm" id="axajForm" enctype="multipart/form-data"
-						onsubmit="javascript:sendWithAjax()">
-						<input type="file" value="Choose file" name="files[0]" />
-						<input type="hidden" value="/home/" name="path" />
-						<input type="submit"
+					<form name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
+						<input type="file" value="Choose file" name="files[0]" /> <input
+							type="hidden" value="/home/" name="path" /> <input type="submit"
 							value="Invia!">
 					</form>
-				</div>
-			</li>
+				</div></li>
 		</ul>
 		</nav>
 
