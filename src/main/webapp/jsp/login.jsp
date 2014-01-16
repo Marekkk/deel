@@ -7,6 +7,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel=stylesheet href="./resources/css/login.css" media="screen">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	sessionStorage.setItem("dir", "home");
+});
+</script>
 <title>Login Page</title>
 </head>
 <body>
@@ -35,8 +42,8 @@
 				<!-- 
 		<button type="submit" class="btn">Log in</button>
 		-->
-				<div style="position:absolute; top: 250px; left: 160px">
-						If you' re not, please <a href="./user/new">register</a>.
+				<div style="position: absolute; top: 250px; left: 160px">
+					If you' re not, please <a href="./user/new">register</a>.
 				</div>
 			</div>
 		</form>
