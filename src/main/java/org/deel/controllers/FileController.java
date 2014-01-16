@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,9 +67,23 @@ public class FileController {
 		
 		return fileService.listFile(curr, path);
 	}
+	
+	@RequestMapping(value = "/file/test", method= RequestMethod.GET)
+	public String sfileUploadTest(){
+		
+	
+		return "success";
+	}
 
+	@RequestMapping(value = "/file/test", method= RequestMethod.POST)
+	public String fileUploadTest(@RequestParam("file") MultipartFile file){
+		
+		System.out.println("file name " + file.getName());
+		return "success";
+	}
+	
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> fileUploadJSON(@RequestParam("files") MultipartFile files, 
+	public @ResponseBody Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm, 
 			BindingResult result,
 			Principal principal, ModelMap model) {
 		/* TODO fix security.getPrincipal return our UserClass */
@@ -84,25 +99,26 @@ public class FileController {
 		
 		User curr = userService.findUserByUsername(username);
 		Map<String, Object> jsonReturn = new HashMap<String, Object>();
-//		 
-//		List<MultipartFile> mFiles = files.getFiles();
-//		
-//		for (MultipartFile multipartFile : mFiles) {
-//			try {
-//				fileService.saveNewFile(curr, 
-//						multipartFile.getOriginalFilename(), 
-//						files.getPath(), 
-//						multipartFile.getBytes());
-//				
-//				jsonReturn.put(multipartFile.getOriginalFilename(), 
-//						"success");
-//				
-//			} catch (IOException e) {
-//				jsonReturn.put(multipartFile.getOriginalFilename(), 
-//						"failed");
-//				e.printStackTrace();
-//			}
-//		}
+		 
+		List<MultipartFile> mFiles = fileForm.getFiles();
+		
+		for (MultipartFile multipartFile : mFiles) {
+			try {
+				fileService.saveNewFile(curr, 
+						multipartFile.getOriginalFilename(), 
+						fileForm.getPath(), 
+						multipartFile.getBytes());
+				System.out.println(multipartFile.getInputStream().read());
+				
+				jsonReturn.put(multipartFile.getOriginalFilename(), 
+						"success");
+				
+			} catch (IOException e) {
+				jsonReturn.put(multipartFile.getOriginalFilename(), 
+						"failed");
+				e.printStackTrace();
+			}
+		}
 
 		/* TODO real message codes */
 		return jsonReturn;
