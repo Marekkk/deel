@@ -14,7 +14,7 @@
    			$("#uploadContainer").toggle();
    		}
    		
-   		$(document).ready(function (){return;
+   		$(document).ready(function (){
    			$("form#ajaxForm").submit(function(event) {
    				event.preventDefault();
    				console.log(this);
@@ -68,7 +68,7 @@
 			<li><a href="javascript:runEffect()" id="toggle">Upload</a>
 				<div id="uploadContainer">
 					<form:form method="POST" commandName="fileForm" action="file/upload" name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
-						<input type="file" value="Choose file" name="files" /> <input
+						<input type="file" value="Choose file" name="files[0]" /> <input
 							type="hidden" value="/home/" name="path" /> <input type="submit"
 							value="Invia!">
 					</form:form>
