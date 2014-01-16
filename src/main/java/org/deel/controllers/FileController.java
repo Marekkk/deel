@@ -66,7 +66,21 @@ public class FileController {
 		
 		return fileService.listFile(curr, path);
 	}
+	
+	@RequestMapping(value = "/file/test", method= RequestMethod.GET)
+	public String sfileUploadTest(){
+		
+	
+		return "success";
+	}
 
+	@RequestMapping(value = "/file/test", method= RequestMethod.POST)
+	public String fileUploadTest(@RequestParam("file") MultipartFile file){
+		
+		System.out.println("file name " + file.getName());
+		return "success";
+	}
+	
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> fileUploadJSON(@RequestParam("files") MultipartFile files, 
 			BindingResult result,
