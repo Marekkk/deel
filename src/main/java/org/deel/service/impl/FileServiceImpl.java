@@ -42,7 +42,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public void saveNewFile(User curr, String originalFilename, String path,
 			byte[] bytes) {
-		// TODO Auto-generated method stub
+		
 
 	}
 

@@ -1,35 +1,42 @@
 package org.deel.test;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-
-import javassist.bytecode.ByteArray;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.deel.controllers.FileController;
 import org.deel.domain.User;
 import org.deel.service.FileService;
+import org.deel.service.UserService;
+import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
+
+import sun.security.acl.PrincipalImpl;
 
 public class UploadControllerTest {
 	private MockMvc mockMvc;
 	
 	@Mock
 	private FileService fileService;
+	
+	@Mock 
+	private UserService userService;
 	
 	@InjectMocks
 	private FileController fileController;
@@ -71,13 +78,20 @@ public class UploadControllerTest {
 	@Test
 	public void fileUploadAsd() throws Exception {
 
+		User u = new User();
+		u.setName("nick");
+		when(userService.findUserByUsername("nick")).thenReturn(u);
+		
+		List<SimpleGrantedAuthority> auth = new LinkedList<SimpleGrantedAuthority>();
+		auth.add(new SimpleGrantedAuthority("ROLE_USER"));
 		 mockMvc.perform(
                  fileUpload("/file/upload")
                  .file(multipartFile1)
                  .file(multipartFile2)
                  .param("path", "/my/path")
-                 )
-                 .andExpect(status().isOk());
+                 .principal(new PrincipalImpl("nick"))                 )
+                 .andExpect(status().isOk())
+                 .andExpect(model().attribute("random0", "success"));
          
 
 		verify(fileService, times(2)).saveNewFile(any(User.class), 

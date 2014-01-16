@@ -1,6 +1,7 @@
 package org.deel.controllers;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 import org.deel.domain.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -40,17 +42,19 @@ public class FileController {
 	}
 
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public String fileUpload(FileForm files, ModelMap model) {
+	public @ResponseBody ModelMap fileUploadJSON(FileForm files, Principal principal, ModelMap model) {
 		/* TODO fix security.getPrincipal return our UserClass */
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username;
-		if (principal instanceof UserDetails) {
-		  username = ((UserDetails)principal).getUsername();
-		} else {
-		  username = principal.toString();
-		}
+//		//Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		String username;
+//		if (principal instanceof UserDetails) {
+//		  username = ((UserDetails)principal).getUsername();
+//		} else {
+//		  username = principal.toString();
+//		}
 		
-		User curr = userService.findUserByUsername(username);
+		//String username = principal.getName();
+		
+		User curr = userService.findUserByUsername("nick"); 
 		 
 		List<MultipartFile> mFiles = files.getFiles();
 		
@@ -60,15 +64,19 @@ public class FileController {
 						multipartFile.getOriginalFilename(), 
 						files.getPath(), 
 						multipartFile.getBytes());
+				
+				model.addAttribute(multipartFile.getOriginalFilename(), 
+						"success");
+				
 			} catch (IOException e) {
-				// TODO gestione eccezioni
+				model.addAttribute(multipartFile.getOriginalFilename(), 
+						"failed");
 				e.printStackTrace();
 			}
 		}
 
 		/* TODO real message codes */
-		model.addAttribute("successCode", "file.uploaded");
-		return "home";
+		return model;
 	}
 }
 
