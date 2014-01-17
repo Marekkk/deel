@@ -46,22 +46,27 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void registerNewUser(User user) throws IOException  {
+	public void registerNewUser(User user)   {
 		if (userDAO.findUserByUsername(user.getUsername()) != null)
 			throw new RuntimeErrorException(new Error("username.exists"),
 					"Username already exists!");
 		
-		userDAO.insertUser(user);
+		
+		Long id = userDAO.insertUser(user);
+		System.out.println("New User register with id -> " + user.getId());
 		
 		Folder f = new Folder();
 		f.setFather(null);
 		f.setName("/");
 		f.setFsPath("/");
 		f.setUser(user);
+		user.getFolders().add(f);
+		userDAO.insertUser(user);
+		//userDAO.updateUser(user);
 		/* Move FS related function in another class TODO */
-		folderDAO.insertFolder(f);
-		
-		mkdir(f);
+		//folderDAO.insertFolder(f);
+		/* Move Fs related function in another class TODO */
+		//mkdir(f);
 		
 	}
 

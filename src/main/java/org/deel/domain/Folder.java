@@ -42,6 +42,10 @@ public class Folder {
 	private Folder father;
 
 	@ManyToOne()
+	@JoinTable(name="user_folder",
+	joinColumns = {@JoinColumn(name="folder_id")},
+	inverseJoinColumns = {@JoinColumn(name="user_id")}
+			)
 	private User user;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)

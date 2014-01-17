@@ -83,8 +83,8 @@ public class User {
 								 inverseJoinColumns = {@JoinColumn(name="team_id")})
 	private Set<Team> teams = new HashSet<Team>(0);
 	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="User_Folder", joinColumns = {@JoinColumn(name="user_id")},
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinTable(name="user_folder", joinColumns = {@JoinColumn(name="user_id")},
 								 inverseJoinColumns = {@JoinColumn(name="folder_id")})
 	public Set<Folder> folders = new HashSet<Folder>(0);
 	
