@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import org.deel.domain.File;
@@ -122,6 +123,9 @@ public class FileServiceImpl implements FileService {
 			InputStream inputStream) throws IOException {
 
 		folder = folderDao.get(folder);
+		
+		if (folder == null) 
+			throw new RuntimeException("folder id doesn't exist");	
 		
 		for (Folder f : folder.getInFolder()) 
 			if (f.getName() == originalFilename)

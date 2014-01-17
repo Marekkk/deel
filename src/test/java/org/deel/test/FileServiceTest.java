@@ -3,6 +3,9 @@ package org.deel.test;
 import java.io.File;
 import java.io.FileInputStream;
 
+import javax.transaction.Transactional;
+
+import org.deel.dao.FileDao;
 import org.deel.dao.FilePathDao;
 import org.deel.dao.FolderDao;
 import org.deel.domain.FilePath;
@@ -21,6 +24,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.*;
 
+
 public class FileServiceTest {
 	
 	@Mock
@@ -28,6 +32,9 @@ public class FileServiceTest {
 	
 	@Mock
 	private FolderDao folderDao;
+	
+	@Mock
+	private FileDao fileDao;
 	
 
 	@InjectMocks
@@ -46,13 +53,16 @@ public class FileServiceTest {
 		
 		User u = new User();
 		u.setUsername("nick");
+		
 		Folder folder = new Folder();
 		folder.setId((long) 1);
+		folder.setFSPath("/");
+		
+		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		
 		fileService.uploadFile(u, "random0", folder, file);
 		
-		
-		verify(folderDao).loadFolderByPath(anyString(), any(User.class));
+		verify(fileDao).insertFile(any(org.deel.domain.File.class));
 		verify(filePathDao).insertFilePath(any(FilePath.class));
 		
 		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");
