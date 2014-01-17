@@ -48,7 +48,7 @@ public class FileServiceTest {
 	
 	
 	@Test
-	public void dbInteractionTest() throws Exception {
+	public void dbInteractionUploadTest() throws Exception {
 		FileInputStream file = new FileInputStream("/home/garulf/info/esami/AE/code/random0");
 		
 		User u = new User();
@@ -73,28 +73,16 @@ public class FileServiceTest {
 	}
 	
 	@Test
-	public void saveOnFilesystemTest() throws Exception {
-		FileInputStream file = new FileInputStream("/home/garulf/info/esami/AE/code/random0");
-		
+	public void listFileTest() {
 		User u = new User();
 		u.setUsername("nick");
 		u.setId((long)1);
 		
-		Folder folder = new Folder();
-		folder.setId((long) 1);
-		folder.setUser(u);
-		folder.setFsPath("/");
-		
-		when(folderDao.get(any(Folder.class))).thenReturn(folder);
-		
-		fileService.uploadFile(u, "random0", folder, file);
+		Folder f = new Folder();
+		f.setId((long)1);
 		
 		
-		File f = new File ("/home/garulf/storage/nick/random0");
-		
-		Assert.assertTrue(f.exists());
-		
-		f.delete();
+		fileService.populateFolder(u, f);
 	}
 	
 }

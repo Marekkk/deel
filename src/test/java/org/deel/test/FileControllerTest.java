@@ -15,8 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.deel.controllers.FileController;
 import org.deel.domain.File;
@@ -29,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,7 +42,7 @@ import sun.security.acl.PrincipalImpl;
 
 public class FileControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Mock
 	private FileService fileService;
 	
@@ -90,29 +93,44 @@ public class FileControllerTest {
 	@Test
 	public void listFilesTest() throws Exception {
 		User u = new User();
-		u.setUsername("nick");
-		when(userService.findUserByUsername("nick")).thenReturn(u);
+		u.setName("nick");
+		
+		Folder f = new Folder();
+		f.setId((long)1);
+		f.setName("/");
+		f.setFsPath("/");
+		f.setUser(u);
+		
+		Set<FilePath> files = new HashSet<FilePath>();
+		FilePath fp1 = new FilePath();
+		FilePath fp2 = new FilePath();
+		
+		fp1.setId((long)1);
+		fp2.setId((long)2);
+		
+		fp1.setFile(null);
+		fp2.setFile(null);
+		
+		fp1.setName("ciaocia");
+		fp2.setName("asdasd");
+		
+		
+		files.add(fp1);
+		files.add(fp2);
 		
 		when(principal.getName()).thenReturn("nick");
-		
-		List<FilePath> files = new LinkedList<FilePath>();
-		
-		files.add(new FilePath("file0", u, new File("realName", u), new Folder("/home", null, u)));
-		files.add(new FilePath("file1", u, new File("realName", u), new Folder("/home", null, u)));
-		files.add(new FilePath("file2", u, new File("realName", u), new Folder("/home", null, u)));
-
-		when(fileService.listFile(any(User.class), anyString())).thenReturn(files);
-		
+		when(userService.findUserByUsername("nick")).thenReturn(u);
+		when(fileService.populateFolder(any(User.class), any(Folder.class))).thenReturn(f);
+		when(fileService.getFilesInFolder(any(User.class), any(Folder.class))).thenReturn(files);
+		when(fileService.getFoldersInFolder(any(User.class), any(Folder.class))).thenReturn(new HashSet<Folder>());
+			
 		mockMvc.perform(get("/file/list")
 				.principal(principal)
-				.param("path", "/home")
-				).andExpect(jsonPath("$").isArray())
-				.andExpect(jsonPath("$[0].path").value("file0"));
-		
-		
-		
+				.param("path", "1")
+				).andDo(print());
 		
 	}
+	
 	@Test 
 	public void exceptionTest() throws Exception {
 		doThrow(new RuntimeException("asd")).when(fileService).uploadFile(any(User.class), 

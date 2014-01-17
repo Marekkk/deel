@@ -190,4 +190,25 @@ public class FileServiceImpl implements FileService {
 
 	}
 
+	@Override
+	public Folder populateFolder(User curr, Folder folder) {
+		/* if null return root directory */
+		if (folder.getId() == null) {
+			Set<Folder> fl = curr.getFolders();
+			for (Folder f: fl) {
+				if(f.getFather() == null)
+					return f;
+			}
+		}
+		
+		folder = folderDao.get(folder);
+		if (folder == null)
+			throw new RuntimeException("folder doesn't exists");
+		
+		if (folder.getUser().getId() != curr.getId())
+			throw new RuntimeException("user " + curr.getUsername() + " doesn't own folder " + folder.getFsPath());
+		
+		return folder;
+	}
+
 }

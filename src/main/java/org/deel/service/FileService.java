@@ -36,4 +36,6 @@ public interface FileService {
 	public Set<Folder> getFoldersInFolder(User currentUser, Folder f);
 
 	public Set<FilePath> getFilesInFolder(User currentUser, Folder f);
+
+	public Folder populateFolder(User currentUser, Folder folder);
 }

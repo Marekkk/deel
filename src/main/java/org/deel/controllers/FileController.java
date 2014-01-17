@@ -5,7 +5,9 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.deel.dao.FolderDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -61,12 +63,23 @@ public class FileController {
 	}
 	
 	@RequestMapping("/file/list")
-	public @ResponseBody List<FilePath> getFilesListJSON(@RequestParam String path, Principal principal) {
+	public @ResponseBody Map<String, Object> getFilesListJSON(@RequestParam(value = "path", required = false) Long path, Principal principal) {
 		String username = principal.getName();
-		
+		Map<String, Object> jsonRet= new HashMap<String, Object>();
 		User curr = userService.findUserByUsername(username);
 		
-		return null;
+		Folder folder = new Folder();
+		folder.setId(path);
+		
+			
+		folder = fileService.populateFolder(curr, folder);
+		Set<FilePath> filePaths = fileService.getFilesInFolder(curr, folder);
+		Set<Folder> folders = fileService.getFoldersInFolder(curr, folder);
+		jsonRet.put("currentDir", folder);
+		jsonRet.put("files", filePaths);
+		jsonRet.put("directories", folders);
+		
+		return jsonRet;
 	}
 	
 	@RequestMapping(value = "/file/test", method= RequestMethod.GET)
@@ -97,14 +110,7 @@ public class FileController {
 	public @ResponseBody Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm, 
 			BindingResult result,
 			Principal principal, ModelMap model) {
-		/* TODO fix security.getPrincipal return our UserClass */
-//		//Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		String username;
-//		if (principal instanceof UserDetails) {
-//		  username = ((UserDetails)principal).getUsername();
-//		} else {
-//		  username = principal.toString();
-//		}
+
 		
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
