@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
 	private UserDao userDao;
 	private FolderDao folderDao;
-	private String storagePath = "/home/garulf/info/esami/AE/code/storage/";
+	private String storagePath = "~/storage/";
 
 	
 	public FolderDao getFolderDao() {
@@ -41,8 +41,6 @@ public class UserServiceImpl implements UserService {
 		this.userDao = userDAO;
 	}
 	
-	
-
 	@Override
 	@Transactional
 	public void registerNewUser(User user) throws IOException  {
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
 					"Username already exists!");
 		
 		
-		userDao.insertUser(user);
+		Long id = userDao.insertUser(user);
 		
 		Folder f = new Folder();
 		f.setFather(null);
