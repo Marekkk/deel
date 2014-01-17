@@ -1,11 +1,11 @@
 package org.deel.dao.impl;
 
-import org.deel.dao.FileDao;
+import org.deel.dao.FileDAO;
 import org.deel.domain.File;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class FileDaoImpl implements FileDao {
+public class FileDaoImpl implements FileDAO {
 	
 	@Autowired
 	SessionFactory sessionFactory;

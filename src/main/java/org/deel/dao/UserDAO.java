@@ -3,7 +3,7 @@ package org.deel.dao;
 import org.deel.domain.User;
 
 
-public interface UserDao {
+public interface UserDAO {
 	public Long insertUser(User u);
 	public void updateUser(User u);
 	public void deleteUser(User u);
