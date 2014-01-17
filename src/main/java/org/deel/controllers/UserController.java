@@ -1,5 +1,7 @@
 package org.deel.controllers;
 
+import java.io.IOException;
+
 import javax.validation.Valid;
 
 import org.deel.domain.User;
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -28,7 +31,6 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	
 	
 
 	@RequestMapping(value = "/user/new", method = RequestMethod.GET)
@@ -60,14 +62,15 @@ public class UserController {
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
 		user.setPassword(pwdEncoder.encode(user.getPassword()));
 
-		if (userService.findUserByUsername(user.getUsername()) == null) {
-			userService.addUser(user);
-		} else {
-			result.reject("Username already taken");
-			return "newUser";
+		try {
+			userService.registerNewUser(user);
+		} catch (RuntimeException e)	{
+			result.rejectValue("user", "user.runtime", e.getMessage());
+		} catch (IOException e) {
+			result.rejectValue("user", "user.ioexception", e.getMessage());
 		}
 
-		return "redirect:homes";
+		return "redirect:home";
 	}
 
 }

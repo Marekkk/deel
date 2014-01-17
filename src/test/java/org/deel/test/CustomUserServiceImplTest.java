@@ -39,7 +39,7 @@ public class CustomUserServiceImplTest {
 		u.setEmail("asd@asd");
 		u.setPassword("asd");
 		
-		userService.addUser(u);
+		userService.registerNewUser(u);
 		
 		UserDetails ud  = customDetailsService.loadUserByUsername("marco");
 		

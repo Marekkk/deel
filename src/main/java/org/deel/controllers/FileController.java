@@ -131,8 +131,11 @@ public class FileController {
 //		}
 		
 		String username = principal.getName();
-		
 		User curr = userService.findUserByUsername(username);
+		
+		Folder folder = new Folder();
+		folder.setId(fileForm.getPath());
+		
 		Map<String, Object> jsonReturn = new HashMap<String, Object>();
 		 
 		List<MultipartFile> mFiles = fileForm.getFiles();
@@ -141,10 +144,8 @@ public class FileController {
 			try {
 				fileService.uploadFile(curr, 
 						multipartFile.getOriginalFilename(), 
-						fileForm.getPath(), 
+						folder, 
 						multipartFile.getInputStream());
-				
-				
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"success");
 				

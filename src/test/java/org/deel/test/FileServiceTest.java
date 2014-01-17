@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import org.deel.dao.FilePathDao;
 import org.deel.dao.FolderDao;
 import org.deel.domain.FilePath;
+import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.impl.FileServiceImpl;
@@ -45,8 +46,10 @@ public class FileServiceTest {
 		
 		User u = new User();
 		u.setUsername("nick");
+		Folder folder = new Folder();
+		folder.setId((long) 1);
 		
-		fileService.uploadFile(u, "random0", "/", file);
+		fileService.uploadFile(u, "random0", folder, file);
 		
 		
 		verify(folderDao).loadFolderByPath(anyString(), any(User.class));
@@ -63,8 +66,10 @@ public class FileServiceTest {
 		
 		User u = new User();
 		u.setUsername("nick");
+		Folder folder = new Folder();
+		folder.setId((long) 1);
 		
-		fileService.uploadFile(u, "random0", "/", file);
+		fileService.uploadFile(u, "random0", folder, file);
 		
 		
 		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");

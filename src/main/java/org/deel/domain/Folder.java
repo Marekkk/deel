@@ -120,4 +120,9 @@ public class Folder {
 		return null;
 	}
 
+	public void setFSPath(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

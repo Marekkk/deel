@@ -126,7 +126,7 @@ public class FileControllerTest {
 	public void exceptionTest() throws Exception {
 		doThrow(new RuntimeException("asd")).when(fileService).uploadFile(any(User.class), 
 				anyString(), 
-				anyString(), 
+				any(Folder.class),
 				any(InputStream.class));
 		
 
@@ -184,7 +184,7 @@ public class FileControllerTest {
 
 		verify(fileService, times(2)).uploadFile(any(User.class), 
 				anyString(), 
-				anyString(), 
+				any(Folder.class), 
 				any(InputStream.class));
 	
         

@@ -32,7 +32,7 @@ public class UserServiceTest {
 		u.setPassword("asdasd");
 		u.setUsername("asda");
 		
-		userService.addUser(u);
+		userService.registerNewUser(u);
 		
 		User u1 = userService.findUserByUsername("asda");
 		

@@ -114,7 +114,7 @@ public class UserControllerTest {
 						.param("email", "asd@asd").param("username", "nick"))
 				.andExpect(model().hasNoErrors());
 
-		verify(userService).addUser(any(User.class));
+		verify(userService).registerNewUser(any(User.class));
 
 	}
 
@@ -128,7 +128,7 @@ public class UserControllerTest {
 						.param("email", "asd@asd").param("username", "nick"))
 				.andExpect(model().hasErrors());
 
-		verify(userService, never()).addUser(any(User.class));
+		verify(userService, never()).registerNewUser(any(User.class));
 	}
 
 }

@@ -7,13 +7,15 @@ public class FileForm {
 
  
 	    private List<MultipartFile> files;
-	    private String path;
+
+	    private long path;
 	    
-		public String getPath() {
+
+		public long getPath() {
 			return path;
 		}
 
-		public void setPath(String path) {
+		public void setPath(long path) {
 			this.path = path;
 		}
 
