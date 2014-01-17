@@ -23,8 +23,8 @@ public class UserDaoImpl implements UserDAO{
 	}
 
 	@Override
-	public void insertUser(User u) {
-		sessionFactory.getCurrentSession().saveOrUpdate(u);
+	public Long insertUser(User u) {
+		return (Long) sessionFactory.getCurrentSession().save(u);
 	}
 
 	@Override

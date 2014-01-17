@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class UserServiceImpl implements UserService {
 
+
 	private UserDAO userDAO;
 	private FolderDAO folderDAO;
 	private String storagePath = "~/storage/";
@@ -43,8 +44,6 @@ public class UserServiceImpl implements UserService {
 		this.userDAO = userDAO;
 	}
 	
-	
-
 	@Override
 	@Transactional
 	public void registerNewUser(User user) throws IOException  {
@@ -52,8 +51,6 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeErrorException(new Error("username.exists"),
 					"Username already exists!");
 		
-		System.out.println("registerNewUser");
-		System.out.println(this);
 		userDAO.insertUser(user);
 		
 		Folder f = new Folder();
