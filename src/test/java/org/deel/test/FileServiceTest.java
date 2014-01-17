@@ -2,6 +2,8 @@ package org.deel.test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -78,11 +80,33 @@ public class FileServiceTest {
 		u.setUsername("nick");
 		u.setId((long)1);
 		
+		
 		Folder f = new Folder();
 		f.setId((long)1);
+		f.setName("/");
+		f.setUser(u);
+		
+		Set<FilePath> files = new HashSet<FilePath>();
+		FilePath fp1 = new FilePath();
+		FilePath fp2 = new FilePath();
+		
+		fp1.setId((long)1);
+		fp2.setId((long)2);
+		
+		fp1.setFile(null);
+		fp2.setFile(null);
+		
+		fp1.setName("ciaocia");
+		fp2.setName("asdasd");
 		
 		
-		fileService.populateFolder(u, f);
+		files.add(fp1);
+		files.add(fp2);
+		f.setFilepaths(files);
+		
+				
+		Assert.assertEquals(fileService.getFilesInFolder(u, f),files);
+		
 	}
 	
 }

@@ -1,9 +1,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:security="http://www.springframework.org/schema/security"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/context   
+          http://www.springframework.org/schema/context/spring-context-3.0.xsd
           http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security.xsd
           http://www.springframework.org/schema/tx
@@ -11,18 +13,20 @@
 
 
 
-	
-	<bean id="folderService" class="org.deel.service.impl.FolderServiceImpl" autowire="byName"></bean>
-	<bean id="filePathService" class="org.deel.service.impl.FilePathServiceImpl" autowire="byName" />
-	
-	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" />
-	<bean id="fileController" class="org.deel.controllers.FileController" autowire="byName"/>	
-	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl" autowire="byName"></bean>
+
+
+	<context:annotation-config />
+
+	<bean id="fileController" class="org.deel.controllers.FileController" autowire="byName"/>
+	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl"	autowire="byName" />
+
+	<bean id="fileDAO" class="org.deel.dao.impl.FileDaoImpl" autowire="byName" />
 	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl" autowire="byName" />
 	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
 	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
+
+	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" />
 	<bean id="userService" class="org.deel.service.impl.UserServiceImpl" autowire="byName" />
-	<bean id="companyService" class="org.deel.service.impl.CompanyServiceImpl" />
 
 
 	<bean name="dataSource"
@@ -52,12 +56,12 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
- 				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
 	</bean>
 
-	
+
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
@@ -94,6 +98,7 @@
 	<bean id="passwordEncoder"
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
-	<bean id="customUserDetailsService" class="org.deel.service.CustomUserDetailsService" autowire="byName"/>
+	<bean id="customUserDetailsService" class="org.deel.service.CustomUserDetailsService"
+		autowire="byName" />
 
 </beans>

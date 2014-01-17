@@ -74,7 +74,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	@Transactional
 	public Set<FilePath> getFilesInFolder(User currentUser, Folder f) {
-		f = folderDao.get(f);
+		
 
 		if (f == null)
 			throw new RuntimeException("Directory doesn't exists");
@@ -89,7 +89,7 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public Set<Folder> getFoldersInFolder(User currentUser, Folder f) {
-		f = folderDao.get(f);
+
 
 		if (f == null)
 			throw new RuntimeException("Directory doesn't exists");

@@ -88,7 +88,7 @@ public class FileUploadIntegrationTest {
                 fileUpload("/file/upload")
                 .file(multipartFile1)
                 .file(multipartFile2)
-                .param("path", "/")
+                .param("path", "1")
                 .principal(principal)
                 )
                 .andExpect(status().isOk())

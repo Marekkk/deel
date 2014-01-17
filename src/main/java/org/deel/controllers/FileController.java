@@ -3,6 +3,7 @@ package org.deel.controllers;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,9 +76,22 @@ public class FileController {
 		folder = fileService.populateFolder(curr, folder);
 		Set<FilePath> filePaths = fileService.getFilesInFolder(curr, folder);
 		Set<Folder> folders = fileService.getFoldersInFolder(curr, folder);
-		jsonRet.put("currentDir", folder);
-		jsonRet.put("files", filePaths);
-		jsonRet.put("directories", folders);
+		
+		Map<Long, String> fp = new HashMap<Long, String>();
+		for (FilePath filePath : filePaths) 
+			fp.put(filePath.getId(), filePath.getName());
+		
+		Map<Long, String> dl = new HashMap<Long, String>();
+		for (Folder f: folders) 
+			dl.put(f.getId(), f.getName());
+		
+		Map<Long, String> cd = new HashMap<Long, String>();
+		cd.put(folder.getId(), folder.getFsPath());
+		
+		
+		jsonRet.put("currentDir", cd);
+		jsonRet.put("files", fp);
+		jsonRet.put("directories", dl);
 		
 		return jsonRet;
 	}
