@@ -16,4 +16,9 @@ public class FolderServiceImpl implements FolderService {
 		return folderDAO.getFolder(name, user);
 	}
 
+	@Override
+	public void addFolder(Folder f) {
+		folderDAO.insertFolder(f);
+	}
+
 }

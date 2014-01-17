@@ -7,5 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface FolderService {
 	
 	@Transactional
+	public void addFolder(Folder f);
+	
+	@Transactional
 	public Folder getFolder(String name, User user);
 }

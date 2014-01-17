@@ -8,6 +8,7 @@ import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface FilePathService {
+	
 	@Transactional
 	public List<FilePath> listOfPathFiles(User u, Folder f);
 }

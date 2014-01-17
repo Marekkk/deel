@@ -3,6 +3,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -74,6 +75,14 @@ public class FilePath {
 		this.user = user;
 	}
 	
+	public Folder getFolder() {
+		return folder;
+	}
+
+	public void setFolder(Folder folder) {
+		this.folder = folder;
+	}
+
 	@Override
 	public String toString() {
 		return "File name : " + this.path + " in the folder of : " + this.user.getUsername();

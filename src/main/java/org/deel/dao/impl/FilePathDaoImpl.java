@@ -43,10 +43,10 @@ public class FilePathDaoImpl implements FilePathDao {
 	@Override
 	public List<FilePath> listOfPathFiles(User user, Folder folder) {
 		List<FilePath> paths = new LinkedList<FilePath>();
-		Query query = sessionFactory.getCurrentSession().createQuery("from filepath fp where fp.user_id = :usr and fp.folder_id = :f");
-		query.setParameter("usr", user.getId());
-		query.setParameter("f", folder.getId());
-		paths = query.list();
+		String q = "from " + FilePath.class.getName();
+		Query query = sessionFactory.getCurrentSession().createQuery(q);
+		//query.setParameter("name", "home");
+		paths = query.list();	
 		return paths;
 	}
 

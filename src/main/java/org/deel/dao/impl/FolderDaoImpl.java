@@ -14,8 +14,7 @@ public class FolderDaoImpl implements FolderDao {
 
 	@Override
 	public void insertFolder(Folder f) {
-		// TODO Auto-generated method stub
-		
+		sessionFactory.getCurrentSession().save(f);
 	}
 
 	@Override

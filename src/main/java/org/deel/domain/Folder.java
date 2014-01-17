@@ -15,48 +15,58 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="Folder")
 public class Folder {
-	
+
 	@Id
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy="increment")
 	private Long id;
-	
+
 	@Column(name="name")
 	private String name;
-	
+
 	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinTable(name="folderInFolder",
+	joinColumns = {@JoinColumn(name="child")},
+	inverseJoinColumns = {@JoinColumn(name="father")}
+			)
 	private Folder father;
-	
-	@ManyToOne(cascade={})
+
+	@ManyToOne()
+	@JoinTable(name="user_folder",
+	joinColumns = {@JoinColumn(name="folder_id")},
+	inverseJoinColumns = {@JoinColumn(name="user_id")}
+			)
 	private User user;
-	
+
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="folderInFolder",
-				joinColumns = {@JoinColumn(name="Father")},
-				inverseJoinColumns = {@JoinColumn(name="Child")}
-		      )
+	joinColumns = {@JoinColumn(name="Father")},
+	inverseJoinColumns = {@JoinColumn(name="Child")}
+			)
 	private Set<Folder> inFolder = new HashSet<Folder>(0); // Other folder in folder
-	
+
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="filepathsInFolder",
-				joinColumns = {@JoinColumn(name="folder_id")},
-				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-		      )
+	joinColumns = {@JoinColumn(name="folder_id")},
+	inverseJoinColumns = {@JoinColumn(name="filePath_id")}
+			)
 	private Set<FilePath> filepaths = new HashSet<FilePath>(0);
-	
+
 	public Folder() {}
-	
+
 	public Folder(String name, Folder father, User user) {
 		this.name = name;
 		this.father = father;
 		this.user = user;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -104,5 +114,5 @@ public class Folder {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 }
