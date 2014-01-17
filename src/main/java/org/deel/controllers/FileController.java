@@ -1,6 +1,9 @@
 package org.deel.controllers;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.deel.dao.FolderDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
@@ -94,6 +100,32 @@ public class FileController {
 		jsonRet.put("directories", dl);
 		
 		return jsonRet;
+	}
+	
+	@RequestMapping("/file/download")
+	public void downloadFile(@RequestParam Long id, Principal principal, HttpServletResponse response) {
+		response.setContentType("application/octet-stream");
+		
+		String username = principal.getName();
+		User curr = userService.findUserByUsername(username);
+		
+		FilePath filePath= new FilePath();
+		filePath.setId(id);
+		FileInputStream is;
+		try {
+			is = fileService.getFile(curr, filePath);
+			IOUtils.copy(is, response.getOutputStream());
+			response.flushBuffer();
+			is.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return;
 	}
 	
 	@RequestMapping(value = "/file/test", method= RequestMethod.GET)

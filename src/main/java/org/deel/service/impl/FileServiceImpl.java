@@ -1,5 +1,6 @@
 package org.deel.service.impl;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Set;
 import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.IOUtils;
 import org.deel.domain.File;
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
@@ -103,9 +105,25 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public InputStream getFile(User currentUser, String path) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public FileInputStream getFile(User currentUser, FilePath fp) throws FileNotFoundException {
+		fp = filePathDao.getFilePath(fp);
+		
+		if (fp == null)
+			throw new RuntimeException("Filepath doesn't exists");
+		if (fp.getUser().getId() != currentUser.getId())
+			throw new RuntimeException("Filepath " + fp.getName() + "doesn't belongs to user " 
+					+ currentUser.getUsername());
+		String path = storagePath + currentUser.getUsername() + fp.getFile().getFsPath();
+		
+		java.io.File file = new java.io.File(path);
+		
+		if (!file.exists())
+			throw new RuntimeException("DB/FS mismatch: file " + path + " doesn't exists");
+		
+		FileInputStream fIn = new FileInputStream(file);
+		
+		return fIn;
 	}
 
 	@Override
@@ -130,12 +148,9 @@ public class FileServiceImpl implements FileService {
 			if (!fsF.createNewFile())
 				throw new RuntimeException("DB/FS mismatch saving file " + fsF.getAbsolutePath());
 
-			byte[] buff = new byte[1024];
 			fOut = new FileOutputStream(fsF);
-			while (inputStream.read(buff) != -1) {
-				fOut.write(buff);
-			}
-
+			IOUtils.copy(inputStream, fOut);
+			fOut.flush();
 			fOut.close();
 
 		} catch (FileNotFoundException e) {
@@ -150,7 +165,10 @@ public class FileServiceImpl implements FileService {
 	public void uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException {
 
+		
+		
 		folder = folderDao.get(folder);
+		
 
 		if (folder == null)
 			throw new RuntimeException("folder id doesn't exist");

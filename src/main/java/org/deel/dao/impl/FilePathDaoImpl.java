@@ -28,4 +28,9 @@ public class FilePathDaoImpl implements FilePathDAO {
 	public void updateFilePath(FilePath fp) {
 		sessionFactory.getCurrentSession().update(fp);
 	}
+
+	@Override
+	public FilePath getFilePath(FilePath fp) {
+		return (FilePath) sessionFactory.getCurrentSession().get(FilePath.class, fp.getId());
+	}
 }

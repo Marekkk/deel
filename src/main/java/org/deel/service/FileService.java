@@ -1,5 +1,7 @@
 package org.deel.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -24,7 +26,7 @@ public interface FileService {
 	public void shareFile(User currentUser, String path, List<User> userList);
 
 	@Transactional
-	public InputStream getFile(User currentUser, String path);
+	public FileInputStream getFile(User currentUser, FilePath filePath) throws FileNotFoundException;
 	
 	@Transactional
 	public List<FilePath> listFile(User currentUser, String Path);

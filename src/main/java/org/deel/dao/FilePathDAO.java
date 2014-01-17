@@ -6,4 +6,5 @@ public interface FilePathDAO {
 	public void insertFilePath(FilePath fp);
 	public void deleteFilePath(FilePath fp);
 	public void updateFilePath(FilePath fp);
+	public FilePath getFilePath(FilePath fp);
 }

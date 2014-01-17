@@ -172,6 +172,51 @@ public class FileControllerTest {
 	}
 	
 	@Test
+	public void downloadTest() throws Exception {
+		User u = new User();
+		FilePath fp = new FilePath();
+		
+		java.io.File f = new java.io.File("/home/garulf/storage/nick/sheep_wolves.bk");
+		FileInputStream fs = new FileInputStream(f);
+		
+		when(userService.findUserByUsername("nick")).thenReturn(u);
+		when(principal.getName()).thenReturn("nick");
+		when(fileService.getFile(any(User.class), any(FilePath.class))).thenReturn(fs);
+		
+		mockMvc.perform(get("/file/download")
+				 .principal(principal)
+				 .param("id", "2")
+                 )
+                 .andDo(print())
+                 .andExpect(status().isOk());
+		 verify(fileService).getFile(any(User.class), any(FilePath.class));
+
+	}
+	
+	@Test
+	public void downloadDifferentOwnerTest() throws Exception {
+		User u = new User();
+		FilePath fp = new FilePath();
+		
+		java.io.File f = new java.io.File("/home/garulf/storage/nick/sheep_wolves.bk");
+		FileInputStream fs = new FileInputStream(f);
+		
+		when(userService.findUserByUsername("nick")).thenReturn(u);
+		when(principal.getName()).thenReturn("nick");
+		when(fileService.getFile(any(User.class), any(FilePath.class))).thenThrow(new RuntimeException());
+		
+		mockMvc.perform(get("/file/download")
+				 .principal(principal)
+				 .param("id", "2")
+                 )
+                 .andDo(print())
+                 .andExpect(status().isOk());
+		 verify(fileService).getFile(any(User.class), any(FilePath.class));
+
+	}
+	
+	
+	@Test
 	public void fileUploadAsd() throws Exception {
 
 		
