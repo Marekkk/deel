@@ -19,6 +19,7 @@
 	}
 </script>
 <script type="text/javascript">
+
 	function getFiles() {
 		if (sessionStorage.getItem("dir") == null)
 			var request = "file/list";
@@ -27,8 +28,8 @@
 		$.get(request, function(data,
 				success) {
 			console.log(success);
-			console.log(data)
-			alert(data.value);
+			console.log(data);
+			alert(data.value + " " + data.count);
 		});
 	}
 
@@ -40,6 +41,8 @@
 			console.log(this);
 			alert("Uploading...");
 
+			this.path = sessionStorage.getItem("dir");
+			
 			//grab all form data  
 			var formData = new FormData($(this)[0]);
 
@@ -109,7 +112,10 @@
 			<div id="uploadContainer" class="upload">
 				<input type="file" value="Choose file" name="files[0]"
 					class="uploading" onchange="return sendUpload();" /> <input
-					type="hidden" value="/home/" name="path" />
+					type="hidden" name="path" />
+			</div>
+			<div>
+			<input type="submit" value="Invia">
 			</div>
 		</form:form>
 
