@@ -21,7 +21,6 @@ public class FilePathDaoImpl implements FilePathDao {
 	SessionFactory sessionFactory;
 
 	@Override
-	@Transactional
 	public void insertFilePath(FilePath fp) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(fp);

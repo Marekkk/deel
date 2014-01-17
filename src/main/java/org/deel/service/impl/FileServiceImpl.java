@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.deel.dao.FileDao;
 import org.deel.dao.FilePathDao;
 import org.deel.dao.FolderDao;
@@ -112,6 +114,7 @@ public class FileServiceImpl implements FileService {
 
 	}
 	@Override
+	@Transactional
 	public void saveNewFile(User curr,
 			String originalFilename,
 			String path,
