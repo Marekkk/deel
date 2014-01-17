@@ -53,19 +53,21 @@ public class FileServiceTest {
 		
 		User u = new User();
 		u.setUsername("nick");
+		u.setId((long)1);
 		
 		Folder folder = new Folder();
 		folder.setId((long) 1);
 		folder.setFsPath("/");
-		
+		folder.setUser(u);
 		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		
 		fileService.uploadFile(u, "random0", folder, file);
 		
 
-		verify(filePathDao).insertFilePath(any(FilePath.class));
+		verify(filePathDao, times(1)).insertFilePath(any(FilePath.class));
+		verify(fileDao, times(1)).insertFile(any(org.deel.domain.File.class));
 		
-		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");
+		File f = new File ("/home/garulf/storage/nick/random0");
 		Assert.assertTrue(f.exists());
 		f.delete();
 	}
@@ -76,16 +78,23 @@ public class FileServiceTest {
 		
 		User u = new User();
 		u.setUsername("nick");
+		u.setId((long)1);
+		
 		Folder folder = new Folder();
 		folder.setId((long) 1);
+		folder.setUser(u);
+		folder.setFsPath("/");
+		
+		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		
 		fileService.uploadFile(u, "random0", folder, file);
 		
 		
-		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");
+		File f = new File ("/home/garulf/storage/nick/random0");
 		
 		Assert.assertTrue(f.exists());
 		
+		f.delete();
 	}
 	
 }
