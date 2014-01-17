@@ -74,7 +74,7 @@ public class User {
 	 * In a company can work multiple user, using CascadeType.ALL when we insert a new user with a new company 
 	 * automatically the new company will be added to the DB
 	 */
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Company company;
 	

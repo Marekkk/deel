@@ -16,7 +16,6 @@ import org.deel.dao.FolderDao;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
-import org.deel.exception.FileAlreadyExistsException;
 import org.deel.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -123,13 +122,14 @@ public class FileServiceImpl implements FileService {
 
 		folder = folderDao.get(folder);
 		
+		// TODO check if current user has this folder
 		for (Folder f : folder.getInFolder()) 
 			if (f.getName() == originalFilename)
 				throw new RuntimeException("Uploaded file has the same name of a directory");
 		
 		/* TODO change Filepath.path in FilePath.name */
 		for (FilePath fp : folder.getFilepaths()) 
-			if (fp.getPath() == originalFilename)
+			if (fp.getName() == originalFilename)
 				updateFile(curr, fp, inputStream);
 		
 
@@ -145,7 +145,7 @@ public class FileServiceImpl implements FileService {
 		
 		fp.setFile(file);
 		fp.setFolder(folder);
-		fp.setPath(originalFilename);
+		fp.setName(originalFilename);
 		fp.setUser(curr);
 		
 		filePathDao.insertFilePath(fp);

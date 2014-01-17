@@ -23,9 +23,7 @@ import org.deel.domain.File;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
-import org.deel.service.FilePathService;
 import org.deel.service.FileService;
-import org.deel.service.FolderService;
 import org.deel.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,9 +40,6 @@ import sun.security.acl.PrincipalImpl;
 public class FileControllerTest {
 	private MockMvc mockMvc;
 	
-	@Mock 
-	private FolderService folderService;
-	
 	@Mock
 	private FileService fileService;
 	
@@ -53,10 +48,6 @@ public class FileControllerTest {
 	
 	@Mock 
 	private Principal principal;
-	
-	@Mock
-	private FilePathService filePathService;
-	
 	
 	@InjectMocks
 	private FileController fileController;

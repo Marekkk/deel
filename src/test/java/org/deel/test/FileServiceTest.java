@@ -52,7 +52,7 @@ public class FileServiceTest {
 		fileService.uploadFile(u, "random0", folder, file);
 		
 		
-		verify(folderDao).loadFolderByPath(anyString(), any(User.class));
+		//verify(folderDao).loadFolderByPath(anyString(), any(User.class));
 		verify(filePathDao).insertFilePath(any(FilePath.class));
 		
 		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");

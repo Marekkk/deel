@@ -1,11 +1,15 @@
 package org.deel.service.impl;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import javax.management.RuntimeErrorException;
 
 import org.deel.dao.FolderDao;
 import org.deel.dao.UserDao;
+import org.deel.domain.File;
+import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.UserService;
@@ -36,10 +40,12 @@ public class UserServiceImpl implements UserService {
 	public void setUserDAO(UserDao userDAO) {
 		this.userDao = userDAO;
 	}
+	
+	
 
 	@Override
 	@Transactional
-	public void registerNewUser(User user) throws IOException {
+	public void registerNewUser(User user) throws IOException  {
 		if (userDao.findUserByUsername(user.getUsername()) != null)
 			throw new RuntimeErrorException(new Error("username.exists"),
 					"Username already exists!");
@@ -55,7 +61,7 @@ public class UserServiceImpl implements UserService {
 		/* Move FS related function in another class TODO */
 		folderDao.insertFolder(f);
 		
-		mkdir(f);
+		//mkdir(f);
 		
 	}
 
@@ -72,6 +78,32 @@ public class UserServiceImpl implements UserService {
 	public User findUserByUsername(String username) {
 		return userDao.findUserByUsername(username);
 
+	}
+
+	@Override
+	public Set<Folder> getFolder(User user) {
+		return user.getFolders();
+	}
+
+	@Override
+	public Set<FilePath> getFilePaths(User user) {
+		return user.getPaths();
+	}
+
+	@Override
+	public Set<File> getFiles(User user) {
+		return user.getFiles();
+	}
+
+	@Override
+	public void updateUser(User user) {
+		userDao.updateUser(user);
+	}
+
+	@Override
+	public void addFolder(User user, Folder folder) {
+		folder.setUser(user);
+		folderDao.insertFolder(folder);
 	}
 
 }
