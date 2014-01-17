@@ -42,10 +42,7 @@ public class Folder {
 	private Folder father;
 
 	@ManyToOne()
-	@JoinTable(name="user_folder",
-	joinColumns = {@JoinColumn(name="folder_id")},
-	inverseJoinColumns = {@JoinColumn(name="user_id")}
-			)
+	@JoinColumn(name="user_id")
 	private User user;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
@@ -55,11 +52,7 @@ public class Folder {
 			)
 	private Set<Folder> inFolder = new HashSet<Folder>(0); // Other folder in folder
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="filepathsInFolder",
-	joinColumns = {@JoinColumn(name="folder_id")},
-	inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-			)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="folder")
 	private Set<FilePath> filepaths = new HashSet<FilePath>(0);
 
 	public Folder() {}
@@ -126,5 +119,9 @@ public class Folder {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Folder [id=" + id + ", name=" + name + ", user=" + user + "]";
+	}
 
 }

@@ -56,18 +56,10 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Category category;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="user_filepath",
-				joinColumns = {@JoinColumn(name="user_id")},
-				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-		      )
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
 	private Set<FilePath> paths = new HashSet<FilePath>(0);
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="user_file",
-				joinColumns = {@JoinColumn(name="user_id")},
-				inverseJoinColumns = {@JoinColumn(name="file_id")}
-		      )
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="owner")
 	private Set<File> files = new HashSet<File>(0);
 	
 	/*
@@ -83,10 +75,8 @@ public class User {
 								 inverseJoinColumns = {@JoinColumn(name="team_id")})
 	private Set<Team> teams = new HashSet<Team>(0);
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="user_folder", joinColumns = {@JoinColumn(name="user_id")},
-								 inverseJoinColumns = {@JoinColumn(name="folder_id")})
-	public Set<Folder> folders = new HashSet<Folder>(0);
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user")
+	public Set<Folder> folders = new HashSet<Folder>();
 	
 	public Set<Team> getTeams() {
 		return this.teams;
@@ -196,4 +186,10 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + "]";
+	}
+	
 }

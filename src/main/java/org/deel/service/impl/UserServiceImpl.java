@@ -54,17 +54,18 @@ public class UserServiceImpl implements UserService {
 		
 		Long id = userDAO.insertUser(user);
 		System.out.println("New User register with id -> " + user.getId());
+		userDAO.insertUser(user);
 		
 		Folder f = new Folder();
 		f.setFather(null);
 		f.setName("/");
 		f.setFsPath("/");
 		f.setUser(user);
-		user.getFolders().add(f);
-		userDAO.insertUser(user);
+		
+		//user.getFolders().add(f);
 		//userDAO.updateUser(user);
 		/* Move FS related function in another class TODO */
-		//folderDAO.insertFolder(f);
+		folderDAO.insertFolder(f);
 		/* Move Fs related function in another class TODO */
 		//mkdir(f);
 		

@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -24,22 +25,17 @@ public class FilePath {
 	private String name;
 
 	@ManyToOne(cascade={})
+	@JoinColumn(name="user_id")
 	private User user;
 
-	@ManyToOne(cascade={})
-	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	@JoinTable(name="file_filepath",
-	joinColumns = {@JoinColumn(name="filepath_id")},
-	inverseJoinColumns = {@JoinColumn(name="file_id")}
-			)
+	@ManyToOne()
+	@Cascade(CascadeType.SAVE_UPDATE)
+	@JoinColumn(name="file_id")
 	private File file;
 
 	@ManyToOne()
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	@JoinTable(name="filepathsInFolder",
-	joinColumns = {@JoinColumn(name="filepath_id")},
-	inverseJoinColumns = {@JoinColumn(name="folder_id")}
-			)
+	@JoinColumn(name="folder_id")
 	private Folder folder;
 
 	public FilePath() {}

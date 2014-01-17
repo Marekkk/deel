@@ -38,20 +38,13 @@ public class File {
 	private String fsPath;
 
 	@ManyToOne(cascade={})
-	@JoinTable(name="user_file",
-	joinColumns = {@JoinColumn(name="file_id")},
-	inverseJoinColumns = {@JoinColumn(name="user_id")}
-			)
+	@JoinColumn(name="user_id")
 	private User owner;
 
 	@Column(name="permission")
 	private Permission permission;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="file_filepath",
-	joinColumns = {@JoinColumn(name="file_id")},
-	inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-			)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="file")
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
 	public File() {}
@@ -110,4 +103,9 @@ public class File {
 		this.paths = paths;
 	}
 
+	@Override
+	public String toString() {
+		return "File [id=" + id + ", name=" + name + ", owner=" + owner + "]";
+	}
+	
 }
