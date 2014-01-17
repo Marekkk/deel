@@ -32,10 +32,13 @@ public interface FileService {
 	@Transactional
 	public void uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException;
-
+	
+	@Transactional
 	public Set<Folder> getFoldersInFolder(User currentUser, Folder f);
-
+	
+	@Transactional
 	public Set<FilePath> getFilesInFolder(User currentUser, Folder f);
 
+	@Transactional
 	public Folder populateFolder(User currentUser, Folder folder);
 }

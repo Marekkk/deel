@@ -49,7 +49,7 @@
 
 	<footer>
 	<div id="footerSection">
-		<p>Electric Sheep 2013</p>
+		<p>Electric Sheep 2014</p>
 	</div>
 	</footer>
 

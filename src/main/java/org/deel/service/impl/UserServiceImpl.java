@@ -1,7 +1,6 @@
 package org.deel.service.impl;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import javax.management.RuntimeErrorException;
@@ -46,15 +45,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void registerNewUser(User user)   {
+	public void registerNewUser(User user) throws IOException {
 		if (userDAO.findUserByUsername(user.getUsername()) != null)
 			throw new RuntimeErrorException(new Error("username.exists"),
 					"Username already exists!");
 		
-		
-		Long id = userDAO.insertUser(user);
-		System.out.println("New User register with id -> " + user.getId());
 		userDAO.insertUser(user);
+		System.out.println("New User register with id -> " + user.getId());
 		
 		Folder f = new Folder();
 		f.setFather(null);
@@ -67,7 +64,7 @@ public class UserServiceImpl implements UserService {
 		/* Move FS related function in another class TODO */
 		folderDAO.insertFolder(f);
 		/* Move Fs related function in another class TODO */
-		//mkdir(f);
+		mkdir(f);
 		
 	}
 

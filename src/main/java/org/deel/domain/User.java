@@ -56,10 +56,10 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Category category;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user")
 	private Set<FilePath> paths = new HashSet<FilePath>(0);
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="owner")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="owner")
 	private Set<File> files = new HashSet<File>(0);
 	
 	/*

@@ -10,49 +10,56 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
-function runEffect() {
-		$("#uploadContainer").toggle();
+	var data;
+	function runEffect() {
+		$("#uploadContainer").show("slow");
+	}
+	function sendUpload() {
+		this.ajaxForm.submit();
 	}
 </script>
 <script type="text/javascript">
-   		
-   		$(document).ready(function (){
+	function getFiles() {
+		if (sessionStorage.getItem("dir") == null)
+			var request = "file/list";
+		else 
+			var request = "file/list?path=" + sessionStorage.getItem("dir");
+		$.get(request, function(data,
+				success) {
+			console.log(success);
+			console.log(data)
+			alert(data.value);
+		});
+	}
 
-   		function getFiles() {
-   			$.get("file/list?path=" + sessionStorage.getItem("dir"), function(data, success) {
-   				console.log(success);
-   				alert(data);
-   			});
-   		}
-   		
-   		$(document).ready(function (){
-   			getFiles();
-   			
-   			$("form#ajaxForm").submit(function(event) {
-   				event.preventDefault();
-   				console.log(this);
-   				alert("Uploading...");
-   				
-   			  //grab all form data  
-   			  var formData = new FormData($(this)[0]);
-   			 
-   			  $.ajax({
-   			    url: 'file/upload',
-   			    type: 'POST',
-   			    data: formData,
-   			    async: false,
-   			    cache: false,
-   			    contentType: false,
-   			    processData: false,
-   			    success: function (returndata) {
-   			      alert(returndata);
-   			      console.log(returndata);
-   			    }
-   			  });
-   			  return false;
-   			});
-   		});
-    </script>
+	$(document).ready(function() {
+		getFiles();
+
+		$("form#ajaxForm").submit(function(event) {
+			event.preventDefault();
+			console.log(this);
+			alert("Uploading...");
+
+			//grab all form data  
+			var formData = new FormData($(this)[0]);
+
+			$.ajax({
+				url : 'file/upload',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				processData : false,
+				success : function(returndata) {
+					alert(returndata);
+					console.log(returndata);
+				}
+			});
+			return false;
+		});
+	});
+</script>
 <title>Home</title>
 </head>
 
@@ -77,17 +84,7 @@ function runEffect() {
 		<nav id="mainav">
 		<ul>
 			<li><a href="home.html" class="active">home</a></li>
-			<li><a href="login.html">logout</a></li>
-			<li><a href="javascript:runEffect()" id="toggle">Upload</a>
-				<div id="uploadContainer">
-					<form:form method="POST" commandName="fileForm"
-						action="file/upload" name="ajaxForm" id="ajaxForm"
-						enctype="multipart/form-data">
-						<input type="file" value="Choose file" name="files[0]" />
-						<input type="hidden" value="/home/" name="path" />
-						<input type="submit" value="Invia!">
-					</form:form>
-				</div></li>
+			<li><a href="logout">logout</a></li>
 		</ul>
 		</nav>
 
@@ -106,11 +103,21 @@ function runEffect() {
 			</table>
 		</div>
 
+
+		<form:form method="POST" commandName="fileForm" action="file/upload"
+			name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
+			<div id="uploadContainer" class="upload">
+				<input type="file" value="Choose file" name="files[0]"
+					class="uploading" onchange="return sendUpload();" /> <input
+					type="hidden" value="/home/" name="path" />
+			</div>
+		</form:form>
+
 	</div>
 
 	<footer>
 	<div id="footerSection">
-		<p>Electric Sheep 2013</p>
+		<p>Electric Sheep 2014</p>
 	</div>
 	</footer>
 
