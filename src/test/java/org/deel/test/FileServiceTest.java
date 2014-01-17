@@ -56,7 +56,7 @@ public class FileServiceTest {
 		
 		Folder folder = new Folder();
 		folder.setId((long) 1);
-		folder.setFSPath("/");
+		folder.setFsPath("/");
 		
 		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		

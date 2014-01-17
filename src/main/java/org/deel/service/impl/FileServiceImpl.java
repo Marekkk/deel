@@ -86,7 +86,7 @@ public class FileServiceImpl implements FileService {
 			InputStream inputStream) throws IOException{
 
 		
-		String finalPath = storagePath + f.getOwner().getUsername() +  f.getFSPath();
+		String finalPath = storagePath + f.getOwner().getUsername() +  f.getFsPath();
 
 		
 		java.io.File fsF = new java.io.File(finalPath);		
@@ -144,7 +144,7 @@ public class FileServiceImpl implements FileService {
 		
 		file.setName(originalFilename);
 		file.setOwner(curr);
-		file.setFSPath(folder.getFSPath()+originalFilename);
+		file.setFsPath(folder.getFsPath()+originalFilename);
 			
 		fileDao.insertFile(file);
 		

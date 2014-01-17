@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 	private UserDAO userDAO;
 	private FolderDAO folderDAO;
-	private String storagePath = "~/storage/";
+	private String storagePath = System.getProperty("user.home") + "/storage/";
 
 	
 	public FolderDAO getFolderDao() {
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 		Folder f = new Folder();
 		f.setFather(null);
 		f.setName("/");
-		f.setFSPath("/");
+		f.setFsPath("/");
 		f.setUser(user);
 		/* Move FS related function in another class TODO */
 		folderDAO.insertFolder(f);
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	private void mkdir(Folder f) 
 			throws IOException {
 		
-		java.io.File dir = new java.io.File(storagePath + f.getUser().getUsername()+f.getFSPath());
+		java.io.File dir = new java.io.File(storagePath + f.getUser().getUsername()+f.getFsPath());
 		if(!dir.mkdir())
 			throw new RuntimeErrorException(new Error("directory.notcreated"), "Can't make dir" + dir.getAbsolutePath());
 	}

@@ -122,14 +122,5 @@ public class Folder {
 		this.id = id;
 	}
 
-	public String getFSPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setFSPath(String string) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
