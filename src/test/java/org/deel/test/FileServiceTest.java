@@ -46,7 +46,7 @@ public class FileServiceTest {
 		User u = new User();
 		u.setUsername("nick");
 		
-		fileService.saveNewFile(u, "random0", "/", file);
+		fileService.uploadFile(u, "random0", "/", file);
 		
 		
 		verify(folderDao).loadFolderByPath(anyString(), any(User.class));
@@ -64,7 +64,7 @@ public class FileServiceTest {
 		User u = new User();
 		u.setUsername("nick");
 		
-		fileService.saveNewFile(u, "random0", "/", file);
+		fileService.uploadFile(u, "random0", "/", file);
 		
 		
 		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");

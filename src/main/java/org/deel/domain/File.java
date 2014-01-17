@@ -94,4 +94,14 @@ public class File {
 	public void setPaths(Set<FilePath> paths) {
 		this.paths = paths;
 	}
+
+	public void setFSPath(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getFSPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

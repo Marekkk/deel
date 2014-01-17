@@ -139,7 +139,7 @@ public class FileController {
 		
 		for (MultipartFile multipartFile : mFiles) {
 			try {
-				fileService.saveNewFile(curr, 
+				fileService.uploadFile(curr, 
 						multipartFile.getOriginalFilename(), 
 						fileForm.getPath(), 
 						multipartFile.getInputStream());

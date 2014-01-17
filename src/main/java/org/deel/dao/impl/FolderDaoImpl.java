@@ -46,4 +46,10 @@ public class FolderDaoImpl implements FolderDao {
 		return null;
 	}
 
+	@Override
+	public Folder get(Folder f) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

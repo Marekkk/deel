@@ -124,7 +124,7 @@ public class FileControllerTest {
 	}
 	@Test 
 	public void exceptionTest() throws Exception {
-		doThrow(new RuntimeException("asd")).when(fileService).saveNewFile(any(User.class), 
+		doThrow(new RuntimeException("asd")).when(fileService).uploadFile(any(User.class), 
 				anyString(), 
 				anyString(), 
 				any(InputStream.class));
@@ -182,7 +182,7 @@ public class FileControllerTest {
 
          
 
-		verify(fileService, times(2)).saveNewFile(any(User.class), 
+		verify(fileService, times(2)).uploadFile(any(User.class), 
 				anyString(), 
 				anyString(), 
 				any(InputStream.class));

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.deel.domain.FilePath;
+import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,7 @@ public interface FileService {
 	public void eraseFile(User owner, String path);
 	
 	@Transactional
-	public void updateFile(User owner, String path, InputStream data);
+	public void updateFile(User owner, FilePath filePath, InputStream data);
 	
 	@Transactional
 	public void shareFile(User currentUser, String path, List<User> userList);
@@ -27,6 +28,6 @@ public interface FileService {
 	public List<FilePath> listFile(User currentUser, String Path);
 
 	@Transactional
-	public void saveNewFile(User curr, String originalFilename, String path,
+	public void uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException;
 }
