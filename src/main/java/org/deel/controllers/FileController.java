@@ -91,8 +91,9 @@ public class FileController {
 		for (Folder f: folders) 
 			dl.put(f.getId(), f.getName());
 		
-		Map<Long, String> cd = new HashMap<Long, String>();
-		cd.put(folder.getId(), folder.getFsPath());
+		Map<String, Object> cd = new HashMap<String, Object>();
+		cd.put("id", folder.getId());
+		cd.put("path", folder.getFsPath());
 		
 		
 		jsonRet.put("currentDir", cd);

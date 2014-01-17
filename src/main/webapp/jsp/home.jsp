@@ -19,7 +19,7 @@
 	}
 </script>
 <script type="text/javascript">
-
+	var obj;
 	function getFiles() {
 		if (sessionStorage.getItem("dir") == null)
 			var request = "file/list";
@@ -28,7 +28,7 @@
 		$.get(request, function(data,
 				success) {
 			console.log(success);
-			console.log(data);
+			obj = data;
 			alert(data.value + " " + data.count);
 		});
 	}
