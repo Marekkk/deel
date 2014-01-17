@@ -1,11 +1,11 @@
 package org.deel.dao.impl;
 
-import org.deel.dao.CompanyDao;
+import org.deel.dao.CompanyDAO;
 import org.deel.domain.Company;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CompanyDaoImpl implements CompanyDao{
+public class CompanyDaoImpl implements CompanyDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;

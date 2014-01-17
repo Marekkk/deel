@@ -9,9 +9,7 @@ import java.util.Map;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
-import org.deel.service.FilePathService;
 import org.deel.service.FileService;
-import org.deel.service.FolderService;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,32 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class FileController {
-
-	private FolderService folderService;
-	private FilePathService filePathService;
 	private FileService fileService;
 	private UserService userService;
-	
-	public FolderService getFolderService() {
-		return folderService;
-	}
-
-	@Autowired
-	public void setFolderService(FolderService folderService) {
-		this.folderService = folderService;
-	}
 
 	public UserService getUserService() {
 		return userService;
-	}
-
-	public FilePathService getFilePathService() {
-		return filePathService;
-	}
-
-	@Autowired
-	public void setFilePathService(FilePathService filePathService) {
-		this.filePathService = filePathService;
 	}
 
 	@Autowired
@@ -88,9 +65,8 @@ public class FileController {
 		String username = principal.getName();
 		
 		User curr = userService.findUserByUsername(username);
-		Folder f = folderService.getFolder(path, curr);
 		
-		return filePathService.listOfPathFiles(curr, f);
+		return null;
 	}
 	
 	@RequestMapping(value = "/file/test", method= RequestMethod.GET)

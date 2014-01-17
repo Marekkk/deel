@@ -11,44 +11,43 @@ import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import org.deel.domain.File;
-import org.deel.dao.FileDao;
-import org.deel.dao.FilePathDao;
-import org.deel.dao.FolderDao;
+import org.deel.dao.FileDAO;
+import org.deel.dao.FilePathDAO;
+import org.deel.dao.FolderDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
-import org.deel.exception.FileAlreadyExistsException;
 import org.deel.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileServiceImpl implements FileService {
 
-	private FolderDao folderDao;
-	private FilePathDao filePathDao;
-	private FileDao fileDao;
+	private FolderDAO folderDao;
+	private FilePathDAO filePathDao;
+	private FileDAO fileDao;
 
-	public FileDao getFileDao() {
+	public FileDAO getFileDao() {
 		return fileDao;
 	}
 	
 	@Autowired
-	public void setFileDao(FileDao fileDao) {
+	public void setFileDao(FileDAO fileDao) {
 		this.fileDao = fileDao;
 	}
 	@Autowired
-	public void setFilePathDao(FilePathDao filePathDao) {
+	public void setFilePathDao(FilePathDAO filePathDao) {
 		this.filePathDao = filePathDao;
 	}
-	public FilePathDao getFilePathDao() {
+	public FilePathDAO getFilePathDao() {
 		return filePathDao;
 	}
 
-	public FolderDao getFolderDao() {
+	public FolderDAO getFolderDao() {
 		return folderDao;
 	}
 
 	@Autowired
-	public void setFolderDao(FolderDao folderDao) {
+	public void setFolderDao(FolderDAO folderDao) {
 		this.folderDao = folderDao;
 	}
 
@@ -124,16 +123,20 @@ public class FileServiceImpl implements FileService {
 
 		folder = folderDao.get(folder);
 		
+
 		if (folder == null) 
 			throw new RuntimeException("folder id doesn't exist");	
 		
+
+		// TODO check if current user has this folder
+
 		for (Folder f : folder.getInFolder()) 
 			if (f.getName() == originalFilename)
 				throw new RuntimeException("Uploaded file has the same name of a directory");
 		
 		/* TODO change Filepath.path in FilePath.name */
 		for (FilePath fp : folder.getFilepaths()) 
-			if (fp.getPath() == originalFilename)
+			if (fp.getName() == originalFilename)
 				updateFile(curr, fp, inputStream);
 		
 
@@ -149,7 +152,7 @@ public class FileServiceImpl implements FileService {
 		
 		fp.setFile(file);
 		fp.setFolder(folder);
-		fp.setPath(originalFilename);
+		fp.setName(originalFilename);
 		fp.setUser(curr);
 		
 		filePathDao.insertFilePath(fp);

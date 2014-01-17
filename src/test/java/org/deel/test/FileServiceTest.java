@@ -5,9 +5,9 @@ import java.io.FileInputStream;
 
 import javax.transaction.Transactional;
 
-import org.deel.dao.FileDao;
-import org.deel.dao.FilePathDao;
-import org.deel.dao.FolderDao;
+import org.deel.dao.FileDAO;
+import org.deel.dao.FilePathDAO;
+import org.deel.dao.FolderDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -28,13 +28,13 @@ import static org.mockito.Matchers.*;
 public class FileServiceTest {
 	
 	@Mock
-	private FilePathDao filePathDao;
+	private FilePathDAO filePathDao;
 	
 	@Mock
-	private FolderDao folderDao;
+	private FolderDAO folderDao;
 	
 	@Mock
-	private FileDao fileDao;
+	private FileDAO fileDao;
 	
 
 	@InjectMocks
@@ -62,7 +62,7 @@ public class FileServiceTest {
 		
 		fileService.uploadFile(u, "random0", folder, file);
 		
-		verify(fileDao).insertFile(any(org.deel.domain.File.class));
+
 		verify(filePathDao).insertFilePath(any(FilePath.class));
 		
 		File f = new File ("/home/garulf/info/esami/AE/code/storage/nick/random0");

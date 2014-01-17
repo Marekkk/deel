@@ -27,6 +27,9 @@ public class Folder {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy="increment")
 	private Long id;
+	
+	@Column(name="fsPath")
+	private String fsPath;
 
 	@Column(name="name")
 	private String name;
@@ -73,6 +76,14 @@ public class Folder {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getFsPath() {
+		return fsPath;
+	}
+
+	public void setFsPath(String fsPath) {
+		this.fsPath = fsPath;
 	}
 
 	public Folder getFather() {

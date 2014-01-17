@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ public class UserController {
 	@RequestMapping(value = "/user/new", method = RequestMethod.GET)
 	public String makeForm(ModelMap map) {
 		User user = new User();
+		user.setPassword("");
 		map.addAttribute("user", user);
 		return "newUser";
 	}
@@ -65,9 +67,14 @@ public class UserController {
 		try {
 			userService.registerNewUser(user);
 		} catch (RuntimeException e)	{
-			result.rejectValue("user", "user.runtime", e.getMessage());
+			result.addError(new ObjectError("user", e.getMessage()));
+			System.out.println("RunTimeException while registering User " + e.getMessage());
+			e.printStackTrace();
+			return "newUser";
 		} catch (IOException e) {
-			result.rejectValue("user", "user.ioexception", e.getMessage());
+			result.addError(new ObjectError("user", e.getMessage()));
+			e.printStackTrace();
+			return "newUser";
 		}
 
 		return "redirect:home";

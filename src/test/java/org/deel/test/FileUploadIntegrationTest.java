@@ -13,8 +13,8 @@ import java.security.Principal;
 import javax.transaction.Transactional;
 
 import org.deel.controllers.FileController;
-import org.deel.dao.FolderDao;
-import org.deel.dao.UserDao;
+import org.deel.dao.FolderDAO;
+import org.deel.dao.UserDAO;
 import org.deel.dao.impl.FolderDaoImpl;
 import org.deel.dao.impl.UserDaoImpl;
 import org.deel.domain.Folder;

@@ -21,7 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name="File")
 public class File {
-	
+
 	public enum Permission {
 		Read, Write
 	}
@@ -30,25 +30,32 @@ public class File {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy="increment")
 	private Long id;
-	
+
 	@Column(name="name")
 	private String name;
 	
+	@Column(name="fsPath")
+	private String fsPath;
+
 	@ManyToOne(cascade={})
+	@JoinTable(name="user_file",
+	joinColumns = {@JoinColumn(name="file_id")},
+	inverseJoinColumns = {@JoinColumn(name="user_id")}
+			)
 	private User owner;
-	
+
 	@Column(name="permission")
 	private Permission permission;
-	
+
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="file_filepath",
-				joinColumns = {@JoinColumn(name="file_id")},
-				inverseJoinColumns = {@JoinColumn(name="filePath_id")}
-		      )
+	joinColumns = {@JoinColumn(name="file_id")},
+	inverseJoinColumns = {@JoinColumn(name="filePath_id")}
+			)
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
-	
+
 	public File() {}
-	
+
 	public File(String name, User u) {
 		this.name = name;
 		this.owner = u;
@@ -61,6 +68,14 @@ public class File {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getFsPath() {
+		return fsPath;
+	}
+
+	public void setFsPath(String fsPath) {
+		this.fsPath = fsPath;
 	}
 
 	public String getName() {

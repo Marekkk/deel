@@ -1,13 +1,10 @@
 package org.deel.dao;
 
 import org.deel.domain.Folder;
-import org.deel.domain.User;
 
-public interface FolderDao {
+public interface FolderDAO {
 	public void insertFolder(Folder f);
 	public void deleteFolder(Folder f);
 	public void updateFolder(Folder f);
 	public Folder get(Folder f);
-	public Folder getFolder(String name, User user);
-	public Folder loadFolderByPath (String path, User user);
 }

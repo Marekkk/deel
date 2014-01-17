@@ -1,6 +1,6 @@
 package org.deel.dao.impl;
 
-import org.deel.dao.UserDao;
+import org.deel.dao.UserDAO;
 import org.deel.domain.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDAO{
 
 
 	private SessionFactory sessionFactory;
