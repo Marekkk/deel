@@ -184,8 +184,10 @@ public class FileServiceImpl implements FileService {
 
 		/* TODO change Filepath.path in FilePath.name */
 		for (FilePath fp : folder.getFilepaths())
-			if (fp.getName() == originalFilename)
+			if (fp.getName() == originalFilename) {
 				updateFile(curr, fp, inputStream);
+				return;
+			}
 
 		File file = new File();
 

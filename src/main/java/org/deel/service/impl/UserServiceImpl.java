@@ -29,8 +29,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	public void setFolderDao(FolderDAO folderDao) {
-		System.out.println("setFoldeDao this: " );
-		System.out.println(this);
 		this.folderDAO = folderDao;
 	}
 	
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
 					"Username already exists!");
 		
 		userDAO.insertUser(user);
-		System.out.println("New User register with id -> " + user.getId());
+		
 		
 		Folder f = new Folder();
 		f.setFather(null);
