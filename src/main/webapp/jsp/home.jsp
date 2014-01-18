@@ -17,24 +17,54 @@
 	function sendUpload() {
 		this.ajaxForm.submit();
 	}
-</script>
-<script type="text/javascript">
-	var obj;
+
+	var currentDir;
+	var files;
+	var directories;
+
 	function getFiles() {
-		if (sessionStorage.getItem("dir") == null)
+		if (sessionStorage.getItem("dir") == null
+				|| sessionStorage.getItem("dir") === undefined)
 			var request = "file/list";
-		else 
+		else
 			var request = "file/list?path=" + sessionStorage.getItem("dir");
-		$.get(request, function(data,
-				success) {
+		$.get(request, function(data, success) {
 			console.log(success);
-			obj = data;
-			alert(data.value + " " + data.count);
+			//alert(data.value + " " + data.count);
+			console.log(data);
+			currentDir = data.currentDir;
+			sessionStorage.setItem("dir", currentDir.id);
+			files = data.files;
+			directories = data.directories;
+			//alert(currentDir);
+			console.log(currentDir);
+
+			updateTable();
 		});
+	}
+
+	function addRow(data) {
+		var t = document.getElementById("dataTable");
+		var c = document.createElement("td");
+		c.appendChild(data);
+		var r = document.createElement("tr");
+		r.appendChild(c);
+		t.appendChild(r);
+	}
+
+	function updateTable() {
+		for ( var i in files) {
+			var a = document.createElement("a");
+			a.href = "file/download?id=" + i;
+			a.innerHTML = files[i];
+			addRow(a);
+		}
 	}
 
 	$(document).ready(function() {
 		getFiles();
+
+		$('input[name="path"]').val(sessionStorage.getItem("dir"));
 
 		$("form#ajaxForm").submit(function(event) {
 			event.preventDefault();
@@ -42,7 +72,7 @@
 			alert("Uploading...");
 
 			this.path = sessionStorage.getItem("dir");
-			
+
 			//grab all form data  
 			var formData = new FormData($(this)[0]);
 
@@ -67,7 +97,7 @@
 </head>
 
 
-<body onload="javascript:runEffect()">
+<body>
 	<header id="mainheader">
 	<h3>
 		<a id="title">drop<span>box</span>~
@@ -92,16 +122,14 @@
 		</nav>
 
 		<div id="filesContainer">
-			<table>
+			<table id="dataTable">
 				<tr>
 					<th>name</th>
-					<th>kind</th>
-					<th>modified</th>
 				</tr>
 				<tr>
+					<!-- 
 					<td>file1</td>
-					<td>kind1</td>
-					<td>date1</td>
+					 -->
 				</tr>
 			</table>
 		</div>
@@ -109,13 +137,9 @@
 
 		<form:form method="POST" commandName="fileForm" action="file/upload"
 			name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
-			<div id="uploadContainer" class="upload">
-				<input type="file" value="Choose file" name="files[0]"
-					class="uploading" onchange="return sendUpload();" /> <input
-					type="hidden" name="path" />
-			</div>
-			<div>
-			<input type="submit" value="Invia">
+			<div id="uploadContainer">
+				<input type="file" value="Choose file" name="files[0]" /> <input
+					type="hidden" name="path" /> <input type="submit" value="Invia" />
 			</div>
 		</form:form>
 
