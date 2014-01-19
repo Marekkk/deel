@@ -43,4 +43,10 @@ public interface FileService {
 
 	@Transactional
 	public Folder populateFolder(User currentUser, Folder folder);
+
+	@Transactional
+	public void createNewFolder(User u, Folder currentFolder, String string) throws IOException;
+
+	@Transactional
+	public void deleteFile(User u, FilePath fdc);
 }

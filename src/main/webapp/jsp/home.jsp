@@ -30,13 +30,12 @@
 			var request = "file/list?path=" + sessionStorage.getItem("dir");
 		$.get(request, function(data, success) {
 			console.log(success);
-			//alert(data.value + " " + data.count);
+
 			console.log(data);
 			currentDir = data.currentDir;
 			sessionStorage.setItem("dir", currentDir.id);
 			files = data.files;
 			directories = data.directories;
-			//alert(currentDir);
 			console.log(currentDir);
 
 			updateTable();
@@ -64,14 +63,15 @@
 	$(document).ready(function() {
 		getFiles();
 
-		$('input[name="path"]').val(sessionStorage.getItem("dir"));
+
 
 		$("form#ajaxForm").submit(function(event) {
 			event.preventDefault();
 			console.log(this);
-			alert("Uploading...");
+			
 
-			this.path = sessionStorage.getItem("dir");
+			
+			$('input[name="path"]').val(sessionStorage.getItem("dir"));			
 
 			//grab all form data  
 			var formData = new FormData($(this)[0]);
@@ -85,7 +85,6 @@
 				contentType : false,
 				processData : false,
 				success : function(returndata) {
-					alert(returndata);
 					console.log(returndata);
 				}
 			});

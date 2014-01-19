@@ -12,6 +12,7 @@ import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.UserService;
+import org.deel.service.utils.FSUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 	private UserDAO userDAO;
 	private FolderDAO folderDAO;
-	private String storagePath = System.getProperty("user.home") + "/storage/";
+
 
 	
 	public FolderDAO getFolderDao() {
@@ -59,21 +60,13 @@ public class UserServiceImpl implements UserService {
 		
 		//user.getFolders().add(f);
 		//userDAO.updateUser(user);
-		/* Move FS related function in another class TODO */
+		
 		folderDAO.insertFolder(f);
-		/* Move Fs related function in another class TODO */
-		mkdir(f);
+		FSUtils.mkdir(f);
 		
 	}
 
-	private void mkdir(Folder f) 
-			throws IOException {
-		
-		java.io.File dir = new java.io.File(storagePath + f.getUser().getUsername()+f.getFsPath());
-		if(!dir.mkdir())
-			throw new RuntimeErrorException(new Error("directory.notcreated"), "Can't make dir" + dir.getAbsolutePath());
-	}
-
+	 
 	@Override
 	@Transactional
 	public User findUserByUsername(String username) {

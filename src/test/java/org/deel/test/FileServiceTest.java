@@ -1,11 +1,15 @@
 package org.deel.test;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +23,7 @@ import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.impl.FileServiceImpl;
+import org.deel.service.utils.FSUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,10 +57,78 @@ public class FileServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
+	@Test
+	public void eraseFile() throws Exception {
+		
+		File f = new File(FSUtils.getStoragePath() + "nick/deleteTest");
+		FileOutputStream fOut = new FileOutputStream(f);
+		OutputStreamWriter bw = new OutputStreamWriter(fOut);
+		bw.write("test");
+		fOut.close();
+		
+		User u = new User();
+		u.setUsername("nick");
+		u.setId((long)1);
+		
+		User u2 = new User();
+		u.setUsername("kick");
+		u.setId((long)2);
+		
+		
+		org.deel.domain.File dbFile = new org.deel.domain.File();
+		dbFile.setFsPath("/deleteTest");
+		
+		
+	
+		FilePath fp = new FilePath();
+		fp.setName("deleteTest");
+		fp.setFile(dbFile);
+		fp.setUser(u);
+		fp.setId((long)1);
+		Set<FilePath> fpl = new HashSet<FilePath>();
+		fpl.add(fp);
+		
+		FilePath fp1 = new FilePath();
+		fp1.setName("deleteSharedTest");
+		fp1.setFile(dbFile);
+		fp1.setUser(u2);
+		fp1.setId((long)2);
+		Set<FilePath> fpl1 = new HashSet<FilePath>();
+		fpl1.add(fp1);
+		
+		Set<FilePath> fps = new HashSet<FilePath>();
+		fps.add(fp);
+		fps.add(fp1);
+		dbFile.setPaths(fps);
+		
+		
+		Folder dir = new Folder();
+		dir.setFsPath("/");
+		dir.setUser(u);
+		dir.setFilepaths(fpl);
+
+		Folder dir1 = new Folder();
+		dir1.setFsPath("/");
+		dir1.setUser(u2);
+		dir1.setFilepaths(fpl1);
+		
+		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(fp);
+
+		org.deel.domain.FilePath fdc = new org.deel.domain.FilePath();
+		fdc.setId((long)1);
+		fileService.deleteFile(u,  fdc);
+		
+		verify(fileDao, never()).deleteFile(any(org.deel.domain.File.class));
+		verify(filePathDao, times(1)).deleteFilePath(any(FilePath.class));
+		
+		Assert.assertTrue(f.exists());
+		
+	}
 	
 	@Test
 	public void dbInteractionUploadTest() throws Exception {
-		FileInputStream file = new FileInputStream("/home/garulf/info/esami/AE/code/random0");
+		FileInputStream file = new FileInputStream(System.getProperty("user.home") + "/test1");
+		
 		
 		User u = new User();
 		u.setUsername("nick");
@@ -67,13 +140,13 @@ public class FileServiceTest {
 		folder.setUser(u);
 		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		
-		fileService.uploadFile(u, "random0", folder, file);
+		fileService.uploadFile(u, "/test1", folder, file);
 		
 
 		verify(filePathDao, times(1)).insertFilePath(any(FilePath.class));
 		verify(fileDao, times(1)).insertFile(any(org.deel.domain.File.class));
 		
-		File f = new File ("/home/garulf/storage/nick/random0");
+		File f = new File (System.getProperty("user.home") + "/storage/nick/test1");
 		Assert.assertTrue(f.exists());
 		f.delete();
 	}
@@ -114,6 +187,31 @@ public class FileServiceTest {
 	}
 	
 	@Test
+	public void createNewDirTest() throws Exception {
+		
+		User u = new User();
+		u.setUsername("nick");
+		u.setId((long)1);
+		
+		Folder currentFolder = new Folder();
+		currentFolder.setFsPath("/");
+		currentFolder.setId((long)1);
+		currentFolder.setFilepaths(new HashSet<FilePath>());
+		currentFolder.setUser(u);
+		
+		when(folderDao.get(any(Folder.class))).thenReturn(currentFolder);
+		
+		fileService.createNewFolder(u, currentFolder, "subdir");
+		
+		
+		verify(folderDao).insertFolder(any(Folder.class));
+		File f = new File(System.getProperty("user.home") + "/storage/nick/subdir");
+		Assert.assertTrue(f.isDirectory());
+		f.delete();
+		
+	}
+	
+	@Test
 	public void getFileTest() throws IOException {
 		
 		
@@ -126,7 +224,7 @@ public class FileServiceTest {
 		filePath.setUser(u);
 		
 		org.deel.domain.File file = new org.deel.domain.File();
-		file.setFsPath("/sheep_wolves.bk");
+		file.setFsPath("/test");
 		filePath.setFile(file);
 		
 		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(filePath);

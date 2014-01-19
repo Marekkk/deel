@@ -20,6 +20,7 @@ import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
+import org.deel.service.utils.FSUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileServiceImpl implements FileService {
@@ -76,7 +77,6 @@ public class FileServiceImpl implements FileService {
 	@Override
 	@Transactional
 	public Set<FilePath> getFilesInFolder(User currentUser, Folder f) {
-		
 
 		if (f == null)
 			throw new RuntimeException("Directory doesn't exists");
@@ -92,13 +92,12 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public Set<Folder> getFoldersInFolder(User currentUser, Folder f) {
 
-
 		if (f == null)
 			throw new RuntimeException("Directory doesn't exists");
 
 		if (f.getUser().getId() != currentUser.getId())
 			throw new RuntimeException("User doesn't own the directory!");
-		
+
 		Set<Folder> ret = f.getInFolder();
 
 		return ret;
@@ -106,23 +105,26 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	@Transactional
-	public FileInputStream getFile(User currentUser, FilePath fp) throws FileNotFoundException {
+	public FileInputStream getFile(User currentUser, FilePath fp)
+			throws FileNotFoundException {
 		fp = filePathDao.getFilePath(fp);
-		
+
 		if (fp == null)
 			throw new RuntimeException("Filepath doesn't exists");
 		if (fp.getUser().getId() != currentUser.getId())
-			throw new RuntimeException("Filepath " + fp.getName() + "doesn't belongs to user " 
-					+ currentUser.getUsername());
-		String path = storagePath + currentUser.getUsername() + fp.getFile().getFsPath();
-		
+			throw new RuntimeException("Filepath " + fp.getName()
+					+ "doesn't belongs to user " + currentUser.getUsername());
+		String path = storagePath + currentUser.getUsername()
+				+ fp.getFile().getFsPath();
+
 		java.io.File file = new java.io.File(path);
-		
+
 		if (!file.exists())
-			throw new RuntimeException("DB/FS mismatch: file " + path + " doesn't exists");
-		
+			throw new RuntimeException("DB/FS mismatch: file " + path
+					+ " doesn't exists");
+
 		FileInputStream fIn = new FileInputStream(file);
-		
+
 		return fIn;
 	}
 
@@ -141,12 +143,14 @@ public class FileServiceImpl implements FileService {
 		java.io.File fsF = new java.io.File(finalPath);
 
 		if (fsF.isDirectory())
-			throw new RuntimeException("DB/FS mismatch path " + fsF.getAbsolutePath() + " is a directory!");
+			throw new RuntimeException("DB/FS mismatch path "
+					+ fsF.getAbsolutePath() + " is a directory!");
 
 		FileOutputStream fOut;
 		try {
 			if (!fsF.createNewFile())
-				throw new RuntimeException("DB/FS mismatch saving file " + fsF.getAbsolutePath());
+				throw new RuntimeException("DB/FS mismatch saving file "
+						+ fsF.getAbsolutePath());
 
 			fOut = new FileOutputStream(fsF);
 			IOUtils.copy(inputStream, fOut);
@@ -165,10 +169,7 @@ public class FileServiceImpl implements FileService {
 	public void uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException {
 
-		
-		
 		folder = folderDao.get(folder);
-		
 
 		if (folder == null)
 			throw new RuntimeException("folder id doesn't exist");
@@ -215,20 +216,72 @@ public class FileServiceImpl implements FileService {
 		/* if null return root directory */
 		if (folder.getId() == null) {
 			Set<Folder> fl = curr.getFolders();
-			for (Folder f: fl) {
-				if(f.getFather() == null)
+			for (Folder f : fl) {
+				if (f.getFather() == null)
 					return f;
 			}
 		}
-		
+
 		folder = folderDao.get(folder);
 		if (folder == null)
 			throw new RuntimeException("folder doesn't exists");
-		
+
 		if (folder.getUser().getId() != curr.getId())
-			throw new RuntimeException("user " + curr.getUsername() + " doesn't own folder " + folder.getFsPath());
-		
+			throw new RuntimeException("user " + curr.getUsername()
+					+ " doesn't own folder " + folder.getFsPath());
+
 		return folder;
+	}
+
+	@Override
+	@Transactional
+	public void createNewFolder(User u, Folder currentFolder, String dirName) throws IOException {
+		currentFolder = populateFolder(u, currentFolder);
+		
+		Set<Folder> folderList = currentFolder.getInFolder();
+		for (Folder f : folderList) 
+			if (f.getName() == dirName)
+				throw new RuntimeException("Directory " + dirName + " already exists!");
+			
+		for (FilePath fp : currentFolder.getFilepaths())
+			if (fp.getName() == dirName)
+				throw new RuntimeException("A file with name " + dirName + " already exists!");
+			
+		Folder newFolder = new Folder();
+		newFolder.setName(dirName);
+		newFolder.setFather(currentFolder);
+		newFolder.setFsPath(currentFolder.getFsPath() + dirName +"/"); /* TODO validation of this input (skip slash, points) */
+		newFolder.setUser(u);
+		
+		folderDao.insertFolder(newFolder);
+		FSUtils.mkdir(newFolder);
+		
+		
+	}
+
+	@Override
+	@Transactional
+	public void deleteFile(User u, FilePath fp) {
+		fp = filePathDao.getFilePath(fp);
+		
+		if (fp == null)
+			throw new RuntimeException("Tried to erase a Filepath that doesn't exists");
+		
+		if (fp.getUser().getId() != u.getId())
+			throw new RuntimeException("User " + u.getUsername() + "doesn't own file " + fp.getName());
+		
+		File f = fp.getFile();
+		if (f.getPaths().size() == 1) { 
+			/* file is not shared */
+			fileDao.deleteFile(f);
+		}
+		filePathDao.deleteFilePath(fp);
+
+		if (f.getPaths().size() == 1) { 
+			/* file is not shared */
+			FSUtils.deleteFile(f);
+		}
+		
 	}
 
 }
