@@ -6,10 +6,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel=stylesheet href="./resources/css/style.css" media="screen">
+<link rel="stylesheet" href="./resources/css/style.css" media="screen">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
+
 	var data;
 	function runEffect() {
 		$("#uploadContainer").show("slow");
@@ -117,6 +118,7 @@
 		<ul>
 			<li><a href="home.html" class="active">home</a></li>
 			<li><a href="logout">logout</a></li>
+			<li><a href="upload">upload</a></li>
 		</ul>
 		</nav>
 
@@ -126,13 +128,17 @@
 					<th>name</th>
 				</tr>
 				<tr>
-					<!-- 
-					<td>file1</td>
-					 -->
+					<!-- Adding folder -->
+					<td><a href="file/addFolder">+</a></td>
 				</tr>
 			</table>
 		</div>
 
+		<!-- overlayed element -->
+		<div class="apple_overlay" id="overlay">
+			<!-- the external content is loaded inside this tag -->
+			<div class="contentWrap"></div>
+		</div>
 
 		<form:form method="POST" commandName="fileForm" action="file/upload"
 			name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">

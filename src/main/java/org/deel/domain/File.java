@@ -37,14 +37,14 @@ public class File {
 	@Column(name="fsPath")
 	private String fsPath;
 
-	@ManyToOne(cascade={})
+	@ManyToOne()
 	@JoinColumn(name="user_id")
 	private User owner;
 
 	@Column(name="permission")
 	private Permission permission;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="file")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="file")
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
 	public File() {}

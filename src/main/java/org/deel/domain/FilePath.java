@@ -24,17 +24,15 @@ public class FilePath {
 	@Column(name="name")
 	private String name;
 
-	@ManyToOne(cascade={})
+	@ManyToOne()
 	@JoinColumn(name="user_id")
 	private User user;
 
 	@ManyToOne()
-	@Cascade(CascadeType.SAVE_UPDATE)
 	@JoinColumn(name="file_id")
 	private File file;
 
 	@ManyToOne()
-	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@JoinColumn(name="folder_id")
 	private Folder folder;
 

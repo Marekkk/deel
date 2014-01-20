@@ -34,7 +34,7 @@ public class Folder {
 	@Column(name="name")
 	private String name;
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinTable(name="folderInFolder",
 	joinColumns = {@JoinColumn(name="child")},
 	inverseJoinColumns = {@JoinColumn(name="father")}
@@ -45,14 +45,14 @@ public class Folder {
 	@JoinColumn(name="user_id")
 	private User user;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER)
 	@JoinTable(name="folderInFolder",
 	joinColumns = {@JoinColumn(name="Father")},
 	inverseJoinColumns = {@JoinColumn(name="Child")}
 			)
 	private Set<Folder> inFolder = new HashSet<Folder>(0); // Other folder in folder
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="folder")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="folder")
 	private Set<FilePath> filepaths = new HashSet<FilePath>(0);
 
 	public Folder() {}

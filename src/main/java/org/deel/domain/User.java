@@ -56,10 +56,10 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Category category;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
 	private Set<FilePath> paths = new HashSet<FilePath>(0);
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="owner")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="owner")
 	private Set<File> files = new HashSet<File>(0);
 	
 	/*
@@ -70,12 +70,12 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Company company;
 	
-	@ManyToMany(cascade={}, fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(name="User_Team", joinColumns = {@JoinColumn(name="user_id")},
 								 inverseJoinColumns = {@JoinColumn(name="team_id")})
 	private Set<Team> teams = new HashSet<Team>(0);
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="user")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
 	public Set<Folder> folders = new HashSet<Folder>();
 	
 	public Set<Team> getTeams() {

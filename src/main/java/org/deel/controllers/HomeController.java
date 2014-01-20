@@ -25,4 +25,18 @@ public class HomeController {
 		return "home";
 	}
 	
+	@RequestMapping("/upload")
+	public String uploadController (ModelMap map) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username;
+		if (principal instanceof UserDetails) {
+		  username = ((UserDetails)principal).getUsername();
+		} else {
+		  username = principal.toString();
+		}
+		
+		map.addAttribute("user", username);
+		return "upload";
+	}
+	
 }
