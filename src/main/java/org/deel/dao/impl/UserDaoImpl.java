@@ -1,7 +1,10 @@
 package org.deel.dao.impl;
 
+import java.util.List;
+
 import org.deel.dao.UserDAO;
 import org.deel.domain.User;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -50,5 +53,16 @@ public class UserDaoImpl implements UserDAO{
 	public void deleteUser(User u) {
 		Session session = sessionFactory.getCurrentSession();
 		session.delete(u);
+	}
+
+	@Override
+	public User get(User u) {
+		return (User)sessionFactory.getCurrentSession().get(User.class, u.getId());
+	}
+
+	@Override
+	public List<User> userList() {
+		Criteria crit = sessionFactory.getCurrentSession().createCriteria(User.class);
+		return crit.list();
 	}	
 }

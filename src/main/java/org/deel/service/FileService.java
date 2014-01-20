@@ -23,7 +23,7 @@ public interface FileService {
 	public void updateFile(User owner, FilePath filePath, InputStream data);
 	
 	@Transactional
-	public void shareFile(User currentUser, String path, List<User> userList);
+	public void shareFile(User currentUser, FilePath filePath, List<User> userList);
 
 	@Transactional
 	public FileInputStream getFile(User currentUser, FilePath filePath) throws FileNotFoundException;
@@ -48,5 +48,5 @@ public interface FileService {
 	public void createNewFolder(User u, Folder currentFolder, String string) throws IOException;
 
 	@Transactional
-	public void deleteFile(User u, FilePath fdc);
+	public void deleteFile(User u, FilePath fdc) throws IOException;
 }

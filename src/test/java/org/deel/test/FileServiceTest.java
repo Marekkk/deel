@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -18,6 +20,7 @@ import javax.transaction.Transactional;
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
 import org.deel.dao.FolderDAO;
+import org.deel.dao.UserDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -47,6 +50,9 @@ public class FileServiceTest {
 	@Mock
 	private FileDAO fileDao;
 	
+	@Mock
+	private UserDAO userDAO;
+	
 
 	@InjectMocks
 	private FileService fileService;
@@ -64,6 +70,9 @@ public class FileServiceTest {
 		FileOutputStream fOut = new FileOutputStream(f);
 		OutputStreamWriter bw = new OutputStreamWriter(fOut);
 		bw.write("test");
+		bw.flush();
+		bw.close();
+		fOut.flush();
 		fOut.close();
 		
 		User u = new User();
@@ -71,13 +80,14 @@ public class FileServiceTest {
 		u.setId((long)1);
 		
 		User u2 = new User();
-		u.setUsername("kick");
-		u.setId((long)2);
+		u2.setUsername("kick");
+		u2.setId((long)2);
 		
 		
 		org.deel.domain.File dbFile = new org.deel.domain.File();
 		dbFile.setFsPath("/deleteTest");
-		
+		dbFile.setName("/deleteTest");
+		dbFile.setOwner(u);
 		
 	
 		FilePath fp = new FilePath();
@@ -94,7 +104,7 @@ public class FileServiceTest {
 		fp1.setUser(u2);
 		fp1.setId((long)2);
 		Set<FilePath> fpl1 = new HashSet<FilePath>();
-		fpl1.add(fp1);
+		
 		
 		Set<FilePath> fps = new HashSet<FilePath>();
 		fps.add(fp);
@@ -106,11 +116,13 @@ public class FileServiceTest {
 		dir.setFsPath("/");
 		dir.setUser(u);
 		dir.setFilepaths(fpl);
+		fp.setFolder(dir);
 
 		Folder dir1 = new Folder();
 		dir1.setFsPath("/");
 		dir1.setUser(u2);
 		dir1.setFilepaths(fpl1);
+		fp1.setFolder(dir1);
 		
 		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(fp);
 
@@ -121,7 +133,9 @@ public class FileServiceTest {
 		verify(fileDao, never()).deleteFile(any(org.deel.domain.File.class));
 		verify(filePathDao, times(1)).deleteFilePath(any(FilePath.class));
 		
-		Assert.assertTrue(f.exists());
+		File f1 = new File(FSUtils.getStoragePath() + "kick/deleteSharedTest");
+		Assert.assertTrue(f1.exists());
+		f1.delete();
 		
 	}
 	
@@ -239,6 +253,30 @@ public class FileServiceTest {
 		in.close();
 		
 		
+		
+	}
+	
+	@Test
+	public void shareFile() throws Exception {
+		User u = new User();
+		u.setUsername("nick");
+		u.setId((long)1);
+		
+		FilePath fp = new FilePath();
+		fp.setUser(u);
+		
+		User us = new User();
+		us.setUsername("kick");
+		us.setId((long)2);
+		
+		List<User> ul = new LinkedList<User>();
+		ul.add(us);
+		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(fp);
+		when(userDAO.get(any(User.class))).thenReturn(us);
+		
+		fileService.shareFile(u, fp, ul);
+		
+		verify(filePathDao).insertFilePath(any(FilePath.class));
 		
 	}
 	

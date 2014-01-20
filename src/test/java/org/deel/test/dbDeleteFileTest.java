@@ -14,6 +14,8 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.deel.dao.FileDAO;
+import org.deel.dao.FilePathDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -23,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -34,8 +37,31 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class dbDeleteFileTest {
 	private FileService fileService;
 	
+	private FileDAO filedao;
 	
+	private FilePathDAO filePathDAO;
 	
+	public FilePathDAO getFilePathDAO() {
+		return filePathDAO;
+	}
+
+	@Autowired
+	public void setFilePathDAO(FilePathDAO filePathDAO) {
+		this.filePathDAO = filePathDAO;
+	}
+
+
+	public FileDAO getFiledao() {
+		return filedao;
+	}
+
+
+	@Autowired
+	public void setFiledao(FileDAO filedao) {
+		this.filedao = filedao;
+	}
+
+
 	public FileService getFileService() {
 		return fileService;
 	}
@@ -53,16 +79,6 @@ public class dbDeleteFileTest {
 	@Test
 	public void deleteFileTest() {
 		
-		org.deel.domain.File dbFile = new org.deel.domain.File();
-		dbFile.setFsPath("/deleteTest");
-		User u = new User();
-		u.setUsername("nick");
-		u.setId((long)1);
-
-		FilePath fp = new FilePath();
-		fp.setId((long)5);
-		fileService.deleteFile(u,  fp);
-		
-
+		return;
 	}
 }
