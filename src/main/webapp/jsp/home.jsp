@@ -133,6 +133,7 @@
 				processData : false,
 				success : function(returndata) {
 					console.log(returndata);
+					getFiles();
 				}
 			});
 			return false;
@@ -141,6 +142,8 @@
 	
 	function sendFolderName() {
 		var addingFolder = document.getElementById("addingFolder");
+		if (addingFolder.children.length > 1) 
+			return;
 		var input = document.createElement("input");
 		input.id = "folderName";
 		input.type = "text";
@@ -169,7 +172,6 @@
 			cache : false,
 			contentType : false,
 			success : function () {
-				alert("Data send!");
 				getFiles();
 			}
 		});
@@ -224,13 +226,13 @@
 					<!-- Adding folder -->
 					<td>
 					<form:form method="POST" action="javascript:createFolder();" id="addingFolder">
-					<a href="javascript:sendFolderName()">+</a>
+					<a href="javascript:sendFolderName()" style="text-decoration: none">+</a>
 					</form:form>
 					</td>
 				</tr>
 			</table>
 		</div>
-
+	
 		<form:form method="POST" commandName="fileForm" action="file/upload"
 			name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
 			<div id="uploadContainer">
@@ -238,6 +240,7 @@
 					type="hidden" name="path" /> <input type="submit" value="Invia" />
 			</div>
 		</form:form>
+		
 
 	</div> 
 

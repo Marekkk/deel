@@ -191,11 +191,8 @@ public class FileController {
 	public @ResponseBody Map<String, Object> addFolder (@RequestParam long id, @RequestParam String folderName, Principal principal) {
 		
 		System.out.println(id + " " + folderName);
-		Folder father = new Folder();
-		father.setId(id);
 		Folder folder = new Folder();
-		folder.setFather(father);
-		folder.setName(folderName);
+		folder.setId(id);
 		String username = principal.getName();
 		User u = userService.findUserByUsername(username);
 		try {
