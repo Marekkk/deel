@@ -92,7 +92,7 @@ public class FileController {
 		return jsonRet;
 	}
 	
-	@RequestMapping("/file/download")
+	@RequestMapping("/file/download/**")
 	public void downloadFile(@RequestParam Long id, Principal principal, HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
 		
