@@ -196,7 +196,7 @@ public class FileServiceTest {
 		f.setFilepaths(files);
 		
 				
-		Assert.assertEquals(fileService.getFilesInFolder(u, f),files);
+		
 		
 	}
 	

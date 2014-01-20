@@ -120,9 +120,6 @@ public class FileControllerTest {
 		
 		when(principal.getName()).thenReturn("nick");
 		when(userService.findUserByUsername("nick")).thenReturn(u);
-		when(fileService.populateFolder(any(User.class), any(Folder.class))).thenReturn(f);
-		when(fileService.getFilesInFolder(any(User.class), any(Folder.class))).thenReturn(files);
-		when(fileService.getFoldersInFolder(any(User.class), any(Folder.class))).thenReturn(new HashSet<Folder>());
 			
 		mockMvc.perform(get("/file/list")
 				.principal(principal)
