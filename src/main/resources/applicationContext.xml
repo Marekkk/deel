@@ -1,0 +1,94 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+	
+	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" />
+	<bean id="fileDAO" class="org.deel.dao.impl.FileDaoImpl" autowire="byName" />
+	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl" autowire="byName"></bean>
+	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl" autowire="byName" />
+	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
+	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
+	<bean id="userService" class="org.deel.service.impl.UserServiceImpl" autowire="byName" />
+
+
+	<bean name="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/ea_dropbox" />
+		<property name="username" value="root" />
+		<property name="password" value="asdrubale" />
+	</bean>
+
+	<!-- Session Factory to use for mapping -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>org.deel.domain.Company</value>
+				<value>org.deel.domain.User</value>
+				<value>org.deel.domain.Team</value>
+				<value>org.deel.domain.FilePath</value>
+				<value>org.deel.domain.File</value>
+				<value>org.deel.domain.Folder</value>
+				<value>org.deel.domain.Category</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+ 				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+
+	<security:http>
+		<security:intercept-url pattern="/login**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/user/new*"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/resources/**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER" />
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:form-login login-page='/login'
+			login-processing-url="/loginprocess" default-target-url="/home" />
+		<security:logout logout-url="/logout" />
+		<security:form-login />
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			ref="daoAuthenticationProvider" />
+	</security:authentication-manager>
+
+	<bean id="daoAuthenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService" />
+		<property name="passwordEncoder" ref="passwordEncoder" />
+	</bean>
+
+	<bean id="passwordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<bean id="customUserDetailsService" class="org.deel.service.CustomUserDetailsService" autowire="byName"/>
+
+</beans>

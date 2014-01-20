@@ -24,17 +24,46 @@
 	var directories;
 
 	function getFiles() {
+		cleanTable();
 		if (sessionStorage.getItem("dir") == null
 				|| sessionStorage.getItem("dir") === undefined)
 			var request = "file/list";
 		else
 			var request = "file/list?path=" + sessionStorage.getItem("dir");
-		$.get(request, function(data, success) {
+		
+		makeRequest(request);
+	}
+	
+	function makeRequest(request) {
+		var req = request;
+		$.get(req, function(data, success) {
 			console.log(success);
 
 			console.log(data);
 			currentDir = data.currentDir;
-			sessionStorage.setItem("dir", currentDir.id);
+			if (req == "file/list") {
+				sessionStorage.setItem("root", currentDir.id);
+				sessionStorage.setItem("dir", currentDir.id);
+			}
+			else {
+				sessionStorage.setItem("dir", currentDir.id);
+			}
+			files = data.files;
+			directories = data.directories;
+			console.log(currentDir);
+
+			updateTable();
+		});
+	} 
+	
+	function getRootId() {
+		var req = "file/list";
+		$.get(req, function(data, success) {
+			console.log(success);
+
+			console.log(data);
+			currentDir = data.currentDir;
+			sessionStorage.setItem("root", currentDir.id);
 			files = data.files;
 			directories = data.directories;
 			console.log(currentDir);
@@ -53,11 +82,28 @@
 	}
 
 	function updateTable() {
+		for (var i in directories) {
+			var a = document.createElement("a");
+			a.id = i;
+			a.value = i;
+			a.style = "color:red";
+			a.href = "javascript:changeFolder("+ i + ")";
+			a.innerHTML = directories[i];
+			addRow(a);
+		}
+		
 		for ( var i in files) {
 			var a = document.createElement("a");
-			a.href = "file/download?id=" + i;
+			a.href = "javascript" + i;
 			a.innerHTML = files[i];
 			addRow(a);
+		}
+	}
+	
+	function cleanTable() {
+		var table = document.getElementById("dataTable");
+		for(var i = table.rows.length -1; i > 1; i--) {
+			table.deleteRow(i);
 		}
 	}
 
@@ -92,6 +138,53 @@
 			return false;
 		});
 	});
+	
+	function sendFolderName() {
+		var addingFolder = document.getElementById("addingFolder");
+		var input = document.createElement("input");
+		input.id = "folderName";
+		input.type = "text";
+		var submit = document.createElement("input");
+		submit.type = "submit";
+		submit.value = "Create!";
+		addingFolder.appendChild(input);
+		addingFolder.appendChild(submit);
+	}
+	function createFolder() {
+		var input = document.getElementById("folderName");
+		var folderName = input.value;
+		var father = sessionStorage.getItem("dir");
+		var username = "<c:out value="${user}"></c:out>";
+		alert("Creating folder " + folderName + " in folder' s id " + father + " for user " + username + "!");
+		
+		var message = new Object();
+		message.id = father;
+		message.folderName = folderName;
+		
+		$.ajax({
+			url : 'file/addFolder',
+			type : 'GET',
+			data : message,
+			async : false,
+			cache : false,
+			contentType : false,
+			success : function () {
+				alert("Data send!");
+				getFiles();
+			}
+		});
+	}
+	
+	function changeFolder(into) {
+		var inFolder = into;
+		sessionStorage.setItem("dir", inFolder);
+		getFiles();
+	}
+	
+	function goRoot() {
+		var root = sessionStorage.getItem("root");
+		sessionStorage.setItem("dir", root);
+	}
 </script>
 <title>Home</title>
 </head>
@@ -116,7 +209,7 @@
 
 		<nav id="mainav">
 		<ul>
-			<li><a href="home.html" class="active">home</a></li>
+			<li><a href="home.html" onclick="javascript:goRoot()" class="active">home</a></li>
 			<li><a href="logout">logout</a></li>
 			<li><a href="upload">upload</a></li>
 		</ul>
@@ -129,15 +222,13 @@
 				</tr>
 				<tr>
 					<!-- Adding folder -->
-					<td><a href="file/addFolder">+</a></td>
+					<td>
+					<form:form method="POST" action="javascript:createFolder();" id="addingFolder">
+					<a href="javascript:sendFolderName()">+</a>
+					</form:form>
+					</td>
 				</tr>
 			</table>
-		</div>
-
-		<!-- overlayed element -->
-		<div class="apple_overlay" id="overlay">
-			<!-- the external content is loaded inside this tag -->
-			<div class="contentWrap"></div>
 		</div>
 
 		<form:form method="POST" commandName="fileForm" action="file/upload"
@@ -148,7 +239,7 @@
 			</div>
 		</form:form>
 
-	</div>
+	</div> 
 
 	<footer>
 	<div id="footerSection">

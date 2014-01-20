@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.RequestWrapper;
 
 import org.apache.commons.io.IOUtils;
 import org.deel.dao.FolderDAO;
@@ -27,6 +28,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -183,6 +185,27 @@ public class FileController {
 
 		/* TODO real message codes */
 		return jsonReturn;
+	}
+	
+	@RequestMapping(value = "/file/addFolder", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> addFolder (@RequestParam long id, @RequestParam String folderName, Principal principal) {
+		
+		System.out.println(id + " " + folderName);
+		Folder father = new Folder();
+		father.setId(id);
+		Folder folder = new Folder();
+		folder.setFather(father);
+		folder.setName(folderName);
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		try {
+			fileService.createNewFolder(u, folder, folderName);
+		} catch (IOException e) {
+			System.out.println("Error during creation of folder. \n" + e);
+		}
+		
+		
+		return null;
 	}
 }
 
