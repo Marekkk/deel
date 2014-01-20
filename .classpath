@@ -48,6 +48,6 @@
 	<classpathentry exported="true" kind="var" path="M2_REPO/commons-io/commons-io/2.2/commons-io-2.2.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/springframework/spring-orm/4.0.0.RELEASE/spring-orm-4.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/org/springframework/spring-jdbc/4.0.0.RELEASE/spring-jdbc-4.0.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="M2_REPO"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

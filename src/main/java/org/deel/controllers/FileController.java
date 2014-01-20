@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.deel.dao.FolderDAO;
+import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -55,19 +56,7 @@ public class FileController {
 		this.fileService = fileService;
 	}
 	
-	@RequestMapping("/test")
-	public @ResponseBody Map<String, Object> test(Principal principal, ModelMap map){
-	
-		Map<String,Object> m = new HashMap<String, Object>();
-		m.put("test", "asd");
-		
-		String username = principal.getName();
-		
-		User curr = userService.findUserByUsername(username);
-		
-		m.put("principal", curr);
-		return m;
-	}
+
 	
 	@RequestMapping("/file/list")
 	public @ResponseBody Map<String, Object> getFilesListJSON(@RequestParam(value = "path", required = false) Long path, Principal principal) {
@@ -78,22 +67,20 @@ public class FileController {
 		Folder folder = new Folder();
 		folder.setId(path);
 		
-			
-		folder = fileService.populateFolder(curr, folder);
-		Set<FilePath> filePaths = fileService.getFilesInFolder(curr, folder);
-		Set<Folder> folders = fileService.getFoldersInFolder(curr, folder);
+		DirectoryListing list = fileService.listFolder(curr, folder);
 		
+
 		Map<Long, String> fp = new HashMap<Long, String>();
-		for (FilePath filePath : filePaths) 
+		for (FilePath filePath : list.getFilePaths()) 
 			fp.put(filePath.getId(), filePath.getName());
 		
 		Map<Long, String> dl = new HashMap<Long, String>();
-		for (Folder f: folders) 
+		for (Folder f: list.getFolders()) 
 			dl.put(f.getId(), f.getName());
 		
 		Map<String, Object> cd = new HashMap<String, Object>();
-		cd.put("id", folder.getId());
-		cd.put("path", folder.getFsPath());
+		cd.put("id", list.getMe().getId());
+		cd.put("path", list.getMe().getFsPath());
 		
 		
 		jsonRet.put("currentDir", cd);

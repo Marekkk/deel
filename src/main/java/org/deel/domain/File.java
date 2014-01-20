@@ -44,7 +44,7 @@ public class File {
 	@Column(name="permission")
 	private Permission permission;
 
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="file")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="file")
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
 	public File() {}

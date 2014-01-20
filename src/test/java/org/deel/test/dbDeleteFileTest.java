@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
+import org.deel.dao.FolderDAO;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -40,7 +41,18 @@ public class dbDeleteFileTest {
 	private FileDAO filedao;
 	
 	private FilePathDAO filePathDAO;
+
+	private FolderDAO folderDAO;
 	
+	public FolderDAO getFolderDAO() {
+		return folderDAO;
+	}
+
+	@Autowired
+	public void setFolderDAO(FolderDAO folderDAO) {
+		this.folderDAO = folderDAO;
+	}
+
 	public FilePathDAO getFilePathDAO() {
 		return filePathDAO;
 	}
@@ -78,7 +90,13 @@ public class dbDeleteFileTest {
 
 	@Test
 	public void deleteFileTest() {
+		Folder dir = new Folder();
+		dir.setId((long)1);
 		
+		dir = folderDAO.get(dir);
+		
+		Set<FilePath> list = dir.getFilepaths();
+		Assert.assertEquals(list.size(), 1);
 		return;
 	}
 }

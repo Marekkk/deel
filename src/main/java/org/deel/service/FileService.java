@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.deel.domain.DirectoryListing;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
@@ -35,11 +36,6 @@ public interface FileService {
 	public void uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException;
 	
-	@Transactional
-	public Set<Folder> getFoldersInFolder(User currentUser, Folder f);
-	
-	@Transactional
-	public Set<FilePath> getFilesInFolder(User currentUser, Folder f);
 
 	@Transactional
 	public Folder populateFolder(User currentUser, Folder folder);
@@ -49,4 +45,7 @@ public interface FileService {
 
 	@Transactional
 	public void deleteFile(User u, FilePath fdc) throws IOException;
+
+	@Transactional
+	public DirectoryListing listFolder(User curr, Folder folder);
 }

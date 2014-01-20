@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
 import org.deel.dao.FolderDAO;
 import org.deel.dao.UserDAO;
+import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -29,6 +31,7 @@ public class FileServiceImpl implements FileService {
 	private FolderDAO folderDao;
 	private FilePathDAO filePathDao;
 	private FileDAO fileDao;
+
 	public UserDAO getUserDAO() {
 		return userDAO;
 	}
@@ -39,7 +42,6 @@ public class FileServiceImpl implements FileService {
 	}
 
 	private UserDAO userDAO;
-	
 
 	public FileDAO getFileDao() {
 		return fileDao;
@@ -78,37 +80,6 @@ public class FileServiceImpl implements FileService {
 	public void updateFile(User owner, FilePath fp, InputStream data) {
 		// TODO Auto-generated method stub
 
-	}
-
-
-
-	@Override
-	@Transactional
-	public Set<FilePath> getFilesInFolder(User currentUser, Folder f) {
-
-		if (f == null)
-			throw new RuntimeException("Directory doesn't exists");
-
-		if (f.getUser().getId() != currentUser.getId())
-			throw new RuntimeException("User doesn't own the directory!");
-
-		Set<FilePath> ret = f.getFilepaths();
-
-		return ret;
-	}
-
-	@Override
-	public Set<Folder> getFoldersInFolder(User currentUser, Folder f) {
-
-		if (f == null)
-			throw new RuntimeException("Directory doesn't exists");
-
-		if (f.getUser().getId() != currentUser.getId())
-			throw new RuntimeException("User doesn't own the directory!");
-
-		Set<Folder> ret = f.getInFolder();
-
-		return ret;
 	}
 
 	@Override
@@ -193,7 +164,7 @@ public class FileServiceImpl implements FileService {
 
 		/* TODO change Filepath.path in FilePath.name */
 		for (FilePath fp : folder.getFilepaths())
-			if (fp.getName() == originalFilename) {
+			if (fp.getName().equals(originalFilename)) {
 				updateFile(curr, fp, inputStream);
 				return;
 			}
@@ -220,8 +191,10 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
+	@Transactional
 	public Folder populateFolder(User curr, Folder folder) {
 		/* if null return root directory */
+		curr = userDAO.get(curr);
 		if (folder.getId() == null) {
 			Set<Folder> fl = curr.getFolders();
 			for (Folder f : fl) {
@@ -304,26 +277,26 @@ public class FileServiceImpl implements FileService {
 			FSUtils.deleteFile(f);
 		} else {
 			if (f.getOwner().getId() != u.getId()) {
-				/*User current not the owner */
+				/* User current not the owner */
 				filePathDao.deleteFilePath(fp);
 				return;
 			}
 			/* i'm the owner */
 			f.getPaths().remove(fp);
 			filePathDao.deleteFilePath(fp);
-			
+
 			FilePath filePath = f.getPaths().iterator().next();
-			
+
 			String oldPath = f.getOwner().getUsername() + f.getFsPath();
-			String newPath = filePath.getUser().getUsername()+filePath.getFolder().getFsPath() + filePath.getName();
-			
+			String newPath = filePath.getUser().getUsername()
+					+ filePath.getFolder().getFsPath() + filePath.getName();
+
 			f.setFsPath(newPath);
 			f.setName(filePath.getName());
 			f.setOwner(filePath.getUser());
-			
+
 			FSUtils.mv(oldPath, newPath);
-			
-			
+
 		}
 
 	}
@@ -334,32 +307,76 @@ public class FileServiceImpl implements FileService {
 			List<User> userList) {
 		filePath = filePathDao.getFilePath(filePath);
 		if (filePath == null)
-			throw new RuntimeException("Error sharing a filepath that doesn't exists" );
-		
+			throw new RuntimeException(
+					"Error sharing a filepath that doesn't exists");
+
 		if (filePath.getUser().getId() != currentUser.getId())
-			throw new RuntimeException("User " + currentUser.getUsername() + " doesn't own filepath " + filePath.getName());
-		
-		for (User user : userList) { 
+			throw new RuntimeException("User " + currentUser.getUsername()
+					+ " doesn't own filepath " + filePath.getName());
+
+		for (User user : userList) {
 			user = userDAO.get(user);
 			Folder root = null;
-			
+
 			for (Folder f : user.getFolders()) {
 				if (f.getFather() == null) {
 					root = f;
 					return;
 				}
 			}
-			
+
 			FilePath nfp = new FilePath();
-			
+
 			nfp.setFile(filePath.getFile());
 			nfp.setName(filePath.getName());
 			nfp.setFolder(root);
-			
+
 			filePathDao.insertFilePath(nfp);
 		}
 		return;
+
+	}
+
+	@Override
+	@Transactional
+	public DirectoryListing listFolder(User curr, Folder folder) {
+		/* we've to reload/merge curr if we want use lazy loading */
+		curr = userDAO.get(curr);
+
+		/* if null return root directory */
+		if (folder.getId() == null) {
+			Set<Folder> fl = curr.getFolders();
+			for (Folder f : fl) {
+				if (f.getFather() == null) {
+					folder = f;
+					break;
+				}
+			}
+		} else {
+
+			folder = folderDao.get(folder);
+		}
 		
+		if (folder == null)
+			throw new RuntimeException("folder doesn't exists");
+
+		if (folder.getUser().getId() != curr.getId())
+			throw new RuntimeException("user " + curr.getUsername()
+					+ " doesn't own folder " + folder.getFsPath());
+
+		DirectoryListing ret = new DirectoryListing();
+		ret.setMe(folder);
+		
+		Set<FilePath> fpaths = new HashSet<FilePath>();
+		fpaths.addAll(folder.getFilepaths());
+		
+		Set<Folder> folders = new HashSet<Folder>();
+		folders.addAll(folder.getInFolder());
+		
+		ret.setFilePaths(fpaths);
+		ret.setFolders(folders);
+		
+		return ret;
 	}
 
 }

@@ -56,10 +56,10 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Category category;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="user")
 	private Set<FilePath> paths = new HashSet<FilePath>(0);
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="owner")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="owner")
 	private Set<File> files = new HashSet<File>(0);
 	
 	/*
@@ -75,7 +75,7 @@ public class User {
 								 inverseJoinColumns = {@JoinColumn(name="team_id")})
 	private Set<Team> teams = new HashSet<Team>(0);
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="user")
 	public Set<Folder> folders = new HashSet<Folder>();
 	
 	public Set<Team> getTeams() {

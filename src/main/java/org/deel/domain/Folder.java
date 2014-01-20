@@ -45,14 +45,14 @@ public class Folder {
 	@JoinColumn(name="user_id")
 	private User user;
 
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="folderInFolder",
 	joinColumns = {@JoinColumn(name="Father")},
 	inverseJoinColumns = {@JoinColumn(name="Child")}
 			)
 	private Set<Folder> inFolder = new HashSet<Folder>(0); // Other folder in folder
 
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="folder")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="folder")
 	private Set<FilePath> filepaths = new HashSet<FilePath>(0);
 
 	public Folder() {}
