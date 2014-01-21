@@ -57,48 +57,48 @@ public class FileController {
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
 	}
-	
 
-	
+
+
 	@RequestMapping("/file/list")
 	public @ResponseBody Map<String, Object> getFilesListJSON(@RequestParam(value = "path", required = false) Long path, Principal principal) {
 		String username = principal.getName();
 		Map<String, Object> jsonRet= new HashMap<String, Object>();
 		User curr = userService.findUserByUsername(username);
-		
+
 		Folder folder = new Folder();
 		folder.setId(path);
-		
+
 		DirectoryListing list = fileService.listFolder(curr, folder);
-		
+
 
 		Map<Long, String> fp = new HashMap<Long, String>();
 		for (FilePath filePath : list.getFilePaths()) 
 			fp.put(filePath.getId(), filePath.getName());
-		
+
 		Map<Long, String> dl = new HashMap<Long, String>();
 		for (Folder f: list.getFolders()) 
 			dl.put(f.getId(), f.getName());
-		
+
 		Map<String, Object> cd = new HashMap<String, Object>();
 		cd.put("id", list.getMe().getId());
 		cd.put("path", list.getMe().getFsPath());
-		
-		
+
+
 		jsonRet.put("currentDir", cd);
 		jsonRet.put("files", fp);
 		jsonRet.put("directories", dl);
-		
+
 		return jsonRet;
 	}
-	
+
 	@RequestMapping("/file/download/**")
 	public void downloadFile(@RequestParam Long id, Principal principal, HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
-		
+
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
-		
+
 		FilePath filePath= new FilePath();
 		filePath.setId(id);
 		FileInputStream is;
@@ -114,50 +114,50 @@ public class FileController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return;
 	}
-	
+
 	@RequestMapping(value = "/file/test", method= RequestMethod.GET)
 	public String sfileUploadTest(){
-		
-	
+
+
 		return "success";
 	}
 
 	@RequestMapping(value = "/file/test", method= RequestMethod.POST)
 	public String fileUploadTest(@RequestParam("file") MultipartFile file){
-		
+
 		System.out.println("file name " + file.getName());
 		return "success";
 	}
-	
+
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody Map<String,Object> exceptionHandler(Exception e) {
 		Map<String, Object> json = new HashMap<String, Object>();
 		RuntimeException re = (RuntimeException) e;
-		
+
 		json.put("error", e.getMessage());
-		
+
 		return json;
 	}
-	
+
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm, 
 			BindingResult result,
 			Principal principal, ModelMap model) {
 
-		
+
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
-		
+
 		Folder folder = new Folder();
 		folder.setId(fileForm.getPath());
-		
+
 		Map<String, Object> jsonReturn = new HashMap<String, Object>();
-		 
+
 		List<MultipartFile> mFiles = fileForm.getFiles();
-		
+
 		for (MultipartFile multipartFile : mFiles) {
 			try {
 				fileService.uploadFile(curr, 
@@ -166,13 +166,13 @@ public class FileController {
 						multipartFile.getInputStream());
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"success");
-				
+
 			} catch (IOException e) {
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"failed");
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"error: " + e.getMessage());
-				
+
 				e.printStackTrace();
 			} catch (RuntimeException e) {
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
@@ -180,16 +180,17 @@ public class FileController {
 				jsonReturn.put(multipartFile.getOriginalFilename(), 
 						"error: " + e.getMessage());
 			}
-			
+
 		}
 
 		/* TODO real message codes */
 		return jsonReturn;
 	}
-	
+
 	@RequestMapping(value = "/file/addFolder", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> addFolder (@RequestParam long id, @RequestParam String folderName, Principal principal) {
-		
+	public @ResponseBody Map<String, Object> addFolder (@RequestParam Long id, @RequestParam String folderName, Principal principal) {
+
+		Map<String, Object> result = new HashMap<String, Object>(); 
 		System.out.println(id + " " + folderName);
 		Folder folder = new Folder();
 		folder.setId(id);
@@ -199,10 +200,35 @@ public class FileController {
 			fileService.createNewFolder(u, folder, folderName);
 		} catch (IOException e) {
 			System.out.println("Error during creation of folder. \n" + e);
+			result.put("Success", "error");
+			return result;
 		}
-		
-		
-		return null;
+
+		result.put("Success", "success");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/file/remove", method = RequestMethod.GET) 
+	public @ResponseBody Map<Long, String> removeFile (@RequestParam Long id, Principal principal) {
+
+		Map<Long, String> result = new HashMap<Long, String>(); 
+		System.out.println("We are going to remove filepath with id -> " + id);
+		FilePath f = new FilePath();
+		f.setId(id);
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		try {
+			fileService.deleteFile(u, f);
+		} catch (IOException e) {
+			System.out.println("Error during creation of folder. \n" + e);
+			result.put(id, "error");
+			return result;
+		}
+
+		result.put(id, "success");
+
+		return result;
 	}
 }
 
