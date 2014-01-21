@@ -118,20 +118,8 @@ public class FileController {
 		return;
 	}
 	
-	@RequestMapping(value = "/file/test", method= RequestMethod.GET)
-	public String sfileUploadTest(){
-		
-	
-		return "success";
-	}
 
-	@RequestMapping(value = "/file/test", method= RequestMethod.POST)
-	public String fileUploadTest(@RequestParam("file") MultipartFile file){
-		
-		System.out.println("file name " + file.getName());
-		return "success";
-	}
-	
+
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody Map<String,Object> exceptionHandler(Exception e) {
 		Map<String, Object> json = new HashMap<String, Object>();

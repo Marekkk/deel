@@ -1,6 +1,8 @@
 package org.deel.service.impl;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.management.RuntimeErrorException;
@@ -98,6 +100,17 @@ public class UserServiceImpl implements UserService {
 	public void addFolder(User user, Folder folder) {
 		folder.setUser(user);
 		folderDAO.insertFolder(folder);
+	}
+
+	@Override
+	@Transactional
+	public List<User> listUser(User curr) {
+		List <User> userList = userDAO.userList();
+		for (Iterator<User> it = userList.listIterator();it.hasNext();) {
+			if (it.next().getId() == curr.getId())
+				it.remove();
+		}
+		return userList;
 	}
 
 }

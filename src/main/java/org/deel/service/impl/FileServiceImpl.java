@@ -71,12 +71,6 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public void eraseFile(User owner, String path) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void updateFile(User owner, FilePath fp, InputStream data) {
 		// TODO Auto-generated method stub
 
@@ -107,11 +101,6 @@ public class FileServiceImpl implements FileService {
 		return fIn;
 	}
 
-	@Override
-	public List<FilePath> listFile(User curretUser, String Path) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private void saveFileOnFilesystem(File f, InputStream inputStream)
 			throws IOException {

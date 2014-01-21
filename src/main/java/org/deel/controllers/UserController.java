@@ -1,6 +1,10 @@
 package org.deel.controllers;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -15,6 +19,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class UserController {
@@ -32,7 +37,21 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	
+	@RequestMapping(value="/user/list")
+	public @ResponseBody Map<Long, String> userList(Principal principal) 
+	{
+		Map<Long,String> json = new HashMap<Long, String>();
+		String username = principal.getName();
+		User curr = userService.findUserByUsername(username);
+		
+		List<User> userList = userService.listUser(curr);
+		
+		for (User user : userList) 
+			json.put(user.getId(), user.getUsername());
+		
+		
+		return json;
+	}
 
 	@RequestMapping(value = "/user/new", method = RequestMethod.GET)
 	public String makeForm(ModelMap map) {
@@ -77,7 +96,7 @@ public class UserController {
 			return "newUser";
 		}
 
-		return "redirect:home";
+		return "redirect:user/home";
 	}
 
 }

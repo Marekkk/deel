@@ -15,10 +15,7 @@ import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface FileService {
-	
-	
-	@Transactional
-	public void eraseFile(User owner, String path);
+
 	
 	@Transactional
 	public void updateFile(User owner, FilePath filePath, InputStream data);
@@ -29,8 +26,6 @@ public interface FileService {
 	@Transactional
 	public FileInputStream getFile(User currentUser, FilePath filePath) throws FileNotFoundException;
 	
-	@Transactional
-	public List<FilePath> listFile(User currentUser, String Path);
 
 	@Transactional
 	public void uploadFile(User curr, String originalFilename, Folder folder,
