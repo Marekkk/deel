@@ -47,6 +47,10 @@ public class File {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="file")
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="file")
+	private Set<FileRevision> revision = new HashSet<FileRevision>(0);
+
+
 	public File() {}
 
 	public File(String name, User u) {
