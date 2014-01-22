@@ -18,7 +18,7 @@ public interface FileService {
 
 	
 	@Transactional
-	public void updateFile(User owner, FilePath filePath, InputStream data);
+	public void updateFile(User owner, FilePath filePath, InputStream data) throws IOException;
 	
 	@Transactional
 	public void shareFile(User currentUser, FilePath filePath, List<User> userList);

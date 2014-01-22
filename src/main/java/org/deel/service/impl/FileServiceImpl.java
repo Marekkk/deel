@@ -86,9 +86,26 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public void updateFile(User owner, FilePath fp, InputStream data) {
-		// TODO Auto-generated method stub
+	public void updateFile(User u, FilePath fp, InputStream data) throws IOException {
+		fp = filePathDao.getFilePath(fp);
+		
+		if (fp == null)
+			throw new RuntimeException(
+					"Tried to update a Filepath that doesn't exists");
 
+		if (fp.getUser().getId() != u.getId())
+			throw new RuntimeException("User " + u.getUsername()
+					+ "doesn't own file " + fp.getName());
+		
+		FileRevision newRevision = new FileRevision();
+		newRevision.setDate(new Date());
+		newRevision.setFsPath(fp.getFolder().getFsPath()+fp.getName());
+		newRevision.setFile(fp.getFile());
+		newRevision.setUploadedBy(u);
+		
+		fileRevisionDAO.insert(newRevision);
+		FSUtils.saveFile(newRevision, data);
+		
 	}
 
 	@Override
@@ -123,37 +140,6 @@ public class FileServiceImpl implements FileService {
 		FileInputStream fIn = new FileInputStream(fsFile);
 
 		return fIn;
-	}
-
-
-	private void saveFileOnFilesystem(FileRevision fileRevision, InputStream inputStream)
-			throws IOException {
-
-		String finalPath = storagePath + fileRevision.getUploadedBy().getUsername()
-				+ fileRevision.getFsPath() + "." + fileRevision.getId();
-
-		java.io.File fsF = new java.io.File(finalPath);
-
-		if (fsF.isDirectory())
-			throw new RuntimeException("DB/FS mismatch path "
-					+ fsF.getAbsolutePath() + " is a directory!");
-
-		FileOutputStream fOut;
-		try {
-			if (!fsF.createNewFile())
-				throw new RuntimeException("DB/FS mismatch saving file "
-						+ fsF.getAbsolutePath());
-
-			fOut = new FileOutputStream(fsF);
-			IOUtils.copy(inputStream, fOut);
-			fOut.flush();
-			fOut.close();
-
-		} catch (FileNotFoundException e) {
-			/* should never happen because of f.createnewFile */
-			throw new RuntimeException("DB/FS mismatch");
-
-		}
 	}
 
 	@Override
@@ -197,20 +183,19 @@ public class FileServiceImpl implements FileService {
 		
 		//file.setFsPath(folder.getFsPath() + originalFilename);
 
-		fileDao.insertFile(file);
-		fileRevisionDAO.insert(fileRevision);
-
 		FilePath fp = new FilePath();
-
 		fp.setFile(file);
 		fp.setFolder(folder);
 		fp.setName(originalFilename);
 		fp.setUser(curr);
 		fp.setHidden(false);
 
+		
+		fileDao.insertFile(file);
+		fileRevisionDAO.insert(fileRevision);
 		filePathDao.insertFilePath(fp);
 
-		saveFileOnFilesystem(fileRevision, inputStream);
+		FSUtils.saveFile(fileRevision, inputStream);
 
 	}
 
@@ -315,7 +300,7 @@ public class FileServiceImpl implements FileService {
 			for (Folder f : user.getFolders()) {
 				if (f.getFather() == null) {
 					root = f;
-					return;
+					break;
 				}
 			}
 
@@ -324,7 +309,9 @@ public class FileServiceImpl implements FileService {
 			nfp.setFile(filePath.getFile());
 			nfp.setName(filePath.getName());
 			nfp.setFolder(root);
-
+			nfp.setUser(user);
+			nfp.setHidden(false);
+			
 			filePathDao.insertFilePath(nfp);
 		}
 		return;
@@ -380,7 +367,7 @@ public class FileServiceImpl implements FileService {
 		folder = folderDao.get(folder);
 		
 		if (folder==null)
-			throw new RuntimeException("folder " + folder.getName() +"doesn't exists");
+			throw new RuntimeException("folder doesn't exists");
 		if (folder.getUser().getId() != u.getId())
 			throw new RuntimeException("User " + u.getUsername() + "doesn't own folder " + folder.getName());
 		
