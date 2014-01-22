@@ -271,26 +271,4 @@ public class FileController {
 
 		return result;
 	}
-	
-	@RequestMapping(value = "/folder/remove", method = RequestMethod.GET) 
-	public @ResponseBody Map<Long, String> removeFolder (@RequestParam Long id, Principal principal) {
-
-		Map<Long, String> result = new HashMap<Long, String>(); 
-		System.out.println("We are going to remove folder with id -> " + id);
-		Folder f = new Folder();
-		f.setId(id);
-		String username = principal.getName();
-		User u = userService.findUserByUsername(username);
-		try {
-			fileService.deleteFolder(u, f);
-		} catch (IOException e) {
-			System.out.println("Error during creation of folder. \n" + e);
-			result.put(id, "error");
-			return result;
-		}
-
-		result.put(id, "success");
-
-		return result;
-	}
 }
