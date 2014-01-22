@@ -220,9 +220,38 @@ public class FileController {
 		
 	}
 
+	@RequestMapping(value = "/file/share")
+	public @ResponseBody Map<String, Object> shareFile(@RequestBody ShareFileMessage message, 
+			BindingResult result,
+			Principal principal) {
+		
+		HashMap<String, Object> json = new HashMap<String, Object>();
+		
+		if (result.hasErrors()) {
+			json.put("status", "failed");
+			json.put("errors", result.getAllErrors());
+			return json;
+		}
+		
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		
+		FilePath fp = new FilePath();
+		fp.setId(message.getFile());
+		
+		fileService.shareFile(u, fp, message.getUsers());
+		
+		
+		json.put("status", "sucess");
+		
+		
+		return json;
+		
+	}
 	@RequestMapping(value = "/file/remove", method = RequestMethod.GET)
 	public @ResponseBody
 	Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
+
 
 		Map<Long, String> result = new HashMap<Long, String>();
 		System.out.println("We are going to remove filepath with id -> " + id);

@@ -36,6 +36,52 @@ public class UserController {
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
+	
+	@RequestMapping(value = "/user/new.json", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> onSubmitJson(@Valid User user, BindingResult result,
+			ModelMap map) {
+		HashMap<String, Object> json = new HashMap<String, Object>();
+		
+		/* checking password */
+		if (user.getPassword() == null && user.getPassword().length() < 5) {
+			result.rejectValue("password",
+	                 "password.tooShort",
+	                 "password should be at least 5 chars");
+		}
+		
+		if (result.hasErrors()) {
+			HashMap<String, String> errors = new HashMap<String, String>();
+			for (ObjectError e : result.getAllErrors()) 
+				errors.put(e.getCode(), e.toString());
+			json.put("status", "failed");
+			json.put("errors", errors);
+			
+		}
+		
+		/* TODO use dependency injection to inject pwdEncoder */
+		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
+		user.setPassword(pwdEncoder.encode(user.getPassword()));
+
+		try {
+			userService.registerNewUser(user);
+		} catch (RuntimeException e)	{
+			result.addError(new ObjectError("user", e.getMessage()));
+			System.out.println("RunTimeException while registering User " + e.getMessage());
+			e.printStackTrace();
+			json.put("status", "failed");
+			json.put("errors", e.getMessage());
+			return json;
+		} catch (IOException e) {
+			result.addError(new ObjectError("user", e.getMessage()));
+			e.printStackTrace();
+			json.put("status", "failed");
+			json.put("errors", e.getMessage());
+			return json;
+		}
+		
+		json.put("status", "success");
+		return json;
+	}
 
 	@RequestMapping(value="/user/list")
 	public @ResponseBody Map<Long, String> userList(Principal principal) 
@@ -68,7 +114,6 @@ public class UserController {
 		
 		
 		if (result.hasErrors()) {
-			/* TODO show error messages */
 			return "newUser";
 		}
 		
@@ -96,7 +141,7 @@ public class UserController {
 			return "newUser";
 		}
 
-		return "redirect:user/home";
+		return "redirect:/home";
 	}
 
 }

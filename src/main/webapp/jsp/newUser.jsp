@@ -9,52 +9,88 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel=stylesheet href="../resources/css/login.css" media="screen">
 <title>Registration</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
 function check() {
-	if (form1.username.value == "") {
+	if (registrationForm.username.value == "") {
 		alert("Please enter your username!");
 		return false;
 	}
-	if (form1.email.value == "") {
+	if (registrationForm.email.value == "") {
 		alert("Please enter your email adress!");
 		return false;
 	}
-	if (form1.name.value == "") {
+	if (registrationForm.name.value == "") {
 		alert("Please enter your name!");
 		return false;
 	}
-	if (form1.surname.value == "") {
+	if (registrationForm.surname.value == "") {
 		alert("Please enter your surname!");
 		return false;
 	}
 	
-	if (form1.password.value != form1.psw2.value) {
+	if (registrationForm.password.value != registrationForm.psw2.value) {
 		alert("Password doesn' t matching!");
-		form1.password.value = "";
+		registrationForm.password.value = "";
 		return false;
 	}
 	return true;
 }
+	
+	
+	
+	$(document).ready(function() {
 
-function checkpsw() {
-	var psw1 = document.getElementById("password");
-	var psw2 = document.getElementById("psw2");
-	if (psw1.value != psw2.value) {
-		var message = document.getElementById("checkpass");
-		message.innerHTML = "<p>" + "No matching between passwords!" + "</p>";
+			
+
+	$("#registrationForm").submit(function(event) {
+			event.preventDefault();
+
+			if(!check())
+				return false;
+			
+
+			//grab all form data  
+			var formData = new FormData($(this)[0]);
+			console.log(formData);
+			$.ajax({
+				url : 'user/new',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				processData: false,
+				success : function(returndata) {
+					console.log(returndata);
+				}
+			});
+			
+			return false;
+		});
+	});
+
+	function checkpsw() {
+		var psw1 = document.getElementById("password");
+		var psw2 = document.getElementById("psw2");
+		if (psw1.value != psw2.value) {
+			var message = document.getElementById("checkpass");
+			message.innerHTML = "<p>" + "No matching between passwords!"
+					+ "</p>";
+			psw2.value = "";
+		}
+		if (psw1.value == psw2.value) {
+			var message = document.getElementById("checkpass");
+			message.innerHTML = "<p>" + "OK!" + "</p>";
+		}
+		//alert(psw1.value + " " + psw2.value);
+	}
+
+	function cleanRetype() {
+		var psw2 = document.getElementById("psw2");
 		psw2.value = "";
 	}
-	if (psw1.value == psw2.value) {
-		var message = document.getElementById("checkpass");
-		message.innerHTML = "<p>" + "OK!" + "</p>";
-	}
-	//alert(psw1.value + " " + psw2.value);
-}
-
-function cleanRetype() {
-	var psw2 = document.getElementById("psw2");
-	psw2.value = "";
-}
 </script>
 </head>
 <body>
@@ -67,7 +103,7 @@ function cleanRetype() {
 	</header>
 
 	<div id="registrationContainer">
-		<form:form commandName="user" name="form1">
+		<form:form commandName="user" id="registrationForm">
 			<label for="username">Username: </label>
 			<form:input path="username" />
 			<br>
@@ -78,8 +114,7 @@ function cleanRetype() {
 			<input id="psw2" name="psw2" type="password" onchange="checkpsw()">
 			<br>
 			<div id="checkpass"
-				style="position: fixed; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;"
-			>
+				style="position: fixed; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;">
 			</div>
 			<br>
 			<label for="email">Email: </label>
@@ -92,7 +127,7 @@ function cleanRetype() {
 			<form:input path="surname" />
 			<br>
 			<div id="lowerRegistration">
-				<input type="submit" value="Register" onclick="return check()">
+				<input type="submit" value="Register">
 			</div>
 		</form:form>
 	</div>
