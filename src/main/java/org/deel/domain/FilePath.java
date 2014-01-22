@@ -23,6 +23,9 @@ public class FilePath {
 
 	@Column(name="name")
 	private String name;
+	
+	@Column(name="hidden", nullable = false)
+	private boolean hidden;
 
 	@ManyToOne()
 	@JoinColumn(name="user_id")
@@ -44,6 +47,16 @@ public class FilePath {
 		this.file = file;
 		this.folder = folder;
 	}
+	
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
 
 	public Long getId() {
 		return id;

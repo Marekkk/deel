@@ -28,6 +28,18 @@ public class Folder {
 	
 	@Column(name="fsPath")
 	private String fsPath;
+	
+	@Column(name="hidden", nullable = false)
+	private boolean hidden;
+
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
 
 	@Column(name="name")
 	private String name;

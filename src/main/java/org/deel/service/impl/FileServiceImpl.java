@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -100,16 +102,25 @@ public class FileServiceImpl implements FileService {
 		if (fp.getUser().getId() != currentUser.getId())
 			throw new RuntimeException("Filepath " + fp.getName()
 					+ "doesn't belongs to user " + currentUser.getUsername());
+		
+		File file = fp.getFile();
+		 
+		FileRevision last = file.getRevisions().iterator().next();
+		for (FileRevision fileRevision : file.getRevisions()) 
+			if (fileRevision.getId() > last.getId())
+				last = fileRevision;
+				
+		
 		String path = storagePath + currentUser.getUsername()
-				+ fp.getFile().getFsPath();
+				+ last.getFsPath() + "." + last.getId();
 
-		java.io.File file = new java.io.File(path);
+		java.io.File fsFile = new java.io.File(path);
 
-		if (!file.exists())
+		if (!fsFile.exists())
 			throw new RuntimeException("DB/FS mismatch: file " + path
 					+ " doesn't exists");
 
-		FileInputStream fIn = new FileInputStream(file);
+		FileInputStream fIn = new FileInputStream(fsFile);
 
 		return fIn;
 	}
@@ -195,6 +206,7 @@ public class FileServiceImpl implements FileService {
 		fp.setFolder(folder);
 		fp.setName(originalFilename);
 		fp.setUser(curr);
+		fp.setHidden(false);
 
 		filePathDao.insertFilePath(fp);
 
@@ -246,21 +258,20 @@ public class FileServiceImpl implements FileService {
 		Folder newFolder = new Folder();
 		newFolder.setName(dirName);
 		newFolder.setFather(currentFolder);
-		newFolder.setFsPath(currentFolder.getFsPath() + dirName + "/"); /*
-																		 * TODO
-																		 * validation
-																		 * of
-																		 * this
-																		 * input
-																		 * (skip
-																		 * slash
-																		 * ,
-																		 * points
-																		 * )
-																		 */
 		newFolder.setUser(u);
-
+		newFolder.setHidden(false);
+		
 		folderDao.insertFolder(newFolder);
+		
+		newFolder.setFsPath(currentFolder.getFsPath() + dirName + "." + newFolder.getId() + "/"); 
+				
+		folderDao.updateFolder(newFolder);
+		
+		/*
+		 * TODO validation of this input (skip slash , points )
+		 */
+		
+		
 		FSUtils.mkdir(newFolder);
 
 	}
@@ -278,38 +289,9 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException("User " + u.getUsername()
 					+ "doesn't own file " + fp.getName());
 
-		File f = fp.getFile();
-
-		boolean shared = !(f.getPaths().size() == 1);
-
-		if (!shared) {
-			/* file is not shared */
-			filePathDao.deleteFilePath(fp);
-			fileDao.deleteFile(f);
-			FSUtils.deleteFile(f);
-		} else {
-			if (f.getOwner().getId() != u.getId()) {
-				/* User current not the owner */
-				filePathDao.deleteFilePath(fp);
-				return;
-			}
-			/* i'm the owner */
-			f.getPaths().remove(fp);
-			filePathDao.deleteFilePath(fp);
-
-			FilePath filePath = f.getPaths().iterator().next();
-
-			String oldPath = f.getOwner().getUsername() + f.getFsPath();
-			String newPath = filePath.getUser().getUsername()
-					+ filePath.getFolder().getFsPath() + filePath.getName();
-
-			f.setFsPath(newPath);
-			f.setName(filePath.getName());
-			f.setOwner(filePath.getUser());
-
-			FSUtils.mv(oldPath, newPath);
-
-		}
+		
+		fp.setHidden(true);
+		filePathDao.updateFilePath(fp);
 
 	}
 
@@ -389,6 +371,49 @@ public class FileServiceImpl implements FileService {
 		ret.setFolders(folders);
 		
 		return ret;
+	}
+
+	@Override
+	@Transactional
+	public void deleteFolder(User u, Folder folder) {
+		
+		folder = folderDao.get(folder);
+		
+		if (folder==null)
+			throw new RuntimeException("folder " + folder.getName() +"doesn't exists");
+		if (folder.getUser().getId() != u.getId())
+			throw new RuntimeException("User " + u.getUsername() + "doesn't own folder " + folder.getName());
+		
+		
+		List<Folder> folderToDelete = new LinkedList<Folder>();
+		folderToDelete.add(folder);
+		
+		for(int i = 0; i < folderToDelete.size();i++) 
+		{
+			Folder f = folderToDelete.get(i);
+			
+			/* Deleting all filepaths */
+			for (FilePath fp : f.getFilepaths()) {
+				if(fp.isHidden())
+					continue;
+				
+				fp.setHidden(true);
+			}
+			
+			/* Recursing */
+			for (Folder dir : f.getInFolder()) {
+				if(dir.isHidden())
+					continue;
+				
+				folderToDelete.add(dir);
+			}
+			f.setHidden(true);
+			folderDao.updateFolder(folder);
+
+		}
+		
+		
+		
 	}
 
 }

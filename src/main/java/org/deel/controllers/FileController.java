@@ -58,12 +58,13 @@ public class FileController {
 		this.fileService = fileService;
 	}
 
-
-
 	@RequestMapping("/file/list")
-	public @ResponseBody Map<String, Object> getFilesListJSON(@RequestParam(value = "path", required = false) Long path, Principal principal) {
+	public @ResponseBody
+	Map<String, Object> getFilesListJSON(
+			@RequestParam(value = "path", required = false) Long path,
+			Principal principal) {
 		String username = principal.getName();
-		Map<String, Object> jsonRet= new HashMap<String, Object>();
+		Map<String, Object> jsonRet = new HashMap<String, Object>();
 		User curr = userService.findUserByUsername(username);
 
 		Folder folder = new Folder();
@@ -71,19 +72,25 @@ public class FileController {
 
 		DirectoryListing list = fileService.listFolder(curr, folder);
 
-
 		Map<Long, String> fp = new HashMap<Long, String>();
-		for (FilePath filePath : list.getFilePaths()) 
-			fp.put(filePath.getId(), filePath.getName());
+		for (FilePath filePath : list.getFilePaths()) {
+			/* TODO maybe can be optimized using a query with WHERE hidden=false */
+			if (!filePath.isHidden())
+				fp.put(filePath.getId(), filePath.getName());
+
+		}
 
 		Map<Long, String> dl = new HashMap<Long, String>();
-		for (Folder f: list.getFolders()) 
+		for (Folder f : list.getFolders()) {
+			if (f.isHidden())
+				continue;
+			
 			dl.put(f.getId(), f.getName());
+		}
 
 		Map<String, Object> cd = new HashMap<String, Object>();
 		cd.put("id", list.getMe().getId());
 		cd.put("path", list.getMe().getFsPath());
-
 
 		jsonRet.put("currentDir", cd);
 		jsonRet.put("files", fp);
@@ -93,13 +100,14 @@ public class FileController {
 	}
 
 	@RequestMapping("/file/download/**")
-	public void downloadFile(@RequestParam Long id, Principal principal, HttpServletResponse response) {
+	public void downloadFile(@RequestParam Long id, Principal principal,
+			HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
 
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
 
-		FilePath filePath= new FilePath();
+		FilePath filePath = new FilePath();
 		filePath.setId(id);
 		FileInputStream is;
 		try {
@@ -119,7 +127,8 @@ public class FileController {
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	public @ResponseBody Map<String,Object> exceptionHandler(Exception e) {
+	public @ResponseBody
+	Map<String, Object> exceptionHandler(Exception e) {
 		Map<String, Object> json = new HashMap<String, Object>();
 		RuntimeException re = (RuntimeException) e;
 
@@ -129,10 +138,9 @@ public class FileController {
 	}
 
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm, 
-			BindingResult result,
-			Principal principal, ModelMap model) {
-
+	public @ResponseBody
+	Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm,
+			BindingResult result, Principal principal, ModelMap model) {
 
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
@@ -146,25 +154,21 @@ public class FileController {
 
 		for (MultipartFile multipartFile : mFiles) {
 			try {
-				fileService.uploadFile(curr, 
-						multipartFile.getOriginalFilename(), 
-						folder, 
+				fileService.uploadFile(curr,
+						multipartFile.getOriginalFilename(), folder,
 						multipartFile.getInputStream());
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"success");
+				jsonReturn.put(multipartFile.getOriginalFilename(), "success");
 
 			} catch (IOException e) {
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"failed");
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"error: " + e.getMessage());
+				jsonReturn.put(multipartFile.getOriginalFilename(), "failed");
+				jsonReturn.put(multipartFile.getOriginalFilename(), "error: "
+						+ e.getMessage());
 
 				e.printStackTrace();
 			} catch (RuntimeException e) {
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"failed");
-				jsonReturn.put(multipartFile.getOriginalFilename(), 
-						"error: " + e.getMessage());
+				jsonReturn.put(multipartFile.getOriginalFilename(), "failed");
+				jsonReturn.put(multipartFile.getOriginalFilename(), "error: "
+						+ e.getMessage());
 			}
 
 		}
@@ -174,9 +178,11 @@ public class FileController {
 	}
 
 	@RequestMapping(value = "/file/addFolder", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> addFolder (@RequestParam Long id, @RequestParam String folderName, Principal principal) {
+	public @ResponseBody
+	Map<String, Object> addFolder(@RequestParam Long id,
+			@RequestParam String folderName, Principal principal) {
 
-		Map<String, Object> result = new HashMap<String, Object>(); 
+		Map<String, Object> result = new HashMap<String, Object>();
 		System.out.println(id + " " + folderName);
 		Folder folder = new Folder();
 		folder.setId(id);
@@ -195,10 +201,30 @@ public class FileController {
 		return result;
 	}
 
-	@RequestMapping(value = "/file/remove", method = RequestMethod.GET) 
-	public @ResponseBody Map<Long, String> removeFile (@RequestParam Long id, Principal principal) {
+	@RequestMapping(value = "/folder/remove", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<Long, String> removeDirectory(@RequestParam Long id, Principal principal) {
+		Folder f = new Folder();
+		f.setId(id);
+		
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
 
-		Map<Long, String> result = new HashMap<Long, String>(); 
+
+		fileService.deleteFolder(u, f);
+
+		Map<Long, String> json = new HashMap<Long, String>();
+		json.put(f.getId(), "success");
+		
+		return json;
+		
+	}
+
+	@RequestMapping(value = "/file/remove", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
+
+		Map<Long, String> result = new HashMap<Long, String>();
 		System.out.println("We are going to remove filepath with id -> " + id);
 		FilePath f = new FilePath();
 		f.setId(id);
@@ -217,4 +243,3 @@ public class FileController {
 		return result;
 	}
 }
-

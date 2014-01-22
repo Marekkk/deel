@@ -12,7 +12,8 @@ public class FolderDaoImpl implements FolderDAO {
 
 	@Override
 	public void insertFolder(Folder f) {
-		sessionFactory.getCurrentSession().save(f);
+		Long id = (Long)sessionFactory.getCurrentSession().save(f);
+		f.setId(id);
 	}
 
 	@Override

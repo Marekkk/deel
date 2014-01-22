@@ -48,8 +48,16 @@ public class File {
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="file")
-	private Set<FileRevision> revision = new HashSet<FileRevision>(0);
+	private Set<FileRevision> revisions = new HashSet<FileRevision>(0);
 
+
+	public Set<FileRevision> getRevisions() {
+		return revisions;
+	}
+
+	public void setRevisions(Set<FileRevision> revisions) {
+		this.revisions = revisions;
+	}
 
 	public File() {}
 

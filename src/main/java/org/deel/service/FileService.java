@@ -36,6 +36,9 @@ public interface FileService {
 	public Folder populateFolder(User currentUser, Folder folder);
 
 	@Transactional
+	public void deleteFolder(User u, Folder folder);
+	
+	@Transactional
 	public void createNewFolder(User u, Folder currentFolder, String string) throws IOException;
 
 	@Transactional
