@@ -33,14 +33,14 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="annotatedClasses">
 			<list>
-<!-- 				<value>org.deel.domain.Company</value> -->
-<!-- 				<value>org.deel.domain.User</value> -->
-<!-- 				<value>org.deel.domain.Team</value> -->
-<!-- 				<value>org.deel.domain.Folder</value> -->
-<!-- 				<value>org.deel.domain.FilePath</value> -->
-<!-- 				<value>org.deel.domain.File</value> -->
-<!-- 				<value>org.deel.domain.FileRevision</value> -->
-<!-- 				<value>org.deel.domain.Category</value> -->
+				<value>org.deel.domain.Company</value>
+				<value>org.deel.domain.User</value>
+				<value>org.deel.domain.Team</value>
+				<value>org.deel.domain.FilePath</value>
+				<value>org.deel.domain.File</value>
+				<value>org.deel.domain.Folder</value>
+				<value>org.deel.domain.Category</value>
+				<value>org.deel.domain.FileRevision</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

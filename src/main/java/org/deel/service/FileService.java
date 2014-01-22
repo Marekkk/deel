@@ -46,4 +46,7 @@ public interface FileService {
 
 	@Transactional
 	public DirectoryListing listFolder(User curr, Folder folder);
+	
+	@Transactional
+	public void deleteFolder(User u, Folder f) throws IOException;
 }

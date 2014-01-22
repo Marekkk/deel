@@ -3,6 +3,7 @@ package org.deel.controllers;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,19 +85,31 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/user/list")
-	public @ResponseBody Map<Long, String> userList(Principal principal) 
+	public @ResponseBody Map<String, Object> userList(Principal principal) 
 	{
-		Map<Long,String> json = new HashMap<Long, String>();
+		Map<String, Object> json = new HashMap<String, Object>();
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
 		
 		List<User> userList = userService.listUser(curr);
+		List<Long> usersId = new LinkedList<Long>();
+		List<String> usernames = new LinkedList<String>();
 		
-		for (User user : userList) 
-			json.put(user.getId(), user.getUsername());
+		for (User user : userList)  {
+			usersId.add(user.getId());
+			usernames.add(user.getUsername());
+			//json.put(user.getId(), user.getUsername());
+		}
 		
+		json.put("id", usersId);
+		json.put("Username", usernames);
 		
 		return json;
+	}
+	
+	@RequestMapping(value="/user/selectUsers")
+	public String selectUsers() {
+		return "userListSelectable";
 	}
 
 	@RequestMapping(value = "/user/new", method = RequestMethod.GET)

@@ -7,13 +7,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./resources/css/style.css" media="screen">
+<link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
-	var data;
-	function runEffect() {
-		$("#uploadContainer").show("slow");
-	}
 	function sendUpload() {
 		this.ajaxForm.submit();
 	}
@@ -32,21 +29,104 @@
 
 		makeRequest(request);
 	}
-	
-	function removeFile(id) {
-		var file = id;
+
+	function removeFile(id, type) {
+		if (!confirm("Vuoi davvero eliminare il file?"))
+			return;
+
 		var message = new Object();
-		message.id = file;
-		
+		message.id = id;
+
+		if (type == "file") {
+			$.ajax({
+				url : 'file/remove',
+				data : message,
+				type : 'GET',
+				success : function(returndata) {
+					console.log(returndata);
+					getFiles();
+				}
+			});
+		} else if (type == "folder") {
+			$.ajax({
+				url : 'folder/remove',
+				data : message,
+				type : 'GET',
+				success : function(returndata) {
+					console.log(returndata);
+					getFiles();
+				}
+			});
+		}
+	}
+	
+	var usersWithShare = new Array();
+	
+	function sharing(id) {
+		var ul = document.getElementById("slist");
+		ul.remove();
+		var sharingDiv = document.getElementById("sharingList");
+		var nul = document.createElement("ul");
+		nul.id = "slist";
+		sharingDiv.appendChild(nul);
 		$.ajax({
-			url : 'file/remove',
-			data: message,
+			url : 'user/list',
 			type : 'GET',
 			success : function(returndata) {
+				var users = returndata;
 				console.log(returndata);
-				getFiles();
+				createShareBox(users.id, users.Username, id);
 			}
 		});
+		var button = document.createElement("input");
+		button.id = "sendButton";
+		button.type = "button";
+		button.value = "Share File!";
+		button.innerHTML = "Share File!";
+		nul.appendChild(button);
+		$('#sendButton').click(
+			function () {
+				alert("You' re sharing " + id + " with " + usersWithShare);
+				var message = new Object();
+
+				message.users = usersWithShare;
+				message.file = id;
+				$.ajax({
+					url : 'file/share',
+					data : message,
+					type : 'POST',
+					dataType: "json",
+					success : function(returndata) {
+						console.log(returndata);
+						getFiles();
+					}
+				});
+			}
+		);
+		$('#sharingList').dialog("open");
+	}
+	
+	function createShareBox(usersid, usr, idFile) {
+		usersWithShare = [];
+		var ul = document.getElementById("slist");
+		
+		for (var i = 0; i < usr.length; i++) {
+			var li = document.createElement("li");
+			var a = document.createElement("a");
+			a.innerHTML = usr[i];
+			a.href = "javascript:shareFileWith("+ usersid[i]+")";
+			li.appendChild(a);
+			ul.appendChild(li);
+		}
+	}
+	
+	function shareFileWith(userId) {
+		var currSize = usersWithShare.length;
+		usersWithShare[currSize] = userId;
+	}
+	
+	function shareFile() {
+		alert();
 	}
 
 	function makeRequest(request) {
@@ -70,22 +150,6 @@
 		});
 	}
 
-	function getRootId() {
-		var req = "file/list";
-		$.get(req, function(data, success) {
-			console.log(success);
-
-			console.log(data);
-			currentDir = data.currentDir;
-			sessionStorage.setItem("root", currentDir.id);
-			files = data.files;
-			directories = data.directories;
-			console.log(currentDir);
-
-			updateTable();
-		});
-	}
-
 	function updateTable() {
 		for ( var i in directories) {
 			var a = document.createElement("a");
@@ -94,37 +158,55 @@
 			a.style = "color:red";
 			a.href = "javascript:changeFolder(" + i + ")";
 			a.innerHTML = directories[i];
-			addRow(a);
+			a.type = "folder";
+			addRow(a, i);
 		}
 
 		for ( var i in files) {
 			var a = document.createElement("a");
 			a.id = i;
-			a.href = "file/download/"+ files[i] +"?id=" + i;
+			a.href = "file/download/" + files[i] + "?id=" + i;
 			a.innerHTML = files[i];
-			addRow(a);
+			a.type = "file";
+			addRow(a, i);
 		}
 	}
-	
-	function addRow(data) {
+
+	function addRow(data, id) {
 		var t = document.getElementById("dataTable");
 		var c = document.createElement("td");
 		c.appendChild(data);
 		var r = document.createElement("tr");
-		addingOps(data, c);
 		r.appendChild(c);
+		addingOps(data, r, id);
 		t.appendChild(r);
 	}
-	
-	function addingOps(data, td) {
-		var c = td;
+
+	function addingOps(data, tr) {
+		var r = tr;
+		var c = document.createElement("td");
 		var a = document.createElement("a");
 		var id = data.id;
-		
-		a.href = "javascript:removeFile(" + id +")";
+		var type = data.type;
+
+		a.type = type;
+		a.id = "opRemove";
+		a.href = "javascript:removeFile(" + id + ", '" + type + "')";
 		a.style = "text-decoration: none";
-		a.innerHTML = "&nbsp Remove!";
+		a.innerHTML = "Remove";
 		c.appendChild(a);
+
+		var cs = document.createElement("td");
+		var share = document.createElement("a");
+		var idOpShare = "share_" + id;
+		share.id = idOpShare;
+		share.className = "opShare";
+		share.href = "javascript:sharing(" + id + ")";
+		share.style = "text-decoration: none";
+		share.innerHTML = "Share";
+		cs.appendChild(share);
+		r.appendChild(c);
+		r.appendChild(cs);
 	}
 
 	function cleanTable() {
@@ -136,6 +218,28 @@
 
 	$(document).ready(function() {
 		getFiles();
+		
+		$('#uploadContainer').dialog({
+			autoOpen: false,
+			show: {
+				effect: "blind"
+			},
+			hide: {
+				effect: "explode"
+			},
+			title: "Select file to upload:"
+		});
+		
+		$('#sharingList').dialog({
+			autoOpen: false,
+			show: {
+				effect: "blind"
+			},
+			hide: {
+				effect: "explode"
+			},
+			title: "Share with:"
+		});
 
 		$("form#ajaxForm").submit(function(event) {
 			event.preventDefault();
@@ -176,7 +280,7 @@
 		addingFolder.appendChild(input);
 		addingFolder.appendChild(submit);
 	}
-	
+
 	function createFolder() {
 		var input = document.getElementById("folderName");
 		var folderName = input.value;
@@ -212,6 +316,9 @@
 		var root = sessionStorage.getItem("root");
 		sessionStorage.setItem("dir", root);
 	}
+	function uploadDialog() {
+		$('#uploadContainer').dialog("open");
+	}
 </script>
 <title>Home</title>
 </head>
@@ -239,7 +346,7 @@
 			<li><a href="home.html" onclick="javascript:goRoot()"
 				class="active">home</a></li>
 			<li><a href="logout">logout</a></li>
-			<li><a href="upload">upload</a></li>
+			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
 		</ul>
 		</nav>
 
@@ -259,14 +366,20 @@
 			</table>
 		</div>
 
-		<form:form method="POST" commandName="fileForm" action="file/upload"
-			name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
-			<div id="uploadContainer">
-				<input type="file" value="Choose file" name="files[0]" /> <input
-					type="hidden" name="path" /> <input type="submit" value="Invia" />
-			</div>
-		</form:form>
+		<div id="uploadContainer">
+			<form:form method="POST" commandName="fileForm" action="file/upload"
+				name="ajaxForm" id="ajaxForm" enctype="multipart/form-data">
 
+				<input type="file" value="Choose file" name="files[0]" />
+				<input type="hidden" name="path" />
+				<input type="submit" value="Invia" />
+		</div>
+		</form:form>
+		
+		<div id="sharingList">
+			<ul id="slist">
+			</ul>
+		</div>
 
 	</div>
 

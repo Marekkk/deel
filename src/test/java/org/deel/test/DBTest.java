@@ -90,5 +90,11 @@ public class DBTest {
 		System.out.println(fp2);
 		filePathDAO.deleteFilePath(fp2);
 	}
+	
+	@Test
+	@Rollback(true)
+	public void test5() {
+		User u = userDAO.findUserByUsername("rpiero");
+	}
 }
 

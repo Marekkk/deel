@@ -100,10 +100,10 @@ span {
 	padding: .2em;
 }
 
-#uploadContainer {
-	position: fixed;
-	margin-left: 70em;
-	margin-top: 2.0em;
+#op {
+	text-align: center;
+	font-style: normal;
+	padding: .2em;
 }
 
 #dropbox {
@@ -117,7 +117,7 @@ span {
 }
 
 footer {
-	position: absolute;
+	position: fixed;
 	bottom: 10px;
 	font-size: 12px;
 }

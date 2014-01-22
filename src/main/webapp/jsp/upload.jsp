@@ -21,28 +21,8 @@
 		
 	</head>
 	<body>
-		<header id="mainheader">
-			<h3><a id="title">drop<span>box</span>~</a></h3>
-		</header>
 		
-		<div id="page">
-		
-		<nav id="personalInfo">
-			<ul>
-				<li>Welcome, <a href="#"><c:out value="${user}"></c:out></a>!</li>
-			</ul>
-		</nav>
-		
-		<nav id="mainav">
-			<ul>
-				<li><a href="home">home</a></li>
-				<li><a href="login.html">logout</a></li>
-				<li class="active"><a href="upload.html">upload</a></li>
-			</ul>
-		</nav>
-		</div>
-		
-		<div id="dropbox">
+		<div>
 		<form:form method="POST" commandName="fileForm" action="file/upload"
 			name="upload" id="upload" enctype="multipart/form-data">
             <div id="drop">
@@ -78,11 +58,5 @@
 				$('input[name="path"]').val(sessionStorage.getItem("dir"));
 			})
 		</script>
-		
-		<footer>
-			<div id="footerSection">
-				<p>Electric Sheep 2014</p>
-			</div>
-		</footer>
 	</body>
 </html>

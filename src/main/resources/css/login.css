@@ -1,12 +1,12 @@
 @import url("style.css");
 
 #loginContainer {
-	position: fixed;
+	position: relative;
     width: 340px;
     height: 280px;
     top: 50%;
     left: 50%;
-    margin-top: -140px;
+    margin-top: 40px;
     margin-left: -170px;
 	background: #fff;
     border-radius: 3px;
@@ -15,12 +15,12 @@
 }
 
 #registrationContainer {
-    position: fixed;
+    position: relative;
     width: 340px;
     height: 600px;
     left: 50%;
     top: 50%;
-    margin-top: -280px;
+    margin-top: 30px;
     margin-left: -170px;
     background: #fff;
     border-radius: 3px;

@@ -53,6 +53,7 @@
 				<value>org.deel.domain.FileRevision</value>
 				<value>org.deel.domain.Folder</value>
 				<value>org.deel.domain.Category</value>
+				<value>org.deel.domain.FileRevision</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

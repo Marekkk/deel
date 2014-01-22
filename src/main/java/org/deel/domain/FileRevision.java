@@ -23,7 +23,7 @@ public class FileRevision {
 	@Column(name="fsPath")
 	private String fsPath;
 	
-	@Column(name="date")
+	@Column(name="updated")
 	private Date date;
 	
 	@ManyToOne()
