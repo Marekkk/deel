@@ -1,75 +1,78 @@
 package org.deel.test;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.io.output.WriterOutputStream;
-import org.deel.dao.FileDAO;
-import org.deel.dao.FilePathDAO;
-import org.deel.dao.FolderDAO;
+import junit.framework.Assert;
+
 import org.deel.dao.UserDAO;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
 import org.deel.domain.FileRevision;
 import org.deel.domain.User;
 import org.deel.service.FileService;
-import org.deel.service.impl.FileServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:applicationContext.xml")
+@WebAppConfiguration
+@Transactional
+public class ListRevisionTest {
 
-public class versioningTest {
-	
-	@Mock 
-	private FileDAO fileDao;
-	
-	@Mock 
-	private UserDAO userDao;
-	
-	@Mock
-	private FilePathDAO filePathDao;
-	
-	@Mock 
-	private FolderDAO folderDao;
-	
-//	@Mock
-//	private FileRevisionDAO filerevisionDAO;
-	
-	@InjectMocks
 	private FileService fileService;
+	private UserDAO userDAO;
 	
-	@Before
-	public void setup() throws Exception {
-		fileService = new FileServiceImpl();
-		MockitoAnnotations.initMocks(this);
+	
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	@Autowired
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
 	}
 
 	public FileService getFileService() {
 		return fileService;
 	}
 
-	
+	@Autowired
+	public void setFileService(FileService fileService) {
+		this.fileService = fileService;
+	}
+
+	/* db DEPENDENT test */
 	@Test
-	public void newFileTest() throws IOException {
+	public void listRevision() throws Exception {
+		User u = new User();
+		u.setId((long)1);
+		
+		u = userDAO.get(u);
+		
+		FilePath fp = new FilePath();
+		fp.setId((long)6);
+		
+		List<FileRevision> list = fileService.getRevisionList(u, fp);
+		
+		System.out.println(list);
+		
+		Assert.assertEquals(list.size(), 2);
+		Assert.assertTrue(list.get(0).getId() > list.get(1).getId());
+	}
+	@Test
+	public void getRevisionTest() throws IOException {
 		User u = new User();
 		u.setUsername("nick");
 		u.setId((long)1);
@@ -78,8 +81,11 @@ public class versioningTest {
 		
 		
 		FilePath fp = new FilePath();
-		fp.setId((long)2);
+		fp.setId((long)6);
 		fp.setFile(f);
+
+		FileRevision fr = new FileRevision();
+		fr.setId((long)4);
 		
 		java.io.FileOutputStream fOut = new FileOutputStream("test");
 		OutputStreamWriter bw = new OutputStreamWriter(fOut);
@@ -93,9 +99,14 @@ public class versioningTest {
 		
 //		when(fileR)
 		
-		fileService.updateFile(u, fp, fIn);
+		FileInputStream in = fileService.getRevision(u, fp, fr);
+		BufferedReader r = new BufferedReader(new InputStreamReader(in));
+		String line;
+		while((line = r.readLine()) != null)
+		{
+			System.out.println(line);
+		}
+		
+		
 	}
-	
-
-	
 }
