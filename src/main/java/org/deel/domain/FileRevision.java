@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="File")
+@Table(name="FileRevision")
 public class FileRevision {
 	@Id
 	@GeneratedValue(generator="increment")
@@ -34,5 +34,46 @@ public class FileRevision {
 	@JoinColumn(name="file_id")
 	private File file;
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getFsPath() {
+		return fsPath;
+	}
+
+	public void setFsPath(String fsPath) {
+		this.fsPath = fsPath;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public User getUploadedBy() {
+		return uploadedBy;
+	}
+
+	public void setUploadedBy(User uploadedBy) {
+		this.uploadedBy = uploadedBy;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+
 	
 }

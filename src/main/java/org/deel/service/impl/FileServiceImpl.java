@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +17,12 @@ import org.apache.commons.io.IOUtils;
 import org.deel.domain.File;
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
+import org.deel.dao.FileRevisionDAO;
 import org.deel.dao.FolderDAO;
 import org.deel.dao.UserDAO;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
+import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
@@ -31,6 +34,16 @@ public class FileServiceImpl implements FileService {
 	private FolderDAO folderDao;
 	private FilePathDAO filePathDao;
 	private FileDAO fileDao;
+	private FileRevisionDAO fileRevisionDAO;
+
+	public FileRevisionDAO getFileRevisionDAO() {
+		return fileRevisionDAO;
+	}
+
+	@Autowired
+	public void setFileRevisionDAO(FileRevisionDAO fileRevisionDAO) {
+		this.fileRevisionDAO = fileRevisionDAO;
+	}
 
 	public UserDAO getUserDAO() {
 		return userDAO;
@@ -102,11 +115,11 @@ public class FileServiceImpl implements FileService {
 	}
 
 
-	private void saveFileOnFilesystem(File f, InputStream inputStream)
+	private void saveFileOnFilesystem(FileRevision fileRevision, InputStream inputStream)
 			throws IOException {
 
-		String finalPath = storagePath + f.getOwner().getUsername()
-				+ f.getFsPath();
+		String finalPath = storagePath + fileRevision.getUploadedBy().getUsername()
+				+ fileRevision.getFsPath() + "." + fileRevision.getId();
 
 		java.io.File fsF = new java.io.File(finalPath);
 
@@ -142,7 +155,7 @@ public class FileServiceImpl implements FileService {
 		if (folder == null)
 			throw new RuntimeException("folder id doesn't exist");
 
-		if (folder.getUser().getId() != curr.getId())
+ 		if (folder.getUser().getId() != curr.getId())
 			throw new RuntimeException("User doesn't own the folder "
 					+ folder.getFsPath() + "with id" + folder.getId());
 
@@ -158,13 +171,23 @@ public class FileServiceImpl implements FileService {
 				return;
 			}
 
+		FileRevision fileRevision = new FileRevision();
+		fileRevision.setDate(new Date());
+		fileRevision.setFsPath(folder.getFsPath() + originalFilename);
+		fileRevision.setUploadedBy(curr);
+		
+		
 		File file = new File();
-
+		
 		file.setName(originalFilename);
 		file.setOwner(curr);
-		file.setFsPath(folder.getFsPath() + originalFilename);
+		
+		fileRevision.setFile(file);
+		
+		//file.setFsPath(folder.getFsPath() + originalFilename);
 
 		fileDao.insertFile(file);
+		fileRevisionDAO.insert(fileRevision);
 
 		FilePath fp = new FilePath();
 
@@ -175,7 +198,7 @@ public class FileServiceImpl implements FileService {
 
 		filePathDao.insertFilePath(fp);
 
-		saveFileOnFilesystem(file, inputStream);
+		saveFileOnFilesystem(fileRevision, inputStream);
 
 	}
 

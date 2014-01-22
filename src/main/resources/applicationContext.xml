@@ -9,12 +9,11 @@
           http://www.springframework.org/schema/tx
           http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-
-	
 	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl" autowire="byName" />
 	<bean id="fileDAO" class="org.deel.dao.impl.FileDaoImpl" autowire="byName" />
 	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl" autowire="byName"></bean>
 	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl" autowire="byName" />
+	<bean id="fileRevisionDAO" class="org.deel.dao.impl.FileRevisionDAOImpl" autowire="byName" />
 	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
 	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
 	<bean id="userService" class="org.deel.service.impl.UserServiceImpl" autowire="byName" />
@@ -34,13 +33,14 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="annotatedClasses">
 			<list>
-				<value>org.deel.domain.Company</value>
-				<value>org.deel.domain.User</value>
-				<value>org.deel.domain.Team</value>
-				<value>org.deel.domain.FilePath</value>
-				<value>org.deel.domain.File</value>
-				<value>org.deel.domain.Folder</value>
-				<value>org.deel.domain.Category</value>
+<!-- 				<value>org.deel.domain.Company</value> -->
+<!-- 				<value>org.deel.domain.User</value> -->
+<!-- 				<value>org.deel.domain.Team</value> -->
+<!-- 				<value>org.deel.domain.Folder</value> -->
+<!-- 				<value>org.deel.domain.FilePath</value> -->
+<!-- 				<value>org.deel.domain.File</value> -->
+<!-- 				<value>org.deel.domain.FileRevision</value> -->
+<!-- 				<value>org.deel.domain.Category</value> -->
 			</list>
 		</property>
 		<property name="hibernateProperties">

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,9 +20,11 @@ import javax.transaction.Transactional;
 
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
+import org.deel.dao.FileRevisionDAO;
 import org.deel.dao.FolderDAO;
 import org.deel.dao.UserDAO;
 import org.deel.domain.FilePath;
+import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
@@ -52,10 +55,14 @@ public class FileServiceTest {
 	
 	@Mock
 	private UserDAO userDAO;
-	
+
+	@Mock
+	private FileRevisionDAO fileRevisionDao;
 
 	@InjectMocks
 	private FileService fileService;
+
+
 	
 	@Before
 	public void setup() {
@@ -141,8 +148,12 @@ public class FileServiceTest {
 	
 	@Test
 	public void dbInteractionUploadTest() throws Exception {
-		FileInputStream file = new FileInputStream(System.getProperty("user.home") + "/test1");
 		
+		File fout = new File(System.getProperty("user.home") + "/test1");
+		
+		FileWriter fw = new FileWriter(fout);
+		fw.write("test");
+		fw.close();
 		
 		User u = new User();
 		u.setUsername("nick");
@@ -153,16 +164,26 @@ public class FileServiceTest {
 		folder.setFsPath("/");
 		folder.setUser(u);
 		when(folderDao.get(any(Folder.class))).thenReturn(folder);
+		when(fileRevisionDao.insert(any(FileRevision.class))).thenReturn((long)1);
 		
-		fileService.uploadFile(u, "/test1", folder, file);
+		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout));
 		
-
+		when(fileRevisionDao.insert(any(FileRevision.class))).thenReturn((long)2);
+		
+		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout));
+		
+		File f1 = new File (System.getProperty("user.home") + "/storage/nick/test1.1");
+		File f2 = new File (System.getProperty("user.home") + "/storage/nick/test1.2");
+		
 		verify(filePathDao, times(1)).insertFilePath(any(FilePath.class));
-		verify(fileDao, times(1)).insertFile(any(org.deel.domain.File.class));
+		verify(fileDao, times(1)).insertFile(any(org.deel.domain.File.class));		
+		verify(fileRevisionDao, times(2)).insert(any(org.deel.domain.FileRevision.class));
 		
-		File f = new File (System.getProperty("user.home") + "/storage/nick/test1");
-		Assert.assertTrue(f.exists());
-		f.delete();
+		Assert.assertTrue(f1.exists());
+		Assert.assertTrue(f2.exists());
+		
+		f1.delete();
+		f2.delete();
 	}
 	
 	@Test
