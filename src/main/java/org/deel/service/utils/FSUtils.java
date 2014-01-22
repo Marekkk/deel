@@ -67,15 +67,15 @@ public class FSUtils {
 	}
 
 	public static void deleteFile(File f) {
-		java.io.File file = new java.io.File(storagePath
-				+ f.getOwner().getUsername() + f.getFsPath());
-
-		if (!file.exists() || file.isDirectory())
-			throw new RuntimeException("DB/FS mismatch file "
-					+ file.getAbsolutePath() + "doesnt exists");
-
-		if (!file.delete())
-			throw new RuntimeException("Can't delete file " + f.getFsPath());
+//		java.io.File file = new java.io.File(storagePath
+//				+ f.getOwner().getUsername() + f.getFsPath());
+//
+//		if (!file.exists() || file.isDirectory())
+//			throw new RuntimeException("DB/FS mismatch file "
+//					+ file.getAbsolutePath() + "doesnt exists");
+//
+//		if (!file.delete())
+//			throw new RuntimeException("Can't delete file " + f.getFsPath());
 
 	}
 

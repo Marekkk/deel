@@ -34,4 +34,5 @@ public interface UserService {
 	
 	@Transactional
 	public void addFolder(User user, Folder folder);
+	
 }

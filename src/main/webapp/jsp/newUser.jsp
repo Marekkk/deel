@@ -55,7 +55,7 @@ function check() {
 			var formData = new FormData($(this)[0]);
 			console.log(formData);
 			$.ajax({
-				url : 'user/new',
+				url : 'new.json',
 				type : 'POST',
 				data : formData,
 				async : false,

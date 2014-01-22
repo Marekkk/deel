@@ -7,7 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./resources/css/style.css" media="screen">
-<link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+<link
+	href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"
+	rel="stylesheet" type="text/css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
@@ -59,12 +61,12 @@
 			});
 		}
 	}
-	
+
 	var usersWithShare = new Array();
-	
+
 	function sharing(id) {
 		var ul = document.getElementById("slist");
-		ul.remove();
+		$(ul).remove();
 		var sharingDiv = document.getElementById("sharingList");
 		var nul = document.createElement("ul");
 		nul.id = "slist";
@@ -84,47 +86,49 @@
 		button.value = "Share File!";
 		button.innerHTML = "Share File!";
 		nul.appendChild(button);
-		$('#sendButton').click(
-			function () {
-				alert("You' re sharing " + id + " with " + usersWithShare);
-				var message = new Object();
+		$('#sendButton').click(function() {
+			alert("You' re sharing " + id + " with " + usersWithShare);
+			var message = new Object();
 
-				message.users = usersWithShare;
-				message.file = id;
-				$.ajax({
-					url : 'file/share',
-					data : message,
-					type : 'POST',
-					dataType: "json",
-					success : function(returndata) {
-						console.log(returndata);
-						getFiles();
-					}
-				});
-			}
-		);
+			message.users = usersWithShare;
+			message.file = id;
+
+			$.ajax({
+				url : 'file/share',
+				type : 'POST',
+				data : JSON.stringify(message),
+				dataType : "json",
+				contentType : "application/json",
+				success : function(returndata) {
+					console.log(returndata);
+					getFiles();
+
+				}
+			});
+
+		});
 		$('#sharingList').dialog("open");
 	}
-	
+
 	function createShareBox(usersid, usr, idFile) {
 		usersWithShare = [];
 		var ul = document.getElementById("slist");
-		
-		for (var i = 0; i < usr.length; i++) {
+
+		for ( var i = 0; i < usr.length; i++) {
 			var li = document.createElement("li");
 			var a = document.createElement("a");
 			a.innerHTML = usr[i];
-			a.href = "javascript:shareFileWith("+ usersid[i]+")";
+			a.href = "javascript:shareFileWith(" + usersid[i] + ")";
 			li.appendChild(a);
 			ul.appendChild(li);
 		}
 	}
-	
+
 	function shareFileWith(userId) {
 		var currSize = usersWithShare.length;
 		usersWithShare[currSize] = userId;
 	}
-	
+
 	function shareFile() {
 		alert();
 	}
@@ -211,34 +215,34 @@
 
 	function cleanTable() {
 		var table = document.getElementById("dataTable");
-		for (var i = table.rows.length - 1; i > 1; i--) {
+		for ( var i = table.rows.length - 1; i > 1; i--) {
 			table.deleteRow(i);
 		}
 	}
 
 	$(document).ready(function() {
 		getFiles();
-		
+
 		$('#uploadContainer').dialog({
-			autoOpen: false,
-			show: {
-				effect: "blind"
+			autoOpen : false,
+			show : {
+				effect : "blind"
 			},
-			hide: {
-				effect: "explode"
+			hide : {
+				effect : "explode"
 			},
-			title: "Select file to upload:"
+			title : "Select file to upload:"
 		});
-		
+
 		$('#sharingList').dialog({
-			autoOpen: false,
-			show: {
-				effect: "blind"
+			autoOpen : false,
+			show : {
+				effect : "blind"
 			},
-			hide: {
-				effect: "explode"
+			hide : {
+				effect : "explode"
 			},
-			title: "Share with:"
+			title : "Share with:"
 		});
 
 		$("form#ajaxForm").submit(function(event) {
@@ -375,7 +379,7 @@
 				<input type="submit" value="Invia" />
 		</div>
 		</form:form>
-		
+
 		<div id="sharingList">
 			<ul id="slist">
 			</ul>

@@ -16,8 +16,9 @@
 
 	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl"
 		autowire="byName" />
-		
-		<bean id="fileRevisionDAO" class="org.deel.dao.impl.FileRevisionDAOImpl" autowire="byName" />
+
+	<bean id="fileRevisionDAO" class="org.deel.dao.impl.FileRevisionDAOImpl"
+		autowire="byName" />
 
 	<bean id="fileDAO" class="org.deel.dao.impl.FileDaoImpl" autowire="byName" />
 	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl"
@@ -79,6 +80,9 @@
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<security:intercept-url pattern="/user/new*"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/user/new.json"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+
 		<security:intercept-url pattern="/resources/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER" />
 		<security:intercept-url pattern="/**" access="ROLE_USER" />

@@ -34,9 +34,6 @@ public class File {
 	@Column(name="name")
 	private String name;
 	
-	@Column(name="fsPath")
-	private String fsPath;
-
 	@ManyToOne()
 	@JoinColumn(name="user_id")
 	private User owner;
@@ -75,13 +72,6 @@ public class File {
 		this.id = id;
 	}
 
-	public String getFsPath() {
-		return fsPath;
-	}
-
-	public void setFsPath(String fsPath) {
-		this.fsPath = fsPath;
-	}
 
 	public String getName() {
 		return name;

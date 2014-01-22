@@ -92,7 +92,7 @@ public class FileServiceTest {
 		
 		
 		org.deel.domain.File dbFile = new org.deel.domain.File();
-		dbFile.setFsPath("/deleteTest");
+//		dbFile.setFsPath("/deleteTest");
 		dbFile.setName("/deleteTest");
 		dbFile.setOwner(u);
 		
@@ -259,7 +259,7 @@ public class FileServiceTest {
 		filePath.setUser(u);
 		
 		org.deel.domain.File file = new org.deel.domain.File();
-		file.setFsPath("/test");
+	//	file.setFsPath("/test");
 		filePath.setFile(file);
 		
 		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(filePath);

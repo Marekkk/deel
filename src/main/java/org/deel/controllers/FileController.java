@@ -133,7 +133,7 @@ public class FileController {
 		RuntimeException re = (RuntimeException) e;
 
 		json.put("error", e.getMessage());
-
+		json.put("trace", e.getStackTrace());
 		return json;
 	}
 
@@ -238,8 +238,14 @@ public class FileController {
 		
 		FilePath fp = new FilePath();
 		fp.setId(message.getFile());
+		List<User> users = new LinkedList<User>();
+		for (Long id : message.getUsers()) {
+			User user = new User();
+			user.setId(id);
+			users.add(user);
+		}
 		
-		fileService.shareFile(u, fp, message.getUsers());
+		fileService.shareFile(u, fp, users);
 		
 		
 		json.put("status", "sucess");

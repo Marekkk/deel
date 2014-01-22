@@ -128,7 +128,7 @@ public class FileServiceImpl implements FileService {
 				last = fileRevision;
 				
 		
-		String path = storagePath + currentUser.getUsername()
+		String path = storagePath + last.getUploadedBy().getUsername()
 				+ last.getFsPath() + "." + last.getId();
 
 		java.io.File fsFile = new java.io.File(path);
@@ -295,6 +295,9 @@ public class FileServiceImpl implements FileService {
 
 		for (User user : userList) {
 			user = userDAO.get(user);
+			if (user == null)
+				throw new RuntimeException("Trying to share a file with a non existent user!");
+			
 			Folder root = null;
 
 			for (Folder f : user.getFolders()) {
