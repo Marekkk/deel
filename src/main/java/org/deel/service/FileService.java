@@ -10,6 +10,7 @@ import java.util.Set;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
+import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,9 @@ public interface FileService {
 	@Transactional
 	public void shareFile(User currentUser, FilePath filePath, List<User> userList);
 
+	@Transactional
+	public FileInputStream getRevision(User currentUser, FilePath filePath, FileRevision fileRevision) throws FileNotFoundException;
+	
 	@Transactional
 	public FileInputStream getFile(User currentUser, FilePath filePath) throws FileNotFoundException;
 	
@@ -46,4 +50,7 @@ public interface FileService {
 
 	@Transactional
 	public DirectoryListing listFolder(User curr, Folder folder);
+
+	@Transactional
+	public List<FileRevision> getRevisionList(User curr, FilePath fp);
 }

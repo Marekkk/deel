@@ -1,6 +1,8 @@
 package org.deel.domain;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -45,14 +48,15 @@ public class File {
 	private Set<FilePath> paths= new HashSet<FilePath>(0);
 
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="file")
-	private Set<FileRevision> revisions = new HashSet<FileRevision>(0);
+	@OrderBy("Id desc")
+	private List<FileRevision> revisions = new LinkedList<FileRevision>();
 
 
-	public Set<FileRevision> getRevisions() {
+	public List<FileRevision> getRevisions() {
 		return revisions;
 	}
 
-	public void setRevisions(Set<FileRevision> revisions) {
+	public void setRevisions(List<FileRevision> revisions) {
 		this.revisions = revisions;
 	}
 

@@ -86,9 +86,10 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public void updateFile(User u, FilePath fp, InputStream data) throws IOException {
+	public void updateFile(User u, FilePath fp, InputStream data)
+			throws IOException {
 		fp = filePathDao.getFilePath(fp);
-		
+
 		if (fp == null)
 			throw new RuntimeException(
 					"Tried to update a Filepath that doesn't exists");
@@ -96,16 +97,16 @@ public class FileServiceImpl implements FileService {
 		if (fp.getUser().getId() != u.getId())
 			throw new RuntimeException("User " + u.getUsername()
 					+ "doesn't own file " + fp.getName());
-		
+
 		FileRevision newRevision = new FileRevision();
 		newRevision.setDate(new Date());
-		newRevision.setFsPath(fp.getFolder().getFsPath()+fp.getName());
+		newRevision.setFsPath(fp.getFolder().getFsPath() + fp.getName());
 		newRevision.setFile(fp.getFile());
 		newRevision.setUploadedBy(u);
-		
+
 		fileRevisionDAO.insert(newRevision);
 		FSUtils.saveFile(newRevision, data);
-		
+
 	}
 
 	@Override
@@ -119,27 +120,18 @@ public class FileServiceImpl implements FileService {
 		if (fp.getUser().getId() != currentUser.getId())
 			throw new RuntimeException("Filepath " + fp.getName()
 					+ "doesn't belongs to user " + currentUser.getUsername());
+
+		/* Revision list is ordered */
+		FileRevision last = fp.getFile().getRevisions().get(0);
+		//
+		// for (FileRevision fileRevision : file.getRevisions())
+		// if (fileRevision.getId() > last.getId())
+		// last = fileRevision;
+		//
+
 		
-		File file = fp.getFile();
-		 
-		FileRevision last = file.getRevisions().iterator().next();
-		for (FileRevision fileRevision : file.getRevisions()) 
-			if (fileRevision.getId() > last.getId())
-				last = fileRevision;
-				
-		
-		String path = storagePath + last.getUploadedBy().getUsername()
-				+ last.getFsPath() + "." + last.getId();
 
-		java.io.File fsFile = new java.io.File(path);
-
-		if (!fsFile.exists())
-			throw new RuntimeException("DB/FS mismatch: file " + path
-					+ " doesn't exists");
-
-		FileInputStream fIn = new FileInputStream(fsFile);
-
-		return fIn;
+		return FSUtils.getFile(last);
 	}
 
 	@Override
@@ -152,7 +144,7 @@ public class FileServiceImpl implements FileService {
 		if (folder == null)
 			throw new RuntimeException("folder id doesn't exist");
 
- 		if (folder.getUser().getId() != curr.getId())
+		if (folder.getUser().getId() != curr.getId())
 			throw new RuntimeException("User doesn't own the folder "
 					+ folder.getFsPath() + "with id" + folder.getId());
 
@@ -172,16 +164,15 @@ public class FileServiceImpl implements FileService {
 		fileRevision.setDate(new Date());
 		fileRevision.setFsPath(folder.getFsPath() + originalFilename);
 		fileRevision.setUploadedBy(curr);
-		
-		
+
 		File file = new File();
-		
+
 		file.setName(originalFilename);
 		file.setOwner(curr);
-		
+
 		fileRevision.setFile(file);
-		
-		//file.setFsPath(folder.getFsPath() + originalFilename);
+
+		// file.setFsPath(folder.getFsPath() + originalFilename);
 
 		FilePath fp = new FilePath();
 		fp.setFile(file);
@@ -190,7 +181,6 @@ public class FileServiceImpl implements FileService {
 		fp.setUser(curr);
 		fp.setHidden(false);
 
-		
 		fileDao.insertFile(file);
 		fileRevisionDAO.insert(fileRevision);
 		filePathDao.insertFilePath(fp);
@@ -245,18 +235,18 @@ public class FileServiceImpl implements FileService {
 		newFolder.setFather(currentFolder);
 		newFolder.setUser(u);
 		newFolder.setHidden(false);
-		
+
 		folderDao.insertFolder(newFolder);
-		
-		newFolder.setFsPath(currentFolder.getFsPath() + dirName + "." + newFolder.getId() + "/"); 
-				
+
+		newFolder.setFsPath(currentFolder.getFsPath() + dirName + "."
+				+ newFolder.getId() + "/");
+
 		folderDao.updateFolder(newFolder);
-		
+
 		/*
 		 * TODO validation of this input (skip slash , points )
 		 */
-		
-		
+
 		FSUtils.mkdir(newFolder);
 
 	}
@@ -274,7 +264,6 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException("User " + u.getUsername()
 					+ "doesn't own file " + fp.getName());
 
-		
 		fp.setHidden(true);
 		filePathDao.updateFilePath(fp);
 
@@ -296,8 +285,9 @@ public class FileServiceImpl implements FileService {
 		for (User user : userList) {
 			user = userDAO.get(user);
 			if (user == null)
-				throw new RuntimeException("Trying to share a file with a non existent user!");
-			
+				throw new RuntimeException(
+						"Trying to share a file with a non existent user!");
+
 			Folder root = null;
 
 			for (Folder f : user.getFolders()) {
@@ -314,7 +304,7 @@ public class FileServiceImpl implements FileService {
 			nfp.setFolder(root);
 			nfp.setUser(user);
 			nfp.setHidden(false);
-			
+
 			filePathDao.insertFilePath(nfp);
 		}
 		return;
@@ -340,7 +330,7 @@ public class FileServiceImpl implements FileService {
 
 			folder = folderDao.get(folder);
 		}
-		
+
 		if (folder == null)
 			throw new RuntimeException("folder doesn't exists");
 
@@ -350,60 +340,105 @@ public class FileServiceImpl implements FileService {
 
 		DirectoryListing ret = new DirectoryListing();
 		ret.setMe(folder);
-		
+
 		Set<FilePath> fpaths = new HashSet<FilePath>();
 		fpaths.addAll(folder.getFilepaths());
-		
+
 		Set<Folder> folders = new HashSet<Folder>();
 		folders.addAll(folder.getInFolder());
-		
+
 		ret.setFilePaths(fpaths);
 		ret.setFolders(folders);
-		
+
 		return ret;
 	}
 
 	@Override
 	@Transactional
 	public void deleteFolder(User u, Folder folder) {
-		
+
 		folder = folderDao.get(folder);
-		
-		if (folder==null)
+
+		if (folder == null)
 			throw new RuntimeException("folder doesn't exists");
 		if (folder.getUser().getId() != u.getId())
-			throw new RuntimeException("User " + u.getUsername() + "doesn't own folder " + folder.getName());
-		
-		
+			throw new RuntimeException("User " + u.getUsername()
+					+ "doesn't own folder " + folder.getName());
+
 		List<Folder> folderToDelete = new LinkedList<Folder>();
 		folderToDelete.add(folder);
-		
-		for(int i = 0; i < folderToDelete.size();i++) 
-		{
+
+		for (int i = 0; i < folderToDelete.size(); i++) {
 			Folder f = folderToDelete.get(i);
-			
+
 			/* Deleting all filepaths */
 			for (FilePath fp : f.getFilepaths()) {
-				if(fp.isHidden())
+				if (fp.isHidden())
 					continue;
-				
+
 				fp.setHidden(true);
 			}
-			
+
 			/* Recursing */
 			for (Folder dir : f.getInFolder()) {
-				if(dir.isHidden())
+				if (dir.isHidden())
 					continue;
-				
+
 				folderToDelete.add(dir);
 			}
 			f.setHidden(true);
 			folderDao.updateFolder(folder);
 
 		}
+
+	}
+
+	@Override
+	@Transactional
+	public List<FileRevision> getRevisionList(User curr, FilePath fp) {
+		fp = filePathDao.getFilePath(fp);
+
+		if (fp == null)
+			throw new RuntimeException("filePath doesn't exists");
+
+		if (fp.getUser().getId() != curr.getId())
+			throw new RuntimeException("User " + curr.getUsername()
+					+ " doesn't own filepath " + fp.getName());
+
+		/* they are already ordered */
+		return fp.getFile().getRevisions();
+	}
+
+	@Override
+	@Transactional
+	public FileInputStream getRevision(User curr, FilePath filePath,
+			FileRevision fileRevision) throws FileNotFoundException {
+		filePath = filePathDao.getFilePath(filePath);
+
+		if (filePath == null)
+			throw new RuntimeException("filePath doesn't exists");
+
+		if (filePath.getUser().getId() != curr.getId())
+			throw new RuntimeException("User " + curr.getUsername()
+					+ " doesn't own filepath " + filePath.getName());
+
+		List<FileRevision> frl = filePath.getFile().getRevisions();
+
+		FileRevision pFileRevision = null;
+
+		for (FileRevision fr : frl) {
+			if (fr.getId() == fileRevision.getId()) {
+				pFileRevision = fr;
+				break;
+			}
+		}
+
+		if (pFileRevision == null)
+			throw new RuntimeException(
+					"Not enough permission to download filerevision or filerevision doesn't exists");
+
 		
-		
-		
+		return FSUtils.getFile(pFileRevision);
 	}
 
 }

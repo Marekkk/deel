@@ -101,4 +101,20 @@ public class FSUtils {
 
 	}
 
+	public static FileInputStream getFile(FileRevision last) throws FileNotFoundException {
+		String path = storagePath + last.getUploadedBy().getUsername()
+				+ last.getFsPath() + "." + last.getId();
+
+		java.io.File fsFile = new java.io.File(path);
+
+		if (!fsFile.exists())
+			throw new RuntimeException("DB/FS mismatch: file " + path
+					+ " doesn't exists");
+
+		FileInputStream fIn = new FileInputStream(fsFile);
+
+
+		return fIn;
+	}
+
 }
