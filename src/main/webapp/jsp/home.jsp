@@ -7,9 +7,52 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./resources/css/style.css" media="screen">
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" media="screen"> 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
+
+	$(function() {
+		$('#revision').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode"
+			},
+			modal : true,
+
+			close : function() {
+				cleanTable("revisionTable");
+			},
+
+			title : "Revision for your file:"
+		});
+		
+		$('#uploadContainer').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode"
+			},
+			title : "Select file to upload:"
+		});
+
+		$('#sharingList').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode",
+			},
+			title : "Share with:"
+		});
+	});
+
 	function sendUpload() {
 		this.ajaxForm.submit();
 	}
@@ -19,7 +62,7 @@
 	var directories;
 
 	function getFiles() {
-		cleanTable();
+		cleanTable("dataTable");
 		if (sessionStorage.getItem("dir") == null
 				|| sessionStorage.getItem("dir") === undefined)
 			var request = "file/list";
@@ -160,6 +203,7 @@
 				createRevisionsTable(id, idRevs, dates);
 			}
 		});
+
 		$('#revision').dialog("open");
 	}
 
@@ -175,7 +219,8 @@
 			var a = document.createElement("a");
 			a.style = "color:black";
 			//a.href = "javascript:requestRevision("+idFile+","+idRevisions[i]+")";
-			a.href = "file/revision/" + files[idFile] + "?id=" + idFile + "&revision=" + idRevisions[i];
+			a.href = "file/revision/" + files[idFile] + "?id=" + idFile
+					+ "&revision=" + idRevisions[i];
 			a.innerHTML = datesRevisions[i];
 			c.appendChild(a);
 			r.appendChild(c);
@@ -271,31 +316,34 @@
 		a.style = "text-decoration: none";
 		a.innerHTML = "Remove";
 		c.appendChild(a);
-
-		var cs = document.createElement("td");
-		var share = document.createElement("a");
-		var idOpShare = "share_" + id;
-		share.id = idOpShare;
-		share.className = "opShare";
-		share.href = "javascript:sharing(" + id + ")";
-		share.style = "text-decoration: none";
-		share.innerHTML = "Share";
-		cs.appendChild(share);
 		r.appendChild(c);
-		r.appendChild(cs);
 
-		var cr = document.createElement("td");
-		var rev = document.createElement("a");
-		rev.id = "revision_" + id;
-		rev.href = "javascript:revision(" + id + ")";
-		rev.style = "text-decoration:none; color: blue";
-		rev.innerHTML = "Revisions";
-		cr.appendChild(rev);
-		r.appendChild(cr);
+
+		if (type == "file") {
+			var cs = document.createElement("td");
+			var share = document.createElement("a");
+			var idOpShare = "share_" + id;
+			share.id = idOpShare;
+			share.className = "opShare";
+			share.href = "javascript:sharing(" + id + ")";
+			share.style = "text-decoration: none";
+			share.innerHTML = "Share";
+			cs.appendChild(share);
+			r.appendChild(cs);
+
+			var cr = document.createElement("td");
+			var rev = document.createElement("a");
+			rev.id = "revision_" + id;
+			rev.href = "javascript:revision(" + id + ")";
+			rev.style = "text-decoration:none; color: blue";
+			rev.innerHTML = "Revisions";
+			cr.appendChild(rev);
+			r.appendChild(cr);
+		}
 	}
 
-	function cleanTable() {
-		var table = document.getElementById("dataTable");
+	function cleanTable(tagid) {
+		var table = document.getElementById(tagid);
 		for (var i = table.rows.length - 1; i > 1; i--) {
 			table.deleteRow(i);
 		}
@@ -303,51 +351,7 @@
 
 	$(document).ready(function() {
 		getFiles();
-
-		$('#uploadContainer').dialog({
-			autoOpen : false,
-			show : {
-				effect : "blind"
-			},
-			hide : {
-				effect : "explode"
-			},
-			title : "Select file to upload:"
-		});
-
-		$('#sharingList').dialog({
-			autoOpen : false,
-			show : {
-				effect : "blind"
-			},
-			hide : {
-				effect : "explode"
-			},
-			title : "Share with:"
-		});
-
-		$('#revision').dialog({
-			autoOpen : false,
-			show : {
-				effect : "blind"
-			},
-			hide : {
-				effect : "explode"
-			},
-			title : "Revision for your file:"
-		});
-
-		$('#revision').dialog({
-			autoOpen : false,
-			show : {
-				effect : "blind"
-			},
-			hide : {
-				effect : "explode"
-			},
-			title : "Revision for your file:"
-		});
-
+		
 		$("form#ajaxForm").submit(function(event) {
 			event.preventDefault();
 			console.log(this);

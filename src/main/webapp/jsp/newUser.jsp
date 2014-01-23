@@ -114,7 +114,7 @@ function check() {
 			<input id="psw2" name="psw2" type="password" onchange="checkpsw()">
 			<br>
 			<div id="checkpass"
-				style="position: fixed; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;">
+				style="position: absolute; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;">
 			</div>
 			<br>
 			<label for="email">Email: </label>
