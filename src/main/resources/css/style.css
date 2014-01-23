@@ -23,6 +23,10 @@ span {
 	color: #555353;
 }
 
+a:visited {
+	color: black;
+}
+
 #mainheader {
 	margin-top: 1.5em;
 }
@@ -106,16 +110,6 @@ span {
 	padding: .2em;
 }
 
-#dropbox {
-	position: absolute;
-	left: 200px;
-	width: 500px;
-	height: 600px;
-	margin-top: 1.5em;
-	font-size: 16px;
-	margin-left: 7em;
-}
-
 footer {
 	position: fixed;
 	bottom: 10px;
@@ -136,4 +130,41 @@ body {
 	color: #555353;
 	background-color: #d0d7de;
 	margin-top: 10 px;
+}
+
+.ui-dialog {
+	font-family: Helvetica;
+	color: white;
+	background-color: #31216A;
+	font-size: 20px;
+	width: 200px;
+	height: 100px;
+}
+
+.ui-dialog ul{
+	list-style-type:none;
+	margin-left: 5px;
+}
+
+.ui-dialog a{
+	color: white;
+}
+.ui-dialog a:visited{
+	color: yellow;
+}
+.ui-dialog a:link{
+	text-decoration: none;
+}
+
+.ui-dialog-titlebar {
+	height:30px;
+	color: white;
+	background-color: #555353;
+}
+
+.ui-dialog-title {
+}
+
+.ui-dialog-titlebar-close {
+display: none;
 }
