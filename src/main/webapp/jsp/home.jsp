@@ -213,7 +213,6 @@
 		//alert("Dates revisions -> " + datesRevisions);
 		var table = document.getElementById("revisionTable");
 		for (var i = 0; i < datesRevisions.length; i++) {
-			//alert(idRevisions[i] + " " + datesRevisions);
 			var r = document.createElement("tr");
 			var c = document.createElement("td");
 			var a = document.createElement("a");
@@ -224,7 +223,6 @@
 			a.innerHTML = datesRevisions[i];
 			c.appendChild(a);
 			r.appendChild(c);
-			console.log(r);
 			table.appendChild(r);
 		}
 	}
@@ -239,15 +237,8 @@
 			data : message,
 			success : function(returndata) {
 				console.log(returndata);
-				for ( var i in returndata) {
-					console.log(i);
-					d = new Date(returndata[i].date);
-					console.log(returndata[i].name + " " + d);
-				}
 			}
 		});
-
-		$('#revision').dialog("open");
 	}
 
 	function makeRequest(request) {
@@ -351,7 +342,7 @@
 
 	$(document).ready(function() {
 		getFiles();
-		
+
 		$("form#ajaxForm").submit(function(event) {
 			event.preventDefault();
 			console.log(this);
@@ -490,14 +481,6 @@
 		<div id="sharingList">
 			<ul id="slist">
 			</ul>
-		</div>
-
-		<div id="revision">
-			<table id="dataTable">
-				<tr>
-					<th>Date</th>
-				<tr>
-			</table>
 		</div>
 
 		<div id="revision">
