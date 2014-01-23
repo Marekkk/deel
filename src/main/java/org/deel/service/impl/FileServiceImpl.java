@@ -429,7 +429,7 @@ public class FileServiceImpl implements FileService {
 		FileRevision pFileRevision = null;
 
 		for (FileRevision fr : frl) {
-			if (fr.getId() == fileRevision.getId()) {
+			if (fr.getId().equals(fileRevision.getId())) {
 				pFileRevision = fr;
 				break;
 			}

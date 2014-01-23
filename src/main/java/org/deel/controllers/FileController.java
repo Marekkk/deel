@@ -150,6 +150,40 @@ public class FileController {
 		return;
 	}
 
+	@RequestMapping("/file/revision/**")
+	public void downloadFileRevision(@RequestParam Long id, 
+			@RequestParam Long revision,
+			Principal principal,
+			HttpServletResponse response) {
+		response.setContentType("application/octet-stream");
+
+		String username = principal.getName();
+		User curr = userService.findUserByUsername(username);
+
+		FilePath filePath = new FilePath();
+		filePath.setId(id);
+		
+		FileRevision fileRevision = new FileRevision();
+		fileRevision.setId(revision);
+
+		FileInputStream is;
+		try {
+			is = fileService.getRevision(curr, filePath, fileRevision);
+			IOUtils.copy(is, response.getOutputStream());
+			response.flushBuffer();
+			is.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return;
+	}
+
+	
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody
 	Map<String, Object> exceptionHandler(Exception e) {
