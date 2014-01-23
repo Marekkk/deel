@@ -84,7 +84,8 @@
 		button.innerHTML = "Share File!";
 		nul.appendChild(button);
 		$('#sendButton').click(function() {
-			alert("You' re sharing " + id + " with " + usersWithShare);
+			alert("File Shared!");
+			//alert("You' re sharing " + id + " with " + usersWithShare);
 			var message = new Object();
 
 			message.users = usersWithShare;
@@ -111,23 +112,88 @@
 		usersWithShare = [];
 		var ul = document.getElementById("slist");
 
-		for ( var i = 0; i < usr.length; i++) {
+		for (var i = 0; i < usr.length; i++) {
 			var li = document.createElement("li");
 			var a = document.createElement("a");
 			a.innerHTML = usr[i];
 			a.href = "javascript:shareFileWith(" + usersid[i] + ")";
 			li.appendChild(a);
+			var a2 = document.createElement("a");
+			a2.id = "added" + usersid[i];
+			a2.innerHTML = "";
+			li.appendChild(a2);
 			ul.appendChild(li);
 		}
 	}
 
 	function shareFileWith(userId) {
+		for (var i = 0; i < usersWithShare.length; i++) {
+			if (usersWithShare[i] == userId) {
+				alert("You have already insert this user!")
+				return;
+			}
+		}
 		var currSize = usersWithShare.length;
 		usersWithShare[currSize] = userId;
+		var a = document.getElementById("added" + userId);
+		a.innerHTML = "&nbsp OK!";
 	}
 
-	function shareFile() {
-		alert();
+	function revision(id) {
+		console.log(id);
+		var message = new Object();
+		message.id = id;
+		$.ajax({
+			url : 'file/revision/list',
+			type : 'GET',
+			data : message,
+			success : function(returndata) {
+				var dates = new Array();
+				var idRevs = new Array();
+				for ( var i in returndata) {
+					// i is the id of current revision
+					d = new Date(returndata[i].date);
+					var currPos = dates.length;
+					dates[currPos] = d;
+					idRevs[currPos] = i;
+				}
+				createRevisionsTable(id, idRevs, dates);
+			}
+		});
+		$('#revision').dialog("open");
+	}
+
+	function createRevisionsTable(idFile, idRevisions, datesRevisions) {
+		//alert("Id file -> " + idFile);
+		//alert("Id Revisions -> " + idRevisions);
+		//alert("Dates revisions -> " + datesRevisions);
+		var table = document.getElementById("revisionTable");
+		for (var i = 0; i < datesRevisions.length; i++) {
+			var r = document.createElement("tr");
+			var c = document.createElement("td");
+			var a = document.createElement("a");
+			a.style = "color:black";	
+			//a.href = "javascript:requestRevision("+idFile+","+idRevisions[i]+")";
+			a.href = "file/revision/" + files[idFile] + "?id=" + idFile + "&revision=" + idRevisions[i];
+			a.innerHTML = datesRevisions[i];
+			c.appendChild(a);
+			r.appendChild(c);
+			table.appendChild(r);
+		}
+	}
+	
+	function requestRevision(idFile, idRevision) {
+		var message = new Object();
+		message.idFile = idFile;
+		message.idRevision = idRevision;
+		$.ajax({
+			url : 'file/revision/list',
+			type : 'GET',
+			data : message,
+			success : function(returndata) {
+				console.log(returndata);
+			}
+		});
 	}
 
 	function makeRequest(request) {
@@ -208,11 +274,20 @@
 		cs.appendChild(share);
 		r.appendChild(c);
 		r.appendChild(cs);
+
+		var cr = document.createElement("td");
+		var rev = document.createElement("a");
+		rev.id = "revision_" + id;
+		rev.href = "javascript:revision(" + id + ")";
+		rev.style = "text-decoration:none; color: blue";
+		rev.innerHTML = "Revisions";
+		cr.appendChild(rev);
+		r.appendChild(cr);
 	}
 
 	function cleanTable() {
 		var table = document.getElementById("dataTable");
-		for ( var i = table.rows.length - 1; i > 1; i--) {
+		for (var i = table.rows.length - 1; i > 1; i--) {
 			table.deleteRow(i);
 		}
 	}
@@ -240,6 +315,17 @@
 				effect : "explode"
 			},
 			title : "Share with:"
+		});
+
+		$('#revision').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode"
+			},
+			title : "Revision for your file:"
 		});
 
 		$("form#ajaxForm").submit(function(event) {
@@ -380,6 +466,14 @@
 		<div id="sharingList">
 			<ul id="slist">
 			</ul>
+		</div>
+
+		<div id="revision">
+			<table id="revisionTable">
+				<tr>
+					<th>Date</th>
+				<tr>
+			</table>
 		</div>
 
 	</div>

@@ -406,6 +406,7 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException("User " + curr.getUsername()
 					+ " doesn't own filepath " + fp.getName());
 
+		fp.getFile().getRevisions().get(0);
 		/* they are already ordered */
 		Hibernate.initialize(fp.getFile().getRevisions());
 		return fp.getFile().getRevisions();
