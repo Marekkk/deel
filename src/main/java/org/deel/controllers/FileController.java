@@ -74,7 +74,8 @@ public class FileController {
 		for (FileRevision fileRevision : fRevisions) {
 			HashMap<String, Object> fRevisionJson = new HashMap<String, Object>();
 			fRevisionJson.put("date", fileRevision.getDate());
-			fRevisionJson.put("uploadedBy", fileRevision.getUploadedBy());
+			fRevisionJson.put("uploadedBy", fileRevision.getUploadedBy().getUsername());
+			fRevisionJson.put("name", fileRevision.getFile().getName());
 			jsonRet.put(Long.toString(fileRevision.getId()), fRevisionJson);
 		}
 		
@@ -157,6 +158,7 @@ public class FileController {
 
 		json.put("error", e.getMessage());
 		json.put("trace", e.getStackTrace());
+		e.printStackTrace();
 		return json;
 	}
 

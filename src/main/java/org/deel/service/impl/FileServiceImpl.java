@@ -29,6 +29,7 @@ import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.utils.FSUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileServiceImpl implements FileService {
@@ -406,6 +407,7 @@ public class FileServiceImpl implements FileService {
 					+ " doesn't own filepath " + fp.getName());
 
 		/* they are already ordered */
+		Hibernate.initialize(fp.getFile().getRevisions());
 		return fp.getFile().getRevisions();
 	}
 
