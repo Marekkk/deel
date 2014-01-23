@@ -88,7 +88,7 @@
 		<security:intercept-url pattern="/**" access="ROLE_USER" />
 		<security:form-login login-page='/login'
 			login-processing-url="/loginprocess" default-target-url="/home" />
-		<security:logout logout-url="/logout" />
+		<security:logout logout-url="/logout" logout-success-url="/login"/>
 		<security:form-login />
 	</security:http>
 
