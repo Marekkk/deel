@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -9,88 +9,52 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel=stylesheet href="../resources/css/login.css" media="screen">
 <title>Registration</title>
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
 function check() {
-	if (registrationForm.username.value == "") {
+	if (form1.username.value == "") {
 		alert("Please enter your username!");
 		return false;
 	}
-	if (registrationForm.email.value == "") {
+	if (form1.email.value == "") {
 		alert("Please enter your email adress!");
 		return false;
 	}
-	if (registrationForm.name.value == "") {
+	if (form1.name.value == "") {
 		alert("Please enter your name!");
 		return false;
 	}
-	if (registrationForm.surname.value == "") {
+	if (form1.surname.value == "") {
 		alert("Please enter your surname!");
 		return false;
 	}
 	
-	if (registrationForm.password.value != registrationForm.psw2.value) {
+	if (form1.password.value != form1.psw2.value) {
 		alert("Password doesn' t matching!");
-		registrationForm.password.value = "";
+		form1.password.value = "";
 		return false;
 	}
 	return true;
 }
-	
-	
-	
-	$(document).ready(function() {
 
-			
-
-	$("#registrationForm").submit(function(event) {
-			event.preventDefault();
-
-			if(!check())
-				return false;
-			
-
-			//grab all form data  
-			var formData = new FormData($(this)[0]);
-			console.log(formData);
-			$.ajax({
-				url : 'new.json',
-				type : 'POST',
-				data : formData,
-				async : false,
-				cache : false,
-				contentType : false,
-				processData: false,
-				success : function(returndata) {
-					console.log(returndata);
-				}
-			});
-			
-			return false;
-		});
-	});
-
-	function checkpsw() {
-		var psw1 = document.getElementById("password");
-		var psw2 = document.getElementById("psw2");
-		if (psw1.value != psw2.value) {
-			var message = document.getElementById("checkpass");
-			message.innerHTML = "<p>" + "No matching between passwords!"
-					+ "</p>";
-			psw2.value = "";
-		}
-		if (psw1.value == psw2.value) {
-			var message = document.getElementById("checkpass");
-			message.innerHTML = "<p>" + "OK!" + "</p>";
-		}
-		//alert(psw1.value + " " + psw2.value);
-	}
-
-	function cleanRetype() {
-		var psw2 = document.getElementById("psw2");
+function checkpsw() {
+	var psw1 = document.getElementById("password");
+	var psw2 = document.getElementById("psw2");
+	if (psw1.value != psw2.value) {
+		var message = document.getElementById("checkpass");
+		message.innerHTML = "<p>" + "No matching between passwords!" + "</p>";
 		psw2.value = "";
 	}
+	if (psw1.value == psw2.value) {
+		var message = document.getElementById("checkpass");
+		message.innerHTML = "<p>" + "OK!" + "</p>";
+	}
+	//alert(psw1.value + " " + psw2.value);
+}
+
+function cleanRetype() {
+	var psw2 = document.getElementById("psw2");
+	psw2.value = "";
+}
 </script>
 </head>
 <body>
@@ -102,8 +66,16 @@ function check() {
 	</h3>
 	</header>
 
+	<c:if test="${errors != null}">
+		<c:forEach var="error" items="${errors}">
+   			<div class="error"> Error <c:out value="${error}"/> </div>
+			<p>
+		</c:forEach>
+	</c:if>
+
+
 	<div id="registrationContainer">
-		<form:form commandName="user" id="registrationForm">
+		<form:form commandName="user" name="form1">
 			<label for="username">Username: </label>
 			<form:input path="username" />
 			<br>
@@ -127,7 +99,7 @@ function check() {
 			<form:input path="surname" />
 			<br>
 			<div id="lowerRegistration">
-				<input type="submit" value="Register">
+				<input type="submit" value="Register" onclick="return check()">
 			</div>
 		</form:form>
 	</div>

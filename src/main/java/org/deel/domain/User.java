@@ -40,7 +40,7 @@ public class User {
 
 	@Column(name="username", unique=true)
 	@NotEmpty
-	@Size(min=4, max=10)
+	@Size(max=10)
 	private String username;
 	
 	/* TODO make constrain with top level domain */

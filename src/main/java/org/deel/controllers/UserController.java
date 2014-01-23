@@ -127,6 +127,18 @@ public class UserController {
 		
 		
 		if (result.hasErrors()) {
+			LinkedList<String> errors = new LinkedList<String>();
+			
+			for (ObjectError error : result.getAllErrors()) {
+				
+				if (error.getDefaultMessage() != null)
+					errors.add(error.getDefaultMessage());
+				else
+					if (error.getCodes() != null)
+						errors.add(error.getCode());
+			}
+			
+			map.addAttribute("errors", errors);
 			return "newUser";
 		}
 		
@@ -147,10 +159,14 @@ public class UserController {
 			result.addError(new ObjectError("user", e.getMessage()));
 			System.out.println("RunTimeException while registering User " + e.getMessage());
 			e.printStackTrace();
+			map.addAttribute("errors", e.getMessage());
+			user.setPassword("");
 			return "newUser";
 		} catch (IOException e) {
 			result.addError(new ObjectError("user", e.getMessage()));
 			e.printStackTrace();
+			user.setPassword("");
+			map.addAttribute("errors", e.getMessage());
 			return "newUser";
 		}
 
