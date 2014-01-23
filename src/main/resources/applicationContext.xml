@@ -80,14 +80,12 @@
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<security:intercept-url pattern="/user/new*"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<security:intercept-url pattern="/user/new.json"
-			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
 		<security:intercept-url pattern="/resources/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER" />
 		<security:intercept-url pattern="/**" access="ROLE_USER" />
 		<security:form-login login-page='/login'
-			login-processing-url="/loginprocess" default-target-url="/home" />
+			login-processing-url="/loginprocess" default-target-url="/deel/home" />
 		<security:logout logout-url="/logout" />
 		<security:form-login />
 	</security:http>
