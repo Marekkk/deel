@@ -7,9 +7,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./resources/css/style.css" media="screen">
-<link
-	href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"
-	rel="stylesheet" type="text/css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
