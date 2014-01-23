@@ -104,6 +104,19 @@ a:visited {
 	padding: .2em;
 }
 
+#revision th {
+	color: #d0d7de;
+	padding: .2em;
+	background-color: #555353;	
+}
+
+#revision td {
+	text-align: center;
+	font-style: italic;
+	background-color: #f2faff;
+	padding: .2em;
+}
+
 #op {
 	text-align: center;
 	font-style: normal;
