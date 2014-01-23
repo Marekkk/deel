@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.deel.dao.FolderDAO;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
+import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
 import org.deel.service.FileService;
@@ -56,6 +57,28 @@ public class FileController {
 	@Autowired
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
+	}
+	
+	@RequestMapping("/file/revision/list")
+	public @ResponseBody Map<String, Object> getRevisionList(@RequestParam Long id, Principal principal) {
+		String username = principal.getName();
+		Map<String, Object> jsonRet = new HashMap<String, Object>();
+		User curr = userService.findUserByUsername(username);
+
+		FilePath fp = new FilePath();
+		fp.setId(id);
+		List<FileRevision> fRevisions = fileService.getRevisionList(curr, fp);
+		
+		 
+		
+		for (FileRevision fileRevision : fRevisions) {
+			HashMap<String, Object> fRevisionJson = new HashMap<String, Object>();
+			fRevisionJson.put("date", fileRevision.getDate());
+			fRevisionJson.put("uploadedBy", fileRevision.getUploadedBy());
+			jsonRet.put(Long.toString(fileRevision.getId()), fRevisionJson);
+		}
+		
+		return jsonRet;
 	}
 
 	@RequestMapping("/file/list")
@@ -254,9 +277,9 @@ public class FileController {
 		return json;
 		
 	}
+	
 	@RequestMapping(value = "/file/remove", method = RequestMethod.GET)
-	public @ResponseBody
-	Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
+	public @ResponseBody Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
 
 
 		Map<Long, String> result = new HashMap<Long, String>();
