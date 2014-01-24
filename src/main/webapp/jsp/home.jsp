@@ -441,7 +441,7 @@
 
 		<nav id="personalInfo">
 		<ul>
-			<li>Welcome, <a href="#"><c:out value="${user}"></c:out></a>!
+			<li>Welcome, <a href="/deel/user/settingsProfile"><c:out value="${user}"></c:out></a>!
 			</li>
 		</ul>
 		</nav>

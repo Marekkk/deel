@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import org.deel.domain.User;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,6 +22,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -171,6 +174,29 @@ public class UserController {
 		}
 
 		return "redirect:/home";
+	}
+	
+	@RequestMapping("/user/settingsProfile")
+	public String goToUpdate (ModelMap map, Principal principal) {
+		String username = principal.getName();
+		map.addAttribute("user", username);
+		return "profile";
+	}
+	
+	@RequestMapping("/user/updatePsw")
+	public String updateProfile (@RequestParam String old, @RequestParam String password, Principal principal) {
+		System.out.println(old);
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
+		String oldpsw = u.getPassword();
+		if (!pwdEncoder.matches(old, oldpsw)){
+			System.out.println("Error : mismatch old password!");
+			return "error";
+		}
+		u.setPassword(pwdEncoder.encode(password));
+		userService.updateUser(u);
+		return "home";
 	}
 
 }
