@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="./resources/css/style.css" media="screen">
+<link rel="stylesheet" href=<c:url value="/resources/css/style.css"/> media="screen">
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" media="screen"> 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -447,7 +447,7 @@
 		<ul>
 			<li><a href="home.html" onclick="javascript:goRoot()"
 				class="active">home</a></li>
-			<li><a href="logout">logout</a></li>
+			<li><a href=<c:url value="/logout"/> >logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
 		</ul>
 		</nav>

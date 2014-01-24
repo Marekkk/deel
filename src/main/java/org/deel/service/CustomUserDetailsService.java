@@ -42,12 +42,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountNonLocked = true;
+		
+		String role = (domainUser.getRole() == 0? "ROLE_USER": "ROLE_ADMIN");
 
 		List<GrantedAuthority> authList = new LinkedList<GrantedAuthority>();
-		authList.add(new SimpleGrantedAuthority("ROLE_USER"));
+		authList.add(new SimpleGrantedAuthority(role));
 
-		
-		
 		User u1 = new User(domainUser.getUsername(), domainUser.getPassword(),
 				enabled, accountNonExpired, credentialsNonExpired,
 				accountNonLocked, authList);

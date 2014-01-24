@@ -52,6 +52,9 @@ public class User {
 	@Column(name="password")
 	private String password;
 	
+	@Column(name="role", nullable=false)
+	private Integer role = 0;
+	
 	@ManyToOne()
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Category category;
@@ -100,6 +103,15 @@ public class User {
 	
 	public Set<File> getFiles() {
 		return this.files;
+	}
+	
+
+	public Integer getRole() {
+		return role;
+	}
+
+	public void setRole(Integer role) {
+		this.role = role;
 	}
 
 	public User() {

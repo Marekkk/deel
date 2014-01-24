@@ -58,9 +58,11 @@ public class FileController {
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
 	}
-	
+
 	@RequestMapping("/file/revision/list")
-	public @ResponseBody Map<String, Object> getRevisionList(@RequestParam Long id, Principal principal) {
+	public @ResponseBody
+	Map<String, Object> getRevisionList(@RequestParam Long id,
+			Principal principal) {
 		String username = principal.getName();
 		Map<String, Object> jsonRet = new HashMap<String, Object>();
 		User curr = userService.findUserByUsername(username);
@@ -68,17 +70,16 @@ public class FileController {
 		FilePath fp = new FilePath();
 		fp.setId(id);
 		List<FileRevision> fRevisions = fileService.getRevisionList(curr, fp);
-		
-		 
-		
+
 		for (FileRevision fileRevision : fRevisions) {
 			HashMap<String, Object> fRevisionJson = new HashMap<String, Object>();
 			fRevisionJson.put("date", fileRevision.getDate());
-			fRevisionJson.put("uploadedBy", fileRevision.getUploadedBy().getUsername());
+			fRevisionJson.put("uploadedBy", fileRevision.getUploadedBy()
+					.getUsername());
 			fRevisionJson.put("name", fileRevision.getFile().getName());
 			jsonRet.put(Long.toString(fileRevision.getId()), fRevisionJson);
 		}
-		
+
 		return jsonRet;
 	}
 
@@ -86,6 +87,7 @@ public class FileController {
 	public @ResponseBody
 	Map<String, Object> getFilesListJSON(
 			@RequestParam(value = "path", required = false) Long path,
+			@RequestParam(value = "hidden", required = false) Boolean hidden,
 			Principal principal) {
 		String username = principal.getName();
 		Map<String, Object> jsonRet = new HashMap<String, Object>();
@@ -97,18 +99,22 @@ public class FileController {
 		DirectoryListing list = fileService.listFolder(curr, folder);
 
 		Map<Long, String> fp = new HashMap<Long, String>();
+		Map<Long, String> fpHidden = new HashMap<Long, String>();
 		for (FilePath filePath : list.getFilePaths()) {
-			/* TODO maybe can be optimized using a query with WHERE hidden=false */
-			if (!filePath.isHidden())
-				fp.put(filePath.getId(), filePath.getName());
-
+			if (filePath.isHidden()) {
+				fpHidden.put(filePath.getId(), filePath.getName());
+				continue;
+			}
+			fp.put(filePath.getId(), filePath.getName());
 		}
 
 		Map<Long, String> dl = new HashMap<Long, String>();
+		Map<Long, String> dlHidden = new HashMap<Long, String>();
 		for (Folder f : list.getFolders()) {
-			if (f.isHidden())
+			if (f.isHidden()) {
+				dlHidden.put(f.getId(), f.getName());
 				continue;
-			
+			}
 			dl.put(f.getId(), f.getName());
 		}
 
@@ -119,6 +125,9 @@ public class FileController {
 		jsonRet.put("currentDir", cd);
 		jsonRet.put("files", fp);
 		jsonRet.put("directories", dl);
+		jsonRet.put("filesHidden", fpHidden);
+		jsonRet.put("directoriesHidden", dlHidden);
+		
 
 		return jsonRet;
 	}
@@ -151,9 +160,8 @@ public class FileController {
 	}
 
 	@RequestMapping("/file/revision/**")
-	public void downloadFileRevision(@RequestParam Long id, 
-			@RequestParam Long revision,
-			Principal principal,
+	public void downloadFileRevision(@RequestParam Long id,
+			@RequestParam Long revision, Principal principal,
 			HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
 
@@ -162,7 +170,7 @@ public class FileController {
 
 		FilePath filePath = new FilePath();
 		filePath.setId(id);
-		
+
 		FileRevision fileRevision = new FileRevision();
 		fileRevision.setId(revision);
 
@@ -183,7 +191,6 @@ public class FileController {
 		return;
 	}
 
-	
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody
 	Map<String, Object> exceptionHandler(Exception e) {
@@ -265,36 +272,35 @@ public class FileController {
 	Map<Long, String> removeDirectory(@RequestParam Long id, Principal principal) {
 		Folder f = new Folder();
 		f.setId(id);
-		
+
 		String username = principal.getName();
 		User u = userService.findUserByUsername(username);
-
 
 		fileService.deleteFolder(u, f);
 
 		Map<Long, String> json = new HashMap<Long, String>();
 		json.put(f.getId(), "success");
-		
+
 		return json;
-		
+
 	}
 
 	@RequestMapping(value = "/file/share")
-	public @ResponseBody Map<String, Object> shareFile(@RequestBody ShareFileMessage message, 
-			BindingResult result,
-			Principal principal) {
-		
+	public @ResponseBody
+	Map<String, Object> shareFile(@RequestBody ShareFileMessage message,
+			BindingResult result, Principal principal) {
+
 		HashMap<String, Object> json = new HashMap<String, Object>();
-		
+
 		if (result.hasErrors()) {
 			json.put("status", "failed");
 			json.put("errors", result.getAllErrors());
 			return json;
 		}
-		
+
 		String username = principal.getName();
 		User u = userService.findUserByUsername(username);
-		
+
 		FilePath fp = new FilePath();
 		fp.setId(message.getFile());
 		List<User> users = new LinkedList<User>();
@@ -303,20 +309,18 @@ public class FileController {
 			user.setId(id);
 			users.add(user);
 		}
-		
-		fileService.shareFile(u, fp, users);
-		
-		
-		json.put("status", "sucess");
-		
-		
-		return json;
-		
-	}
-	
-	@RequestMapping(value = "/file/remove", method = RequestMethod.GET)
-	public @ResponseBody Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
 
+		fileService.shareFile(u, fp, users);
+
+		json.put("status", "sucess");
+
+		return json;
+
+	}
+
+	@RequestMapping(value = "/file/remove", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<Long, String> removeFile(@RequestParam Long id, Principal principal) {
 
 		Map<Long, String> result = new HashMap<Long, String>();
 		System.out.println("We are going to remove filepath with id -> " + id);
