@@ -10,51 +10,52 @@
 <link rel=stylesheet href="../resources/css/login.css" media="screen">
 <title>Registration</title>
 <script type="text/javascript">
-function check() {
-	if (form1.username.value == "") {
-		alert("Please enter your username!");
-		return false;
-	}
-	if (form1.email.value == "") {
-		alert("Please enter your email adress!");
-		return false;
-	}
-	if (form1.name.value == "") {
-		alert("Please enter your name!");
-		return false;
-	}
-	if (form1.surname.value == "") {
-		alert("Please enter your surname!");
-		return false;
-	}
-	
-	if (form1.password.value != form1.psw2.value) {
-		alert("Password doesn' t matching!");
-		form1.password.value = "";
-		return false;
-	}
-	return true;
-}
+	function check() {
+		if (form1.username.value == "") {
+			alert("Please enter your username!");
+			return false;
+		}
+		if (form1.email.value == "") {
+			alert("Please enter your email adress!");
+			return false;
+		}
+		if (form1.name.value == "") {
+			alert("Please enter your name!");
+			return false;
+		}
+		if (form1.surname.value == "") {
+			alert("Please enter your surname!");
+			return false;
+		}
 
-function checkpsw() {
-	var psw1 = document.getElementById("password");
-	var psw2 = document.getElementById("psw2");
-	if (psw1.value != psw2.value) {
-		var message = document.getElementById("checkpass");
-		message.innerHTML = "<p>" + "No matching between passwords!" + "</p>";
+		if (form1.password.value != form1.psw2.value) {
+			alert("Password doesn' t matching!");
+			form1.password.value = "";
+			return false;
+		}
+		return true;
+	}
+
+	function checkpsw() {
+		var psw1 = document.getElementById("password");
+		var psw2 = document.getElementById("psw2");
+		if (psw1.value != psw2.value) {
+			var message = document.getElementById("checkpass");
+			message.innerHTML = "<p>" + "No matching between passwords!"
+					+ "</p>";
+			psw2.value = "";
+		}
+		if (psw1.value == psw2.value) {
+			var message = document.getElementById("checkpass");
+			message.innerHTML = "<p>" + "OK!" + "</p>";
+		}
+		//alert(psw1.value + " " + psw2.value);
+	}
+
+	function cleanRetype() {
+		var psw2 = document.getElementById("psw2");
 		psw2.value = "";
 	}
-	if (psw1.value == psw2.value) {
-		var message = document.getElementById("checkpass");
-		message.innerHTML = "<p>" + "OK!" + "</p>";
-	}
-	//alert(psw1.value + " " + psw2.value);
-}
-
-function cleanRetype() {
-	var psw2 = document.getElementById("psw2");
-	psw2.value = "";
-}
 </script>
 </head>
 <body>
@@ -68,7 +69,10 @@ function cleanRetype() {
 
 	<c:if test="${errors != null}">
 		<c:forEach var="error" items="${errors}">
-   			<div class="error"> Error <c:out value="${error}"/> </div>
+			<div class="error">
+				Error
+				<c:out value="${error}" />
+			</div>
 			<p>
 		</c:forEach>
 	</c:if>
@@ -106,7 +110,7 @@ function cleanRetype() {
 
 	<footer>
 	<div id="footerSection">
-		<p>Electric Sheep 2013</p>
+		<p>Electric Sheep 2014</p>
 	</div>
 	</footer>
 

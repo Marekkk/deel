@@ -297,6 +297,7 @@
 	function addingOps(data, tr) {
 		var r = tr;
 		var c = document.createElement("td");
+		c.style = "background-color: transparent";
 		var a = document.createElement("a");
 		var id = data.id;
 		var type = data.type;
@@ -312,6 +313,7 @@
 
 		if (type == "file") {
 			var cs = document.createElement("td");
+			cs.style = "background-color: transparent";
 			var share = document.createElement("a");
 			var idOpShare = "share_" + id;
 			share.id = idOpShare;
@@ -323,6 +325,7 @@
 			r.appendChild(cs);
 
 			var cr = document.createElement("td");
+			cr.style = "background-color: transparent";
 			var rev = document.createElement("a");
 			rev.id = "revision_" + id;
 			rev.href = "javascript:revision(" + id + ")";
@@ -438,7 +441,7 @@
 
 		<nav id="personalInfo">
 		<ul>
-			<li>Welcome, <a href="#"><c:out value="${user}"></c:out></a>!
+			<li>Welcome, <a href="/deel/user/settingsProfile"><c:out value="${user}"></c:out></a>!
 			</li>
 		</ul>
 		</nav>
