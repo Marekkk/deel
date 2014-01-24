@@ -13,6 +13,23 @@
 <script type="text/javascript">
 
 	$(function() {
+		$('#trash').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode"
+			},
+			modal : true,
+
+			close : function() {
+				cleanTable("revisionTable");
+			},
+
+			title : "Revision for your file:"
+		});
+		
 		$('#revision').dialog({
 			autoOpen : false,
 			show : {
@@ -60,6 +77,7 @@
 	var currentDir;
 	var files;
 	var directories;
+	var filesHidden;
 
 	function getFiles() {
 		cleanTable("dataTable");
@@ -256,13 +274,13 @@
 			}
 			files = data.files;
 			directories = data.directories;
-			console.log(currentDir);
-
-			updateTable();
+			filesHidden = data.filesHidden;
+			console.log(currentDir, filesHidden);
+			updateTable("dataTable");
 		});
 	}
 
-	function updateTable() {
+	function updateTable(tableId) {
 		for ( var i in directories) {
 			var a = document.createElement("a");
 			a.id = i;
@@ -271,7 +289,7 @@
 			a.href = "javascript:changeFolder(" + i + ")";
 			a.innerHTML = directories[i];
 			a.type = "folder";
-			addRow(a, i);
+			addRow(a, i, tableId);
 		}
 
 		for ( var i in files) {
@@ -280,12 +298,12 @@
 			a.href = "file/download/" + files[i] + "?id=" + i;
 			a.innerHTML = files[i];
 			a.type = "file";
-			addRow(a, i);
+			addRow(a, i, tableId);
 		}
 	}
 
-	function addRow(data, id) {
-		var t = document.getElementById("dataTable");
+	function addRow(data, id, tableId) {
+		var t = document.getElementById(tableId);
 		var c = document.createElement("td");
 		c.appendChild(data);
 		var r = document.createElement("tr");
@@ -424,6 +442,9 @@
 	function uploadDialog() {
 		$('#uploadContainer').dialog("open");
 	}
+	function trashDialog() {
+		$('#trash').dialog("open");
+	}
 </script>
 <title>Home</title>
 </head>
@@ -452,6 +473,7 @@
 				class="active">home</a></li>
 			<li><a href=<c:url value="/logout"/> >logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
+			<li><a href="javascript:trashDialog()" >trash</a></li>
 		</ul>
 		</nav>
 
@@ -490,6 +512,14 @@
 			<table id="revisionTable">
 				<tr>
 					<th>Date</th>
+				<tr>
+			</table>
+		</div>
+		
+		<div id="trash">
+			<table id="trashTable">
+				<tr>
+					<th>Name</th>
 				<tr>
 			</table>
 		</div>
