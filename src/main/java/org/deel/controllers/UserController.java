@@ -184,19 +184,24 @@ public class UserController {
 	}
 	
 	@RequestMapping("/user/updatePsw")
-	public String updateProfile (@RequestParam String old, @RequestParam String password, Principal principal) {
+	public @ResponseBody Map<String, String> updateProfile (@RequestParam String old, @RequestParam String password, Principal principal, ModelMap map) {
 		System.out.println(old);
+		Map<String, String> result = new HashMap<String, String>();
 		String username = principal.getName();
 		User u = userService.findUserByUsername(username);
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		String oldpsw = u.getPassword();
 		if (!pwdEncoder.matches(old, oldpsw)){
 			System.out.println("Error : mismatch old password!");
-			return "error";
+			String error = "Error";
+			result.put("status", error);
+			return result;
 		}
 		u.setPassword(pwdEncoder.encode(password));
 		userService.updateUser(u);
-		return "home";
+		String noError = "Password has been changed!";
+		result.put("status", noError);
+		return result;
 	}
 
 }
