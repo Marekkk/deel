@@ -24,7 +24,7 @@
 			modal : true,
 
 			close : function() {
-				cleanTable("revisionTable");
+				cleanTable("trashTable");
 			},
 
 			title : "Revision for your file:"
@@ -55,6 +55,8 @@
 			hide : {
 				effect : "explode"
 			},
+			modal : true,
+			
 			title : "Select file to upload:"
 		});
 
@@ -83,11 +85,32 @@
 		cleanTable("dataTable");
 		if (sessionStorage.getItem("dir") == null
 				|| sessionStorage.getItem("dir") === undefined)
-			var request = "file/list";
+			var request = "<c:url value="/file/list"/>";
 		else
-			var request = "file/list?path=" + sessionStorage.getItem("dir");
+			var request = "<c:url value="/file/list?path="/>" + sessionStorage.getItem("dir");
 
 		makeRequest(request);
+	}
+	
+	function makeRequest(request) {
+		var req = request;
+		$.get(req, function(data, success) {
+			console.log(success);
+
+			console.log(data);
+			currentDir = data.currentDir;
+			if (req == "<c:url value="/file/list"/>") {
+				sessionStorage.setItem("root", currentDir.id);
+				sessionStorage.setItem("dir", currentDir.id);
+			} else {
+				sessionStorage.setItem("dir", currentDir.id);
+			}
+			files = data.files;
+			directories = data.directories;
+			filesHidden = data.filesHidden;
+			console.log(currentDir, filesHidden);
+			updateTable("dataTable");
+		});
 	}
 
 	function removeFile(id, type) {
@@ -99,7 +122,7 @@
 
 		if (type == "file") {
 			$.ajax({
-				url : 'file/remove',
+				url : "<c:url value="/file/remove"/>",
 				data : message,
 				type : 'GET',
 				success : function(returndata) {
@@ -109,7 +132,7 @@
 			});
 		} else if (type == "folder") {
 			$.ajax({
-				url : 'folder/remove',
+				url : "<c:url value="/folder/remove"/>",
 				data : message,
 				type : 'GET',
 				success : function(returndata) {
@@ -153,7 +176,7 @@
 			message.file = id;
 
 			$.ajax({
-				url : 'file/share',
+				url : "<c:url value="/file/share"/>",
 				type : 'POST',
 				data : JSON.stringify(message),
 				dataType : "json",
@@ -205,7 +228,7 @@
 		var message = new Object();
 		message.id = id;
 		$.ajax({
-			url : 'file/revision/list',
+			url : "<c:url value="/file/revision/list"/>",
 			type : 'GET',
 			data : message,
 			success : function(returndata) {
@@ -250,33 +273,12 @@
 		message.idFile = idFile;
 		message.idRevision = idRevision;
 		$.ajax({
-			url : 'file/revision/list',
+			url : "<c:url value="/file/revision/list"/>",
 			type : 'GET',
 			data : message,
 			success : function(returndata) {
 				console.log(returndata);
 			}
-		});
-	}
-
-	function makeRequest(request) {
-		var req = request;
-		$.get(req, function(data, success) {
-			console.log(success);
-
-			console.log(data);
-			currentDir = data.currentDir;
-			if (req == "file/list") {
-				sessionStorage.setItem("root", currentDir.id);
-				sessionStorage.setItem("dir", currentDir.id);
-			} else {
-				sessionStorage.setItem("dir", currentDir.id);
-			}
-			files = data.files;
-			directories = data.directories;
-			filesHidden = data.filesHidden;
-			console.log(currentDir, filesHidden);
-			updateTable("dataTable");
 		});
 	}
 
@@ -374,7 +376,7 @@
 			var formData = new FormData($(this)[0]);
 
 			$.ajax({
-				url : 'file/upload',
+				url : "<c:url value="/file/upload"/>",
 				type : 'POST',
 				data : formData,
 				async : false,
@@ -417,7 +419,7 @@
 		message.folderName = folderName;
 
 		$.ajax({
-			url : 'file/addFolder',
+			url : "<c:url value="/file/addFolder"/>",
 			type : 'GET',
 			data : message,
 			async : false,
@@ -443,7 +445,23 @@
 		$('#uploadContainer').dialog("open");
 	}
 	function trashDialog() {
+		createDeletedTable();
 		$('#trash').dialog("open");
+	}
+	
+	function createDeletedTable() {
+		var table = document.getElementById("trashTable");
+		for (var i in filesHidden) {
+			var r = document.createElement("tr");
+			var c = document.createElement("td");
+			var a = document.createElement("a");
+			a.style = "color:black";
+			a.href = "#";
+			a.innerHTML = filesHidden[i];
+			c.appendChild(a);
+			r.appendChild(c);
+			table.appendChild(r);
+		}
 	}
 </script>
 <title>Home</title>
@@ -469,7 +487,7 @@
 
 		<nav id="mainav">
 		<ul>
-			<li><a href="home.html" onclick="javascript:goRoot()"
+			<li><a href="<c:url value="/home" />" onclick="javascript:goRoot()"
 				class="active">home</a></li>
 			<li><a href=<c:url value="/logout"/> >logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>

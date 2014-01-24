@@ -23,7 +23,6 @@ public class CompanyController {
 		return companyService;
 	}
 
-	@Autowired
 	public void setCompanyService(CompanyService companyService) {
 		this.companyService = companyService;
 	}
