@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class FileController {
 
 	@RequestMapping("/file/list")
 	public @ResponseBody
-	Map<String, Object> getFilesListJSON(
+	DirectoryListing getFilesListJSON(
 			@RequestParam(value = "path", required = false) Long path,
 			@RequestParam(value = "hidden", required = false) Boolean hidden,
 			Principal principal) {
@@ -98,38 +99,7 @@ public class FileController {
 
 		DirectoryListing list = fileService.listFolder(curr, folder);
 
-		Map<Long, String> fp = new HashMap<Long, String>();
-		Map<Long, String> fpHidden = new HashMap<Long, String>();
-		for (FilePath filePath : list.getFilePaths()) {
-			if (filePath.isHidden()) {
-				fpHidden.put(filePath.getId(), filePath.getName());
-				continue;
-			}
-			fp.put(filePath.getId(), filePath.getName());
-		}
-
-		Map<Long, String> dl = new HashMap<Long, String>();
-		Map<Long, String> dlHidden = new HashMap<Long, String>();
-		for (Folder f : list.getFolders()) {
-			if (f.isHidden()) {
-				dlHidden.put(f.getId(), f.getName());
-				continue;
-			}
-			dl.put(f.getId(), f.getName());
-		}
-
-		Map<String, Object> cd = new HashMap<String, Object>();
-		cd.put("id", list.getMe().getId());
-		cd.put("path", list.getMe().getFsPath());
-
-		jsonRet.put("currentDir", cd);
-		jsonRet.put("files", fp);
-		jsonRet.put("directories", dl);
-		jsonRet.put("filesHidden", fpHidden);
-		jsonRet.put("directoriesHidden", dlHidden);
-		
-
-		return jsonRet;
+		return list;
 	}
 
 	@RequestMapping("/file/download/**")

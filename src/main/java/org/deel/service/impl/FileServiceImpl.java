@@ -16,6 +16,7 @@ import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
+import org.deel.domain.FilePathInfo;
 import org.deel.domain.File;
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
@@ -26,6 +27,7 @@ import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
+import org.deel.domain.FolderInfo;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.utils.FSUtils;
@@ -340,13 +342,17 @@ public class FileServiceImpl implements FileService {
 					+ " doesn't own folder " + folder.getFsPath());
 
 		DirectoryListing ret = new DirectoryListing();
-		ret.setMe(folder);
+		ret.setMe(new FolderInfo(folder));
 
-		Set<FilePath> fpaths = new HashSet<FilePath>();
-		fpaths.addAll(folder.getFilepaths());
+		Set<FilePathInfo> fpaths = new HashSet<FilePathInfo>();
+		for (FilePath filePath : folder.getFilepaths()) 
+			fpaths.add(new FilePathInfo(filePath));
+		
+		Set<FolderInfo> folders = new HashSet<FolderInfo>();
+		for (Folder f : folder.getInFolder()) 
+			folders.add(new FolderInfo(f));
+		
 
-		Set<Folder> folders = new HashSet<Folder>();
-		folders.addAll(folder.getInFolder());
 
 		ret.setFilePaths(fpaths);
 		ret.setFolders(folders);
