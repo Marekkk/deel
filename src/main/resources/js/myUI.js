@@ -1,12 +1,25 @@
-var myUI = function ($) {
+var myUI = (function ($) {
+	var currentFolder;
 	
-
+	
 	return  {
 
 		init : function(opts) {
 			this.opts = opts;
+			jQuery.event.props.push("dataTransfer");
+			/* stub */
+			currentFolder = sessionStorage.getItem("dir");
+			
 		}, 
+		
+		getCurrentFolder: function() {
+			return currentFolder;
+		},
 
+		setCurrentFolder: function (f) {
+			currentFolder = f;
+		},
+		
 		createTable : function (opts, data) {
 
 			
@@ -167,8 +180,74 @@ var myUI = function ($) {
 			return tr;
 			
 		},
+		
+		createUploadDiv: function (opts) {
+			if(!opts.uploadCB) {
+				return;
+			}
+			
+			var holder = $("<div></div>");
+			
+			var cssClass = "cssClass" in opts ? opts.cssClass : '';
+			var cssClassHover = "cssClassHover" in opts ? opts.cssClassHover : cssClass;
+			
+			
+			/* enable drag and drop */
+			/* check that they are files */
+			holder.on('dragover', function () { this.className = cssClass; console.log("dragover");return false; });
+			holder.on('dragend' , function () { this.className = cssClassHover;console.log("dragend"); return false; });
+			
+			
+			holder.on('drop', function (e) {
+				e.preventDefault();
+				this.className  = cssClass;
+				console.log(e);
+				opts.uploadCB(e);
+			});
+			return holder;
+			
+		},
+		postWithAjax : function (url, cb, data) {
+			$.ajax({
+				url : url,
+				type : 'POST',
+				data : JSON.stringify(data),
+				contentType : "application/json",
+				dataType : "json",
+				success : cb(data),
+			});
+		},
+		
+		uploadFiles : function (e) {
+			var files = e.dataTransfer.files;
+			var fd = new FormData();
+			console.log(files);
+			for (var i = 0; i < files.length; i++) 
+			      fd.append('files', files[i]);
+			
+			fd.append('path', currentFolder);
+			
+			$.ajax({
+				/* TODO set correct URL */
+				//url : "<c:url value="/file/upload"/>",
+				url : "file/upload",
+				type : 'POST',
+				data : fd,
+				cache : false,
+				contentType : false,
+				async : false,
+				processData : false,
+				success : function(returndata) {
+					getFiles();
+				}
+			});
+			 
+			
+
+		},
+		
 	};
-}($);
+})($);
 
 	
 	
