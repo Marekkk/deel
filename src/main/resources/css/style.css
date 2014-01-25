@@ -3,9 +3,47 @@
 	padding: 0;
 }
 
+.companyTable
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;
+	background: #fff;
+	margin: 45px;
+	width: 480px;
+	border-collapse: collapse;
+	text-align: left;
+}
+.companyTable th
+{
+	font-size: 14px;
+	font-weight: normal;
+	color: #039;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+}
+.companyTable td
+{
+	color: #669;
+	padding: 9px 8px 0px 8px;
+}
+
+.companyTable td
+{
+	border: solid 1px black;
+	color: #669;
+	padding: 9px 8px 0px 8px;
+}
+.companyTable tbody tr:hover td
+{
+	color: #009;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 span {
 	font-style: italic;
 }
+
 
 #mainav a:link {
 	font-family: Helvetica, sans-serif;

@@ -16,6 +16,7 @@
 	
 	<bean id="teamDAO" class="org.deel.dao.impl.TeamDaoImpl" autowire="byName" />
 
+	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" autowire="byName"/>
 	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl"
 		autowire="byName" />
 
@@ -26,13 +27,13 @@
 	<bean id="filePathDAO" class="org.deel.dao.impl.FilePathDaoImpl"
 		autowire="byName" />
 	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
-	<bean id="companyDAO" class="org.deel.dao.impl.CompanyDaoImpl" />
+	
 
 	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl"
 		autowire="byName" />
 	<bean id="userService" class="org.deel.service.impl.UserServiceImpl"
 		autowire="byName" />
-
+	<bean id="companyService" class="org.deel.service.impl.CompanyServiceImpl" autowire="byName" />	
 
 	<bean name="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
