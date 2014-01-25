@@ -13,6 +13,8 @@
 
 
 	<context:annotation-config />
+	
+	<bean id="teamDAO" class="org.deel.dao.impl.TeamDaoImpl" autowire="byName" />
 
 	<bean id="folderDAO" class="org.deel.dao.impl.FolderDaoImpl"
 		autowire="byName" />

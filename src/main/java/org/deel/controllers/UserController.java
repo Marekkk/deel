@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UserController {
 
-	
+
 	private UserService userService;
-	
+
 
 	public UserService getUserService() {
 		return userService;
@@ -40,28 +42,28 @@ public class UserController {
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
-	
+
 	@RequestMapping(value = "/user/new.json", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> onSubmitJson(@Valid User user, BindingResult result,
 			ModelMap map) {
 		HashMap<String, Object> json = new HashMap<String, Object>();
-		
+
 		/* checking password */
 		if (user.getPassword() == null && user.getPassword().length() < 5) {
 			result.rejectValue("password",
-	                 "password.tooShort",
-	                 "password should be at least 5 chars");
+					"password.tooShort",
+					"password should be at least 5 chars");
 		}
-		
+
 		if (result.hasErrors()) {
 			HashMap<String, String> errors = new HashMap<String, String>();
 			for (ObjectError e : result.getAllErrors()) 
 				errors.put(e.getCode(), e.toString());
 			json.put("status", "failed");
 			json.put("errors", errors);
-			
+
 		}
-		
+
 		/* TODO use dependency injection to inject pwdEncoder */
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
 		user.setPassword(pwdEncoder.encode(user.getPassword()));
@@ -82,7 +84,7 @@ public class UserController {
 			json.put("errors", e.getMessage());
 			return json;
 		}
-		
+
 		json.put("status", "success");
 		return json;
 	}
@@ -93,23 +95,23 @@ public class UserController {
 		Map<String, Object> json = new HashMap<String, Object>();
 		String username = principal.getName();
 		User curr = userService.findUserByUsername(username);
-		
+
 		List<User> userList = userService.listUser(curr);
 		List<Long> usersId = new LinkedList<Long>();
 		List<String> usernames = new LinkedList<String>();
-		
+
 		for (User user : userList)  {
 			usersId.add(user.getId());
 			usernames.add(user.getUsername());
 			//json.put(user.getId(), user.getUsername());
 		}
-		
+
 		json.put("id", usersId);
 		json.put("Username", usernames);
-		
+
 		return json;
 	}
-	
+
 	@RequestMapping(value="/user/selectUsers")
 	public String selectUsers() {
 		return "userListSelectable";
@@ -127,31 +129,31 @@ public class UserController {
 	public String onSubmit(@Valid User user, BindingResult result,
 			ModelMap map) {
 
-		
-		
+
+
 		if (result.hasErrors()) {
 			LinkedList<String> errors = new LinkedList<String>();
-			
+
 			for (ObjectError error : result.getAllErrors()) {
-				
+
 				if (error.getDefaultMessage() != null)
 					errors.add(error.getDefaultMessage());
 				else
 					if (error.getCodes() != null)
 						errors.add(error.getCode());
 			}
-			
+
 			map.addAttribute("errors", errors);
 			return "newUser";
 		}
-		
+
 		/* checking password */
 		if (user.getPassword() == null && user.getPassword().length() < 5) {
 			result.rejectValue("password",
-	                 "password.tooShort",
-	                 "password should be at least 5 chars");
+					"password.tooShort",
+					"password should be at least 5 chars");
 		}
-		
+
 		/* TODO use dependency injection to inject pwdEncoder */
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();	
 		user.setPassword(pwdEncoder.encode(user.getPassword()));
@@ -175,14 +177,15 @@ public class UserController {
 
 		return "redirect:/home";
 	}
-	
+
 	@RequestMapping("/user/settingsProfile")
 	public String goToUpdate (ModelMap map, Principal principal) {
 		String username = principal.getName();
 		map.addAttribute("user", username);
+		System.out.println("Load page to change password");
 		return "profile";
 	}
-	
+
 	@RequestMapping("/user/updatePsw")
 	public @ResponseBody Map<String, String> updateProfile (@RequestParam String old, @RequestParam String password, Principal principal, ModelMap map) {
 		System.out.println(old);
@@ -203,5 +206,38 @@ public class UserController {
 		result.put("status", noError);
 		return result;
 	}
+	
 
+
+	@RequestMapping("/team/create")
+	public @ResponseBody Map<String, String> createTeam (@RequestBody teamCreateMessage message, Principal principal) {
+		Map<String, String> json = new HashMap<String, String>();
+		String name = message.getName();
+		List<Long> usersId = message.getUsers();
+		String username = principal.getName();
+		User user = userService.findUserByUsername(username);
+		Team t = userService.findTeamByName(name);
+		if (t != null) {
+			json.put("status", "Team with this name already exists.");
+			return json;
+		}
+		
+		List<User> users = new LinkedList<User>();
+		for (Long id : usersId) {
+			User temp = new User();
+			temp.setId(id);
+			users.add(temp);
+		}
+		
+		Team team = new Team();
+		team.setCreatedBy(user.getId());
+		team.setName(name);
+		team.setUsersInTeam(users);
+		
+		userService.addTeam(team);
+		
+		json.put("status", "Team created!");
+		
+		return json;
+	}
 }

@@ -8,10 +8,12 @@ import java.util.Set;
 import javax.management.RuntimeErrorException;
 
 import org.deel.dao.FolderDAO;
+import org.deel.dao.TeamDAO;
 import org.deel.dao.UserDAO;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.UserService;
 import org.deel.service.utils.FSUtils;
@@ -23,8 +25,16 @@ public class UserServiceImpl implements UserService {
 
 	private UserDAO userDAO;
 	private FolderDAO folderDAO;
+	private TeamDAO teamDAO;
 
-
+	public TeamDAO getTeamDao() {
+		return teamDAO;
+	}
+	
+	@Autowired
+	public void setTeamDao(TeamDAO teamDao) {
+		this.teamDAO = teamDao;
+	}
 	
 	public FolderDAO getFolderDao() {
 		return folderDAO;
@@ -112,7 +122,14 @@ public class UserServiceImpl implements UserService {
 		}
 		return userList;
 	}
-	
-	
 
+	@Override
+	public void addTeam(Team t) {
+		teamDAO.insertTeam(t);
+	}
+
+	@Override
+	public Team findTeamByName(String name) {
+		return teamDAO.findTeamByName(name);
+	}
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,5 +35,11 @@ public interface UserService {
 	
 	@Transactional
 	public void addFolder(User user, Folder folder);
+	
+	@Transactional
+	public void addTeam(Team t);
+	
+	@Transactional
+	public Team findTeamByName(String name);
 	
 }

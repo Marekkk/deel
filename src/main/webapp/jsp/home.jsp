@@ -6,8 +6,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href=<c:url value="/resources/css/style.css"/> media="screen">
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" media="screen"> 
+<link rel="stylesheet" href=<c:url value="/resources/css/style.css"/>
+	media="screen">
+<link rel="stylesheet"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css"
+	media="screen">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript">
@@ -27,7 +30,20 @@
 				cleanTable("trashTable");
 			},
 
-			title : "Revision for your file:"
+			title : "File in your trash:"
+		});
+		
+		$('#team').dialog({
+			autoOpen : false,
+			show : {
+				effect : "blind"
+			},
+			hide : {
+				effect : "explode"
+			},
+			modal : true,
+
+			title : "Create your team:"
 		});
 		
 		$('#revision').dialog({
@@ -68,6 +84,9 @@
 			hide : {
 				effect : "explode",
 			},
+			
+			modal : true,
+			
 			title : "Share with:"
 		});
 	});
@@ -153,7 +172,7 @@
 		nul.id = "slist";
 		sharingDiv.appendChild(nul);
 		$.ajax({
-			url : 'user/list',
+			url : "<c:url value="/user/list"/>",
 			type : 'GET',
 			success : function(returndata) {
 				var users = returndata;
@@ -195,6 +214,7 @@
 	function createShareBox(usersid, usr, idFile) {
 		usersWithShare = [];
 		var ul = document.getElementById("slist");
+		ul.style = "list-style-type: none; margin-left: 2px";
 
 		for (var i = 0; i < usr.length; i++) {
 			var li = document.createElement("li");
@@ -222,6 +242,90 @@
 		var a = document.getElementById("added" + userId);
 		a.innerHTML = "&nbsp OK!";
 	}
+	
+	var usersInTeam = new Array();
+	function createTeam() {
+		var ul = document.getElementById("teamList");
+		$(ul).remove();
+		var team = document.getElementById("team");
+		var nul = document.createElement("ul");
+		nul.id = "teamList";
+		team.appendChild(nul);
+		$.ajax({
+			url : "<c:url value="/user/list"/>",
+			type : 'GET',
+			success : function(returndata) {
+				var users = returndata;
+				console.log(returndata);
+				createTeamBox(users.id, users.Username);
+			}
+		});
+		var button = document.createElement("input");
+		button.id = "sendButton";
+		button.type = "button";
+		button.value = "Create Team!";
+		button.innerHTML = "Create Team!";
+		nul.appendChild(button);
+		var name = document.createElement("input");
+		name.id = "name";
+		name.value = "";
+		name.type = "text";
+		nul.appendChild(name);
+		$('#sendButton').click(function() {
+			//alert("Team Created!");
+			var message = new Object();
+
+			message.users = usersInTeam;
+			message.name = name.value;
+			
+			$.ajax({
+				url : "<c:url value="/team/create"/>",
+				type : 'POST',
+				data : JSON.stringify(message),
+				dataType : "json",
+				contentType : "application/json",
+				success : function(returndata) {
+					console.log(returndata);
+					alert(returndata.status);				
+				}
+			});
+
+		});
+		$('#team').dialog("open");
+	}
+	
+	function createTeamBox(usersid, usr) {
+		usersInTeam = [];
+		var ul = document.getElementById("teamList");
+		ul.style = "list-style-type: none; margin-left: 2px";
+
+		for (var i = 0; i < usr.length; i++) {
+			var li = document.createElement("li");
+			var a = document.createElement("a");
+			a.innerHTML = usr[i];
+			a.href = "javascript:addUserInTeam(" + usersid[i] + ")";
+			li.appendChild(a);
+			var a2 = document.createElement("a");
+			a2.id = "added" + usersid[i];
+			a2.innerHTML = "";
+			li.appendChild(a2);
+			ul.appendChild(li);
+		}
+	}
+
+	function addUserInTeam(userId) {
+		for (var i = 0; i < usersInTeam.length; i++) {
+			if (usersInTeam[i] == userId) {
+				alert("You have already insert this user!")
+				return;
+			}
+		}
+		var currSize = usersInTeam.length;
+		usersInTeam[currSize] = userId;
+		var a = document.getElementById("added" + userId);
+		a.innerHTML = "&nbsp OK!";
+	}
+	
 
 	function revision(id) {
 		console.log(id);
@@ -319,6 +423,11 @@
 		var c = document.createElement("td");
 		c.style = "background-color: transparent";
 		var a = document.createElement("a");
+		var img = document.createElement("img");
+		img.src = "<c:url value="/resources/img/remove.png"/>";
+		img.height = "50";
+		img.width = "75";
+		a.appendChild(img);
 		var id = data.id;
 		var type = data.type;
 
@@ -326,7 +435,7 @@
 		a.id = "opRemove";
 		a.href = "javascript:removeFile(" + id + ", '" + type + "')";
 		a.style = "text-decoration: none";
-		a.innerHTML = "Remove";
+		//a.innerHTML = "Remove";
 		c.appendChild(a);
 		r.appendChild(c);
 
@@ -340,7 +449,12 @@
 			share.className = "opShare";
 			share.href = "javascript:sharing(" + id + ")";
 			share.style = "text-decoration: none";
-			share.innerHTML = "Share";
+			//share.innerHTML = "Share";
+			var img = document.createElement("img");
+			img.src = "<c:url value="/resources/img/share.png"/>";
+			img.height = "40";
+			img.width = "40";
+			share.appendChild(img);
 			cs.appendChild(share);
 			r.appendChild(cs);
 
@@ -350,7 +464,12 @@
 			rev.id = "revision_" + id;
 			rev.href = "javascript:revision(" + id + ")";
 			rev.style = "text-decoration:none; color: blue";
-			rev.innerHTML = "Revisions";
+			var img = document.createElement("img");
+			img.src = "<c:url value="/resources/img/revision.png"/>";
+			img.height = "35";
+			img.width = "40";
+			rev.appendChild(img);
+			//rev.innerHTML = "Revisions";
 			cr.appendChild(rev);
 			r.appendChild(cr);
 		}
@@ -400,19 +519,19 @@
 		input.id = "folderName";
 		input.type = "text";
 		var submit = document.createElement("input");
+		submit.id = "submitInput";
 		submit.type = "submit";
 		submit.value = "Create!";
 		addingFolder.appendChild(input);
 		addingFolder.appendChild(submit);
 	}
 
-	function createFolder() {
+	function createFolder() {                
 		var input = document.getElementById("folderName");
 		var folderName = input.value;
 		var father = sessionStorage.getItem("dir");
 		var username = "<c:out value="${user}"></c:out>";
-		alert("Creating folder " + folderName + " in folder' s id " + father
-				+ " for user " + username + "!");
+		//alert("Creating folder " + folderName + " in folder' s id " + father + " for user " + username + "!");
 
 		var message = new Object();
 		message.id = father;
@@ -449,6 +568,10 @@
 		$('#trash').dialog("open");
 	}
 	
+	function teamDialog() {
+		createTeam();
+	}
+	
 	function createDeletedTable() {
 		var table = document.getElementById("trashTable");
 		for (var i in filesHidden) {
@@ -480,18 +603,20 @@
 
 		<nav id="personalInfo">
 		<ul>
-			<li>Welcome, <a href="/deel/user/settingsProfile"><c:out value="${user}"></c:out></a>!
+			<li>Welcome, <a href="<c:url value="/user/settingsProfile"/>"><c:out
+						value="${user}"></c:out></a>!
 			</li>
 		</ul>
 		</nav>
 
 		<nav id="mainav">
 		<ul>
-			<li><a href="<c:url value="/home" />" onclick="javascript:goRoot()"
-				class="active">home</a></li>
-			<li><a href=<c:url value="/logout"/> >logout</a></li>
+			<li><a href="<c:url value="/home" />"
+				onclick="javascript:goRoot()" class="active">home</a></li>
+			<li><a href=<c:url value="/logout"/>>logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
-			<li><a href="javascript:trashDialog()" >trash</a></li>
+			<li><a href="javascript:teamDialog()">team</a></li>
+			<li><a href="javascript:trashDialog()">trash</a></li>
 		</ul>
 		</nav>
 
@@ -505,7 +630,10 @@
 					<td><form:form method="POST"
 							action="javascript:createFolder();" id="addingFolder">
 							<a href="javascript:sendFolderName()"
-								style="text-decoration: none">+</a>
+								style="text-decoration: none"> <img
+								src="<c:url value="/resources/img/folder.png"/>" height="30"
+								width="30">
+							</a>
 						</form:form></td>
 				</tr>
 			</table>
@@ -533,13 +661,18 @@
 				<tr>
 			</table>
 		</div>
-		
+
 		<div id="trash">
 			<table id="trashTable">
 				<tr>
 					<th>Name</th>
 				<tr>
 			</table>
+		</div>
+
+		<div id="team">
+			<ul id="teamList">
+			</ul>
 		</div>
 
 	</div>
