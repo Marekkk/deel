@@ -73,9 +73,7 @@ public class User {
 	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	private Company company;
 	
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(name="User_Team", joinColumns = {@JoinColumn(name="user_id")},
-								 inverseJoinColumns = {@JoinColumn(name="team_id")})
+	@ManyToMany(mappedBy="usersInTeam")
 	private Set<Team> teams = new HashSet<Team>(0);
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="user")

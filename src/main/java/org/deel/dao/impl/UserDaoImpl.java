@@ -63,6 +63,7 @@ public class UserDaoImpl implements UserDAO{
 	@Override
 	public List<User> userList() {
 		Criteria crit = sessionFactory.getCurrentSession().createCriteria(User.class);
+		System.out.println(crit.list());
 		return crit.list();
 	}	
 }

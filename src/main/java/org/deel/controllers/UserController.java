@@ -97,6 +97,7 @@ public class UserController {
 		User curr = userService.findUserByUsername(username);
 
 		List<User> userList = userService.listUser(curr);
+		System.out.println(userList);
 		List<Long> usersId = new LinkedList<Long>();
 		List<String> usernames = new LinkedList<String>();
 
@@ -219,6 +220,10 @@ public class UserController {
 		Team t = userService.findTeamByName(name);
 		if (t != null) {
 			json.put("status", "Team with this name already exists.");
+			return json;
+		}
+		if (name == "") {
+			json.put("status", "Please insert a name.");
 			return json;
 		}
 		
