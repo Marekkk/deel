@@ -57,58 +57,7 @@
 				effect : "explode"
 			},
 			modal : true,
-			uploadFiles : function (e) {
-				var files = e.dataTransfer.files;
-				var fd = new FormData();
-				console.log(files);
-				for (var i = 0; i < files.length; i++) 
-				      fd.append('files', files[i]);
-				
-				fd.append('path', currentFolder);
-				
-				$.ajax({
-					/* TODO set correct URL */
-					//url : "<c:url value="/file/upload"/>",
-					url : "file/upload",
-					type : 'POST',
-					data : fd,
-					cache : false,
-					contentType : false,
-					async : false,
-					processData : false,
-					success : function(returndata) {
-						getFiles();
-					}
-				});
-				 
-				
-
-			},
-			
-			downloadFile: function (id) {
-				console.log("donwloading file with id " + id);
-			},
-			removeFolder : function (id) {
-				console.log("removing folder with id " + id);
-			},
-			
-			changeDir: function(id) {
-				console.log("changing to dir with id " + id);
-			},
-			remove : function (id) {
-				console.log("removing id " +id);
-			},
-			revision : function (id) {
-				console.log("revision id " +id);	
-			},
-			share : function (id) {
-				console.log("sharing id" + id);
-			},
-			close : function() {
-				cleanTable("revisionTable");
-			},
-
-			title : "Revision for your file:"
+			title : "Revision for your file",
 		});
 		
 		$('#uploadContainer').dialog({
@@ -258,51 +207,8 @@
 
 	var usersWithShare = new Array();
 
-	function sharing(id) {
-		var ul = document.getElementById("slist");
-		$(ul).remove();
-		var sharingDiv = document.getElementById("sharingList");
-		var nul = document.createElement("ul");
-		nul.id = "slist";
-		sharingDiv.appendChild(nul);
-		$.ajax({
-			url : "<c:url value="/user/list"/>",
-			type : 'GET',
-			success : function(returndata) {
-				var users = returndata;
-				console.log(returndata);
-				createShareBox(users.id, users.Username, id);
-			}
-		});
-		var button = document.createElement("input");
-		button.id = "sendButton";
-		button.type = "button";
-		button.value = "Share File!";
-		button.innerHTML = "Share File!";
-		nul.appendChild(button);
-		$('#sendButton').click(function() {
-			alert("File Shared!");
-			//alert("You' re sharing " + id + " with " + usersWithShare);
-			var message = new Object();
+	function sharing(fp) {
 
-			message.users = usersWithShare;
-			message.file = id;
-
-			$.ajax({
-				url : "<c:url value="/file/share"/>",
-				type : 'POST',
-				data : JSON.stringify(message),
-				dataType : "json",
-				contentType : "application/json",
-				success : function(returndata) {
-					console.log(returndata);
-					getFiles();
-
-				}
-			});
-
-		});
-		$('#sharingList').dialog("open");
 	}
 
 	function createShareBox(usersid, usr, idFile) {
@@ -422,42 +328,20 @@
 	
 
 	function revision(id) {
-		console.log(id);
-		var message = new Object();
-		message.id = id;
-		$.ajax({
-			url : "<c:url value="/file/revision/list"/>",
-			type : 'GET',
-			data : message,
-			success : function(returndata) {
-				var dates = new Array();
-				var idRevs = new Array();
-				for ( var i in returndata) {
-					// i is the id of current revision
-					d = new Date(returndata[i].date);
-					var currPos = dates.length;
-					dates[currPos] = d;
-					idRevs[currPos] = i;
-				}
-				createRevisionsTable(id, idRevs, dates);
-			}
-		});
 
-		$('#revision').dialog("open");
 	}
 
-	function createRevisionsTable(idFile, idRevisions, datesRevisions) {
-		//alert("Id file -> " + idFile);
-		//alert("Id Revisions -> " + idRevisions);
-		//alert("Dates revisions -> " + datesRevisions);
+	function createRevisionsTable(file, idRevisions, datesRevisions) {
+
 		var table = document.getElementById("revisionTable");
+		$(table).empty();
 		for (var i = 0; i < datesRevisions.length; i++) {
 			var r = document.createElement("tr");
 			var c = document.createElement("td");
 			var a = document.createElement("a");
 			a.style = "color:black";
 			//a.href = "javascript:requestRevision("+idFile+","+idRevisions[i]+")";
-			a.href = "file/revision/" + files[idFile] + "?id=" + idFile
+			a.href = "file/revision/" + file.name + "?id=" + file.id2
 					+ "&revision=" + idRevisions[i];
 			a.innerHTML = datesRevisions[i];
 			c.appendChild(a);
@@ -577,32 +461,14 @@
 	}
 
 	$(document).ready(function() {
+		myUI.init();
 		
 		var wrapper = $('#wrapper');
 		
-		var uploadDiv = myUI.createUploadDiv({
-			cssClass : "upload",
-			cssClassHover : "uploadHover",
-			});
+		myUI.setWrapper(wrapper);
 		
-		wrapper.append(uploadDiv);
-		console.log(uploadDiv);
+		myUI.updateSpace();
 		
-		var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder() : "");
-		$.get(url, function(data) {
-			myUI.setCurrentFolder(data.me);
-			
-		
-
-			data.folders.forEach(function(f) {
-				wrapper.append(myUI.makeDivFromFolder(f));
-			});
-			
-			data.filePaths.forEach(function(f){
-				wrapper.append(myUI.makeDivFromFilePath(f));
-			});
-			
-		});
 		return;
 		
 		function getDataAndMakeTableBody(body) {

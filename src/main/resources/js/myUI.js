@@ -1,6 +1,9 @@
 var myUI = (function ($, service) {
 	var currentFolder;
 	
+	var wrapper;
+	var uploadDiv;
+	
 	var opsImageUrls = {
 			remove : '/deel/resources/img/remove.png',
 			revision : '/deel/resources/img/revision.png',
@@ -9,13 +12,55 @@ var myUI = (function ($, service) {
 	
 	return  {
 
-		init : function(opts) {
-			this.opts = opts;
-			jQuery.event.props.push("dataTransfer");
-			/* stub */
-			currentFolder = sessionStorage.getItem("dir");
+		init : function() {
+			jQuery.event.props.push( "dataTransfer" );
 			
+			uploadDiv = myUI.createUploadDiv({
+				cssClass : "upload",
+				cssClassHover : "uploadHover",
+				});
+
 		}, 
+		
+		setWrapper : function(w) {
+			wrapper = w;
+		},
+		
+		getWrapper : function() {
+			return wrapper;
+		},
+		
+		updateSpace : function() {
+			wrapper.empty();	
+			
+			
+			var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder().id : "");
+			$.get(url, function(data) {
+				myUI.setCurrentFolder(data.me);
+				var controls = $("<div></div>");
+	
+				if (data.me.father) {
+					var goBack = $("<div><div>");
+					goBack.addClass("goBack");
+					goBack.click(function() {
+						myUI.setCurrentFolder(data.me.father);
+						myUI.updateSpace();
+					});
+					controls.append(goBack);
+				} 
+					
+				controls.append(uploadDiv);
+				wrapper.append(controls);
+				data.folders.forEach(function(f) {
+					wrapper.append(myUI.makeDivFromFolder(f));
+				});
+				
+				data.filePaths.forEach(function(f){
+					wrapper.append(myUI.makeDivFromFilePath(f));
+				});
+				
+			});
+		},
 		
 		makeDivFromFilePath : function(fp) {
 			var now = new Date();
@@ -30,7 +75,7 @@ var myUI = (function ($, service) {
 			
 			name.html(fp.name);
 			name.css("cursor", "pointer");
-			name.click(function() {service.downloadFile(fp.id);});
+			name.click(function() {service.downloadFile(fp);});
 			
 			var time = $("<span class='time'></span>");
 			
@@ -52,7 +97,7 @@ var myUI = (function ($, service) {
 				img[0].width = 50;
 				img[0].height = 70;
 				img.click(function() {
-					service[op](fp.id);
+					service[op](fp);
 				});
 				ops.append(img);
 			});
@@ -77,7 +122,7 @@ var myUI = (function ($, service) {
 			
 			name.html(f.name);
 			name.css("cursor", "pointer");
-			name.click(function() {service.changeDir(f.id);});
+			name.click(function() {myUI.setCurrentFolder(f);myUI.updateSpace();});
 			
 		
 		    var img = $("<img></img>");
@@ -85,7 +130,7 @@ var myUI = (function ($, service) {
 			img[0].width = 50;
 			img[0].height = 70;2
 			img.click(function() {
-					service.removeFolder(f.id);
+					service.removeFolder(f);
 			});
 			ops.append(img);
 
@@ -186,7 +231,7 @@ var myUI = (function ($, service) {
 								input.hide();
 							}
 						}
-					});
+					});2
 				}
 			});
 			
@@ -279,16 +324,17 @@ var myUI = (function ($, service) {
 			var cssClassHover = "cssClassHover" in opts ? opts.cssClassHover : cssClass;
 			
 			
+			holder.addClass(cssClass);
 			/* enable drag and drop */
 			/* check that they are files */
-			holder.on('dragover', function () { this.className = cssClass; console.log("dragover");return false; });
-			holder.on('dragend' , function () { this.className = cssClassHover;console.log("dragend"); return false; });
+			holder.on('dragover', function () { this.className = cssClass; return false; });
+			holder.on('dragend' , function () { this.className = cssClassHover;return false; });
 			
 			
 			holder.on('drop', function (e) {
 				e.preventDefault();
 				this.className  = cssClass;
-				service.uploadFiles(e);
+				service.uploadFiles(e, myUI.getCurrentFolder());
 			});
 			return holder;
 			

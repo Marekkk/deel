@@ -1,18 +1,18 @@
 var service = (function ($) {
 	
-
+	var idown;  
 	
 	
 	return {
-		uploadFiles : function (e) {
+		uploadFiles : function (e, currentFolder) {
 			var files = e.dataTransfer.files;
 			var fd = new FormData();
 			
-			console.log(files);
+
 			for (var i = 0; i < files.length; i++) 
 			      fd.append('files', files[i]);
 			
-			fd.append('path', currentFolder);
+			fd.append('path', currentFolder.id);
 			
 			$.ajax({
 				/* TODO set correct URL */
@@ -24,31 +24,90 @@ var service = (function ($) {
 				contentType : false,
 				async : false,
 				processData : false,
-				success : function(returndata) {
-					getFiles();
+				success : function(returndata) { 
+						myUI.updateSpace();
 				}
 			});
 			 
 		},
 		
-		downloadFile: function (id) {
-			console.log("donwloading file with id " + id);
-		},
-		removeFolder : function (id) {
-			console.log("removing folder with id " + id);
+		downloadFile: function (fp) {
+			var url = 'file/download/'+fp.name+'?id='+fp.id;
+				if (idown) {
+			    idown.attr('src', url);
+			  } else {
+			    idown = $('<iframe>', { id:'idown', src:url }).hide().appendTo('body');
+			  }
+				
+			},
+			
+		removeFolder : function (f) {
+			$.get('folder/remove', {id:f.id}, function(){myUI.updateSpace();});
 		},
 		
-		changeDir: function(id) {
-			console.log("changing to dir with id " + id);
+		remove : function (fp) {
+			$.get('file/remove', {id:fp.id}, function(){myUI.updateSpace();});
 		},
-		remove : function (id) {
-			console.log("removing id " +id);
+		revision : function (fp) {
+			/* stub */
+			$.get("file/revision/list",
+					{id:fp.id}, function(returndata) {
+					var dates = new Array();
+					var idRevs = new Array();
+					for ( var i in returndata) {
+						// i is the id of current revision
+						d = new Date(returndata[i].date);
+						var currPos = dates.length;
+						dates[currPos] = d;
+						idRevs[currPos] = i;
+					}
+					createRevisionsTable(fp, idRevs, dates);
+				});
+
+			$('#revision').dialog("open");	
 		},
-		revision : function (id) {
-			console.log("revision id " +id);	
-		},
-		share : function (id) {
-			console.log("sharing id" + id);
+		share : function (fp) {
+			
+			var ul = document.getElementById("slist");
+			$(ul).remove();
+			var sharingDiv = document.getElementById("sharingList");
+			var nul = document.createElement("ul");
+			nul.id = "slist";
+			sharingDiv.appendChild(nul);
+			$.ajax({
+				url : "user/list",
+				type : 'GET',
+				success : function(returndata) {
+					var users = returndata;
+					createShareBox(users.id, users.Username, fp.id);
+				}
+			});
+			var button = document.createElement("input");
+			button.id = "sendButton";
+			button.type = "button";
+			button.value = "Share File!";
+			button.innerHTML = "Share File!";
+			nul.appendChild(button);
+			$('#sendButton').click(function() {
+				alert("File Shared!");
+				//alert("You' re sharing " + id + " with " + usersWithShare);
+				var message = new Object();
+
+				message.users = usersWithShare;
+				message.file = fp.id;
+
+				$.ajax({
+					url : "file/share",
+					type : 'POST',
+					data : JSON.stringify(message),
+					dataType : "json",
+					contentType : "application/json",
+					success : function(returndata) {
+					}
+				});
+
+			});
+			$('#sharingList').dialog("open");
 		},
 		
 	};
