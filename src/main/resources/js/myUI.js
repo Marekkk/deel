@@ -94,8 +94,6 @@ var myUI = (function ($, service) {
 			"remove revision share".split(' ').forEach(function(op) {
 				var img = $("<img></img>");
 				img.prop('src', opsImageUrls[op]);
-				img[0].width = 50;
-				img[0].height = 70;
 				img.click(function() {
 					service[op](fp);
 				});
@@ -127,8 +125,6 @@ var myUI = (function ($, service) {
 		
 		    var img = $("<img></img>");
 			img.prop('src', opsImageUrls["remove"]);
-			img[0].width = 50;
-			img[0].height = 70;2
 			img.click(function() {
 					service.removeFolder(f);
 			});
