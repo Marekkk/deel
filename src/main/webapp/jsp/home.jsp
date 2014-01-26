@@ -13,6 +13,7 @@
 	media="screen">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="<c:url value='/resources/js/service.js'/>"></script>
 <script src="<c:url value='/resources/js/myUI.js'/>"></script>
 <script type="text/javascript">
 
@@ -56,7 +57,53 @@
 				effect : "explode"
 			},
 			modal : true,
+			uploadFiles : function (e) {
+				var files = e.dataTransfer.files;
+				var fd = new FormData();
+				console.log(files);
+				for (var i = 0; i < files.length; i++) 
+				      fd.append('files', files[i]);
+				
+				fd.append('path', currentFolder);
+				
+				$.ajax({
+					/* TODO set correct URL */
+					//url : "<c:url value="/file/upload"/>",
+					url : "file/upload",
+					type : 'POST',
+					data : fd,
+					cache : false,
+					contentType : false,
+					async : false,
+					processData : false,
+					success : function(returndata) {
+						getFiles();
+					}
+				});
+				 
+				
 
+			},
+			
+			downloadFile: function (id) {
+				console.log("donwloading file with id " + id);
+			},
+			removeFolder : function (id) {
+				console.log("removing folder with id " + id);
+			},
+			
+			changeDir: function(id) {
+				console.log("changing to dir with id " + id);
+			},
+			remove : function (id) {
+				console.log("removing id " +id);
+			},
+			revision : function (id) {
+				console.log("revision id " +id);	
+			},
+			share : function (id) {
+				console.log("sharing id" + id);
+			},
 			close : function() {
 				cleanTable("revisionTable");
 			},
@@ -105,7 +152,53 @@
 		cleanTable("dataTable");
 		if (sessionStorage.getItem("dir") == null
 				|| sessionStorage.getItem("dir") === undefined)
-			var request = "<c:url value="/file/list"/>";
+			var request = "<c:url value="/fil		uploadFiles : function (e) {
+				var files = e.dataTransfer.files;
+				var fd = new FormData();
+				console.log(files);
+				for (var i = 0; i < files.length; i++) 
+				      fd.append('files', files[i]);
+				
+				fd.append('path', currentFolder);
+				
+				$.ajax({
+					/* TODO set correct URL */
+					//url : "<c:url value="/file/upload"/>",
+					url : "file/upload",
+					type : 'POST',
+					data : fd,
+					cache : false,
+					contentType : false,
+					async : false,
+					processData : false,
+					success : function(returndata) {
+						getFiles();
+					}
+				});
+				 
+				
+
+			},
+			
+			downloadFile: function (id) {
+				console.log("donwloading file with id " + id);
+			},
+			removeFolder : function (id) {
+				console.log("removing folder with id " + id);
+			},
+			
+			changeDir: function(id) {
+				console.log("changing to dir with id " + id);
+			},
+			remove : function (id) {
+				console.log("removing id " +id);
+			},
+			revision : function (id) {
+				console.log("revision id " +id);	
+			},
+			share : function (id) {
+				console.log("sharing id" + id);
+			},e/list"/>";
 		else
 			var request = "<c:url value="/file/list?path="/>" + sessionStorage.getItem("dir");
 
@@ -223,7 +316,53 @@
 			a.innerHTML = usr[i];
 			a.href = "javascript:shareFileWith(" + usersid[i] + ")";
 			li.appendChild(a);
-			var a2 = document.createElement("a");
+			var a2 = document.createElement("a		uploadFiles : function (e) {
+					var files = e.dataTransfer.files;
+					var fd = new FormData();
+					console.log(files);
+					for (var i = 0; i < files.length; i++) 
+					      fd.append('files', files[i]);
+					
+					fd.append('path', currentFolder);
+					
+					$.ajax({
+						/* TODO set correct URL */
+						//url : "<c:url value="/file/upload"/>",
+						url : "file/upload",
+						type : 'POST',
+						data : fd,
+						cache : false,
+						contentType : false,
+						async : false,
+						processData : false,
+						success : function(returndata) {
+							getFiles();
+						}
+					});
+					 
+					
+
+				},
+				
+				downloadFile: function (id) {
+					console.log("donwloading file with id " + id);
+				},
+				removeFolder : function (id) {
+					console.log("removing folder with id " + id);
+				},
+				
+				changeDir: function(id) {
+					console.log("changing to dir with id " + id);
+				},
+				remove : function (id) {
+					console.log("removing id " +id);
+				},
+				revision : function (id) {
+					console.log("revision id " +id);	
+				},
+				share : function (id) {
+					console.log("sharing id" + id);
+				},");
 			a2.id = "added" + usersid[i];
 			a2.innerHTML = "";
 			li.appendChild(a2);
@@ -485,6 +624,24 @@
 
 	$(document).ready(function() {
 
+		
+		var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder() : "");
+		$.get(url, function(data) {
+			myUI.setCurrentFolder(data.me);
+			
+			var wrapper = $('#wrapper');
+			
+			data.folders.forEach(function() {
+				wrapper.append(myUI.makeDivFromFolder);
+			});
+			
+			data.filepaths.forEach(function(){
+				wrapper.append(myUI.makeDivFromFilePath);
+			});
+			
+		});
+		return;
+		
 		function getDataAndMakeTableBody(body) {
 			
 			var opsImageUrls = {
@@ -504,9 +661,6 @@
 					var name = $("<span></span>");
 					name.html(f.name);
 					name.click(function(){myUI.changeDir(f.id)});
-					
-					
-					
 					
 					var ops = $("<div></div>");
 					ops.className = "ops";

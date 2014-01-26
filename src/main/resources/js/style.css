@@ -1,0 +1,32 @@
+* {
+	margin : 0;
+	padding : 0;
+}
+
+.file span {
+	margin: 10px;
+}
+
+.file {
+	overflow: auto;
+	background:  linear-gradient(#1e5799 0%,#48abbf 0%,#7db9e8 99%);
+}
+
+.file div {
+	display: inline-block;
+	margin: 10px;
+}
+
+.file .ops {
+	float:right;
+	display : none;
+}
+
+.ops {
+	cursor: pointer;
+}
+
+.file:hover .ops {
+	float:right;
+	display : inline-block;
+}

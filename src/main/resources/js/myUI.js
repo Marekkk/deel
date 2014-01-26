@@ -1,6 +1,11 @@
-var myUI = (function ($) {
+var myUI = (function ($, service) {
 	var currentFolder;
 	
+	var opsImageUrls = {
+			remove : '../img/remove.png',
+			revision : '../img/revision.png',
+			share : '../img/share.png',
+	};
 	
 	return  {
 
@@ -11,6 +16,91 @@ var myUI = (function ($) {
 			currentFolder = sessionStorage.getItem("dir");
 			
 		}, 
+		
+		makeDivFromFilePath : function(fp) {
+			var now = new Date();
+			var div = $("<div></div>");
+			
+			var name = $("<div></div>");
+			var info = $("<div></div>");
+			var ops = $("<div></div>");
+			
+			div.addClass("file");
+			ops.addClass("ops");
+			
+			name.html(fp.name);
+			name.css("cursor", "pointer");
+			name.click(function() {service.downloadFile(fp.id);});
+			
+			var time = $("<span class='time'></span>");
+			
+			var lastModified = new Date(fp.lastModified);
+			if (lastModified.getDate() == now.getDate() &&
+					lastModified.getMonth() == now.getMonth())
+				time.html(lastModified.toLocaleTimeString());
+			else
+				time.html(lastModified.toLocaleString());
+			
+			info.append(time);
+			info.append($("<span>" + fp.size + "</span>"));
+			info.append($("<span>" + fp.uploadedBy + "</span>"));
+			
+			var opsImageUrls = {
+					remove : '../img/remove.png',
+					revision : '../img/revision.png',
+					share : '../img/share.png',
+			};
+			
+			"remove revision share".split(' ').forEach(function(op) {
+				var img = $("<img></img>");
+				img.prop('src', opsImageUrls[op]);
+				img.prop('height', '50');
+				img.prop('width', '75');
+				img.click(function() {
+					service[op](fp.id);
+				});
+				ops.append(img);
+			});
+			
+			div.append(name);
+			div.append(info);
+			div.append(ops);
+			
+			return div;
+				
+		},
+		
+		makeDivFromFolder : function(f) {
+
+			var div = $("<div></div>");
+			
+			var name = $("<div></div>");
+			var ops = $("<div></div>");
+			
+			div.addClass("file");
+			ops.addClass("ops");
+			
+			name.html(f.name);
+			name.css("cursor", "pointer");
+			name.click(function() {service.changeDir(fp.id);});
+			
+		
+		    var img = $("<img></img>");
+			img.prop('src','../img/remove.png');
+			img.prop('height', '50');
+			img.prop('width', '75');
+			img.click(function() {
+					service:removeFolder(fp.id);
+			});
+			ops.append(img);
+
+			
+			div.append(name);
+			div.append(ops);
+			
+			return div;
+				
+		},
 		
 		getCurrentFolder: function() {
 			return currentFolder;
@@ -186,10 +276,7 @@ var myUI = (function ($) {
 			
 		},
 		
-		createUploadDiv: function (opts) {
-			if(!opts.uploadCB) {
-				return;
-			}
+		createUploadDiv: function () {
 			
 			var holder = $("<div></div>");
 			
@@ -206,8 +293,7 @@ var myUI = (function ($) {
 			holder.on('drop', function (e) {
 				e.preventDefault();
 				this.className  = cssClass;
-				console.log(e);
-				opts.uploadCB(e);
+				service.uploadFiles(e);
 			});
 			return holder;
 			
@@ -224,50 +310,7 @@ var myUI = (function ($) {
 			});
 		},
 		
-		uploadFiles : function (e) {
-			var files = e.dataTransfer.files;
-			var fd = new FormData();
-			console.log(files);
-			for (var i = 0; i < files.length; i++) 
-			      fd.append('files', files[i]);
-			
-			fd.append('path', currentFolder);
-			
-			$.ajax({
-				/* TODO set correct URL */
-				//url : "<c:url value="/file/upload"/>",
-				url : "file/upload",
-				type : 'POST',
-				data : fd,
-				cache : false,
-				contentType : false,
-				async : false,
-				processData : false,
-				success : function(returndata) {
-					getFiles();
-				}
-			});
-			 
-			
 
-		},
-		
-		downloadFile: function (id) {
-			console.log("donwloading file with id " + id);
-		},
-		
-		changeDir: function(id) {
-			console.log("changing to dir with id " + id);
-		},
-		remove : function (id) {
-			console.log("removing id " +id);
-		},
-		revision : function (id) {
-			console.log("revision id " +id);	
-		},
-		share : function (id) {
-			console.log("sharing id" + id);
-		},
 		
 //		function addingOps(data, tr) {
 //			var r = tr;
@@ -380,7 +423,7 @@ var myUI = (function ($) {
 //		}
 		
 	};
-})($);
+})($, service);
 
 	
 	
