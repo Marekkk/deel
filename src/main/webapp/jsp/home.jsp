@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href=<c:url value="/resources/css/style.css"/>
+<link rel="stylesheet" href=<c:url value="/resources/js/style.css"/>
 	media="screen">
 <link rel="stylesheet"
 	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css"
@@ -148,62 +148,62 @@
 	var directories;
 	var filesHidden;
 
-	function getFiles() {
-		cleanTable("dataTable");
-		if (sessionStorage.getItem("dir") == null
-				|| sessionStorage.getItem("dir") === undefined)
-			var request = "<c:url value="/fil		uploadFiles : function (e) {
-				var files = e.dataTransfer.files;
-				var fd = new FormData();
-				console.log(files);
-				for (var i = 0; i < files.length; i++) 
-				      fd.append('files', files[i]);
+// 	function getFiles() {
+// 		cleanTable("dataTable");
+// 		if (sessionStorage.getItem("dir") == null
+// 				|| sessionStorage.getItem("dir") === undefined)
+
+// 				var files = e.dataTransfer.files;
+// 				var fd = new FormData();
+// 				console.log(files);
+// 				for (var i = 0; i < files.length; i++) 
+// 				      fd.append('files', files[i]);
 				
-				fd.append('path', currentFolder);
+// 				fd.append('path', currentFolder);
 				
-				$.ajax({
-					/* TODO set correct URL */
-					//url : "<c:url value="/file/upload"/>",
-					url : "file/upload",
-					type : 'POST',
-					data : fd,
-					cache : false,
-					contentType : false,
-					async : false,
-					processData : false,
-					success : function(returndata) {
-						getFiles();
-					}
-				});
+// 				$.ajax({
+					
+					
+// 					url : "file/upload",
+// 					type : 'POST',
+// 					data : fd,
+// 					cache : false,
+// 					contentType : false,
+// 					async : false,
+// 					processData : false,
+// 					success : function(returndata) {
+// 						getFiles();
+// 					}
+// 				});
 				 
 				
 
-			},
+// 			},
 			
-			downloadFile: function (id) {
-				console.log("donwloading file with id " + id);
-			},
-			removeFolder : function (id) {
-				console.log("removing folder with id " + id);
-			},
+// 			downloadFile: function (id) {
+// 				console.log("donwloading file with id " + id);
+// 			},
+// 			removeFolder : function (id) {
+// 				console.log("removing folder with id " + id);
+// 			},
 			
-			changeDir: function(id) {
-				console.log("changing to dir with id " + id);
-			},
-			remove : function (id) {
-				console.log("removing id " +id);
-			},
-			revision : function (id) {
-				console.log("revision id " +id);	
-			},
-			share : function (id) {
-				console.log("sharing id" + id);
-			},e/list"/>";
-		else
-			var request = "<c:url value="/file/list?path="/>" + sessionStorage.getItem("dir");
+// 			changeDir: function(id) {
+// 				console.log("changing to dir with id " + id);
+// 			},
+// 			remove : function (id) {
+// 				console.log("removing id " +id);
+// 			},
+// 			revision : function (id) {
+// 				console.log("revision id " +id);	
+// 			},
+// 			share : function (id) {
+// 				console.log("sharing id" + id);
+// 			},e/list"/>";
+// 		else
+// 			var request = "<c:url value="/file/list?path="/>" + sessionStorage.getItem("dir");
 
-		makeRequest(request);
-	}
+// 		makeRequest(request);
+// 	}
 	
 	function makeRequest(request) {
 		var req = request;
@@ -316,53 +316,7 @@
 			a.innerHTML = usr[i];
 			a.href = "javascript:shareFileWith(" + usersid[i] + ")";
 			li.appendChild(a);
-			var a2 = document.createElement("a		uploadFiles : function (e) {
-					var files = e.dataTransfer.files;
-					var fd = new FormData();
-					console.log(files);
-					for (var i = 0; i < files.length; i++) 
-					      fd.append('files', files[i]);
-					
-					fd.append('path', currentFolder);
-					
-					$.ajax({
-						/* TODO set correct URL */
-						//url : "<c:url value="/file/upload"/>",
-						url : "file/upload",
-						type : 'POST',
-						data : fd,
-						cache : false,
-						contentType : false,
-						async : false,
-						processData : false,
-						success : function(returndata) {
-							getFiles();
-						}
-					});
-					 
-					
-
-				},
-				
-				downloadFile: function (id) {
-					console.log("donwloading file with id " + id);
-				},
-				removeFolder : function (id) {
-					console.log("removing folder with id " + id);
-				},
-				
-				changeDir: function(id) {
-					console.log("changing to dir with id " + id);
-				},
-				remove : function (id) {
-					console.log("removing id " +id);
-				},
-				revision : function (id) {
-					console.log("revision id " +id);	
-				},
-				share : function (id) {
-					console.log("sharing id" + id);
-				},");
+			var a2 = document.createElement("a");
 			a2.id = "added" + usersid[i];
 			a2.innerHTML = "";
 			li.appendChild(a2);
@@ -623,20 +577,29 @@
 	}
 
 	$(document).ready(function() {
-
+		
+		var wrapper = $('#wrapper');
+		
+		var uploadDiv = myUI.createUploadDiv({
+			cssClass : "upload",
+			cssClassHover : "uploadHover",
+			});
+		
+		wrapper.append(uploadDiv);
+		console.log(uploadDiv);
 		
 		var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder() : "");
 		$.get(url, function(data) {
 			myUI.setCurrentFolder(data.me);
 			
-			var wrapper = $('#wrapper');
-			
-			data.folders.forEach(function() {
-				wrapper.append(myUI.makeDivFromFolder);
+		
+
+			data.folders.forEach(function(f) {
+				wrapper.append(myUI.makeDivFromFolder(f));
 			});
 			
-			data.filepaths.forEach(function(){
-				wrapper.append(myUI.makeDivFromFilePath);
+			data.filePaths.forEach(function(f){
+				wrapper.append(myUI.makeDivFromFilePath(f));
 			});
 			
 		});
@@ -877,6 +840,7 @@
 		</ul>
 		</nav>
 
+		<div id="wrapper"></div>
 		<div id="filesContainer">
 			<table id="dataTable">
 				<tr>

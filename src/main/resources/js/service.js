@@ -1,11 +1,13 @@
 var service = (function ($) {
 	
+
 	
 	
 	return {
 		uploadFiles : function (e) {
 			var files = e.dataTransfer.files;
 			var fd = new FormData();
+			
 			console.log(files);
 			for (var i = 0; i < files.length; i++) 
 			      fd.append('files', files[i]);
@@ -27,8 +29,6 @@ var service = (function ($) {
 				}
 			});
 			 
-			
-
 		},
 		
 		downloadFile: function (id) {

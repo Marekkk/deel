@@ -2,9 +2,9 @@ var myUI = (function ($, service) {
 	var currentFolder;
 	
 	var opsImageUrls = {
-			remove : '../img/remove.png',
-			revision : '../img/revision.png',
-			share : '../img/share.png',
+			remove : '/deel/resources/img/remove.png',
+			revision : '/deel/resources/img/revision.png',
+			share : '/deel/resources/img/share.png',
 	};
 	
 	return  {
@@ -44,18 +44,13 @@ var myUI = (function ($, service) {
 			info.append(time);
 			info.append($("<span>" + fp.size + "</span>"));
 			info.append($("<span>" + fp.uploadedBy + "</span>"));
-			
-			var opsImageUrls = {
-					remove : '../img/remove.png',
-					revision : '../img/revision.png',
-					share : '../img/share.png',
-			};
+
 			
 			"remove revision share".split(' ').forEach(function(op) {
 				var img = $("<img></img>");
 				img.prop('src', opsImageUrls[op]);
-				img.prop('height', '50');
-				img.prop('width', '75');
+				img[0].width = 50;
+				img[0].height = 70;
 				img.click(function() {
 					service[op](fp.id);
 				});
@@ -82,15 +77,15 @@ var myUI = (function ($, service) {
 			
 			name.html(f.name);
 			name.css("cursor", "pointer");
-			name.click(function() {service.changeDir(fp.id);});
+			name.click(function() {service.changeDir(f.id);});
 			
 		
 		    var img = $("<img></img>");
-			img.prop('src','../img/remove.png');
-			img.prop('height', '50');
-			img.prop('width', '75');
+			img.prop('src', opsImageUrls["remove"]);
+			img[0].width = 50;
+			img[0].height = 70;2
 			img.click(function() {
-					service:removeFolder(fp.id);
+					service.removeFolder(f.id);
 			});
 			ops.append(img);
 
@@ -276,7 +271,7 @@ var myUI = (function ($, service) {
 			
 		},
 		
-		createUploadDiv: function () {
+		createUploadDiv: function (opts) {
 			
 			var holder = $("<div></div>");
 			
