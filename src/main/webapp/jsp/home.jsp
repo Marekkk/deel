@@ -484,6 +484,106 @@
 	}
 
 	$(document).ready(function() {
+
+		function getDataAndMakeTableBody(body) {
+			
+			var opsImageUrls = {
+					remove : '<c:url value="/resources/img/remove.png"/>',
+					revision : '<c:url value="/resources/img/revision.png"/>',
+					share : '<c:url value="/resources/img/share.png"/>',
+			};
+			
+			var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder() : "");
+			$.get(url, function(data) {
+				myUI.setCurrentFolder = data.me;
+				var now = new Date();				
+				data.folders.forEach(function(f){
+					var div = $("<div></div>");
+					div.className = "folderDiv";
+					
+					var name = $("<span></span>");
+					name.html(f.name);
+					name.click(function(){myUI.changeDir(f.id)});
+					
+					
+					
+					
+					var ops = $("<div></div>");
+					ops.className = "ops";
+					
+					div.append(name);
+					div.append(ops);
+					
+					var tr = $("<tr></tr>");
+					var td = $("<td></td>");
+					body.append(tr.append(td.append(div)));
+				});
+				
+				data.filePaths.forEach(function(fp) {
+					var div = $("<div></div>");
+					
+					var name = $("<span></span>");
+					name.html(fp.name);
+					name.click(function(){myUI.downloadFile(fp.id)});
+					
+					var time = $("<span class='time'></span>");
+					var lastModified = new Date(fp.lastModified);
+					if (lastModified.getDate() == now.getDate() &&
+							lastModified.getMonth() == now.getMonth())
+						time.html(lastModified.toLocaleTimeString());
+					else
+						time.html(lastModified.toLocaleString());
+					
+					
+					
+					
+					//ops.className = "ops";
+					
+					"remove revision share".split(' ').forEach(function(op) {
+						var img = $("<img></img>");
+						img.prop('src', opsImageUrls[op]);
+						img.prop('height', '50');
+						img.prop('width', '75');
+						img.click(function() {
+							myUI[op](fp.id);
+						});
+						div.append(img);
+					})
+					
+					div.append(name);
+					div.append(time);
+					//div.append(ops);
+					
+					var tr = $("<tr></tr>");
+					var td = $("<td></td>");
+					body.append(tr.append(td.append(div)));
+				});
+				
+
+			});	
+		}
+		
+
+		var uploadDiv = myUI.createUploadDiv({
+			cssClass : "uploadDiv",
+			cssClassHover : "uploadDivHover",
+			uploadCB : myUI.uploadFiles,
+		});
+		
+		console.log(uploadDiv);
+		var fr = $("<tr></tr>");
+		fr.append(uploadDiv);
+
+		var t = myUI.createTable({
+			tableClassName : "fileTable",
+			head : ["Your deel space"],
+			firstRow : fr,
+			dataCB : getDataAndMakeTableBody,
+		});
+		
+		$('#filesContainer').append(t);	
+
+		return;
 		getFiles();
 
 

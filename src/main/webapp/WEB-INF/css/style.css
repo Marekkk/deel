@@ -102,14 +102,14 @@ font-size: 16px;
 margin-left: 7em;
 }
 
-#filesContainer th
+.fileTable thead tr
 {
 color: #d0d7de;
 padding: .2em;
 background-color: #555353;
 }
 
-#filesContainer td
+.fileTable td
 {
 text-align: center;
 font-style: italic;

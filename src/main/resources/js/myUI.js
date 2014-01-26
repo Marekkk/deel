@@ -33,13 +33,13 @@ var myUI = (function ($) {
 				var thr = $("<tr></tr>");
 				thead.append(thr);
 				opts.head.forEach(function (th) {
-					thr.append($("<td>"+th+"</td>"));
+					thr.append($("<th>"+th+"</th>"));
 				});
 				t.append(thead);
 			}
-			
+			var body = $("<tbody></tbody>");
 			if("firstRow" in opts)
-				t.append(opts.firstRow);
+				body.append(opts.firstRow);
 			
 			if("data" in opts)
 			opts.data.forEach(function(r)  {
@@ -50,6 +50,11 @@ var myUI = (function ($) {
 					tr.append(myUI.createDivGeneral(r));
 				t.append(tr);
 			});
+			
+			if("dataCB" in opts) {
+				t.append(body);
+				opts.dataCB(body);
+			}
 	
 			console.log(t);
 			return t;
@@ -207,6 +212,7 @@ var myUI = (function ($) {
 			return holder;
 			
 		},
+		
 		postWithAjax : function (url, cb, data) {
 			$.ajax({
 				url : url,
@@ -245,6 +251,133 @@ var myUI = (function ($) {
 			
 
 		},
+		
+		downloadFile: function (id) {
+			console.log("donwloading file with id " + id);
+		},
+		
+		changeDir: function(id) {
+			console.log("changing to dir with id " + id);
+		},
+		remove : function (id) {
+			console.log("removing id " +id);
+		},
+		revision : function (id) {
+			console.log("revision id " +id);	
+		},
+		share : function (id) {
+			console.log("sharing id" + id);
+		},
+		
+//		function addingOps(data, tr) {
+//			var r = tr;
+//			var c = document.createElement("td");
+//			c.style = "background-color: transparent";
+//			var a = document.createElement("a");
+//			var img = document.createElement("img");
+//			img.src = "<c:url value="/resources/img/remove.png"/>";
+//			img.height = "50";
+//			img.width = "75";
+//			a.appendChild(img);
+//			var id = data.id;
+//			var type = data.type;
+//
+//			a.type = type;
+//			a.id = "opRemove";
+//			a.href = "javascript:removeFile(" + id + ", '" + type + "')";
+//			a.style = "text-decoration: none";
+//			//a.innerHTML = "Remove";
+//			c.appendChild(a);
+//			r.appendChild(c);
+//
+//
+//			if (type == "file") {
+//				var cs = document.createElement("td");
+//				cs.style = "background-color: transparent";
+//				var share = document.createElement("a");
+//				var idOpShare = "share_" + id;
+//				share.id = idOpShare;
+//				share.className = "opShare";
+//				share.href = "javascript:sharing(" + id + ")";
+//				share.style = "text-decoration: none";
+//				//share.innerHTML = "Share";
+//				var img = document.createElement("img");
+//				img.src = "<c:url value="/resources/img/share.png"/>";
+//				img.height = "40";
+//				img.width = "40";
+//				share.appendChild(img);
+//				cs.appendChild(share);
+//				r.appendChild(cs);
+//
+//				var cr = document.createElement("td");
+//				cr.style = "background-color: transparent";
+//				var rev = document.createElement("a");
+//				rev.id = "revision_" + id;
+//				rev.href = "javascript:revision(" + id + ")";
+//				rev.style = "text-decoration:none; color: blue";
+//				var img = document.createElement("img");
+//				img.src = "<c:url value="/resources/img/revision.png"/>";
+//				img.height = "35";
+//				img.width = "40";
+//				rev.appendChild(img);
+//				//rev.innerHTML = "Revisions";
+//				cr.appendChild(rev);
+//				r.appendChild(cr);
+//			}
+//		}
+//		function getFiles() {
+//			cleanTable("dataTable");
+//			if (sessionStorage.getItem("dir") == null
+//					|| sessionStorage.getItem("dir") === undefined)
+//				var request = "<c:url value="/file/list"/>";
+//			else
+//				var request = "<c:url value="/file/list?path="/>" + sessionStorage.getItem("dir");
+//
+//			makeRequest(request);
+//		}
+//		
+//		function makeRequest(request) {
+//			var req = request;
+//			$.get(req, function(data, success) {
+//				console.log(success);
+//
+//				console.log(data);
+//				currentDir = data.currentDir;
+//				if (req == "<c:url value="/file/list"/>") {
+//					sessionStorage.setItem("root", currentDir.id);
+//					sessionStorage.setItem("dir", currentDir.id);
+//				} else {
+//					sessionStorage.setItem("dir", currentDir.id);
+//				}
+//				files = data.files;
+//				directories = data.directories;
+//				filesHidden = data.filesHidden;
+//				console.log(currentDir, filesHidden);
+//				updateTable("dataTable");
+//			});
+//		}
+//		
+//		function updateTable(tableId) {
+//			for ( var i in directories) {
+//				var a = document.createElement("a");
+//				a.id = i;
+//				a.value = i;
+//				a.style = "color:red";
+//				a.href = "javascript:changeFolder(" + i + ")";
+//				a.innerHTML = directories[i];
+//				a.type = "folder";
+//				addRow(a, i, tableId);
+//			}
+//
+//			for ( var i in files) {
+//				var a = document.createElement("a");
+//				a.id = i;
+//				a.href = "file/download/" + files[i] + "?id=" + i;
+//				a.innerHTML = files[i];
+//				a.type = "file";
+//				addRow(a, i, tableId);
+//			}
+//		}
 		
 	};
 })($);
