@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.deel.dao.FolderDAO;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
+import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -187,13 +188,15 @@ public class FileController {
 		Map<String, Object> jsonReturn = new HashMap<String, Object>();
 
 		List<MultipartFile> mFiles = fileForm.getFiles();
-
+		Set<FilePathInfo> ret = new HashSet<FilePathInfo>();
+		FilePathInfo fInfo;
 		for (MultipartFile multipartFile : mFiles) {
 			try {
-				fileService.uploadFile(curr,
+				fInfo = fileService.uploadFile(curr,
 						multipartFile.getOriginalFilename(), folder,
 						multipartFile.getInputStream());
-				jsonReturn.put(multipartFile.getOriginalFilename(), "success");
+				ret.add(fInfo);
+				
 
 			} catch (IOException e) {
 				jsonReturn.put(multipartFile.getOriginalFilename(), "failed");
@@ -205,9 +208,12 @@ public class FileController {
 				jsonReturn.put(multipartFile.getOriginalFilename(), "failed");
 				jsonReturn.put(multipartFile.getOriginalFilename(), "error: "
 						+ e.getMessage());
+				e.printStackTrace();
 			}
 
 		}
+		jsonReturn.put("status", "success");
+		jsonReturn.put("files", ret);
 
 		/* TODO real message codes */
 		return jsonReturn;

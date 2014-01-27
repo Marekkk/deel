@@ -10,6 +10,7 @@ import java.util.Set;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.File;
 import org.deel.domain.FilePath;
+import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.User;
@@ -19,7 +20,7 @@ public interface FileService {
 
 	
 	@Transactional
-	public void updateFile(User owner, FilePath filePath, InputStream data) throws IOException;
+	public FilePathInfo updateFile(User owner, FilePath filePath, InputStream data) throws IOException;
 	
 	@Transactional
 	public void shareFile(User currentUser, FilePath filePath, List<User> userList);
@@ -32,7 +33,7 @@ public interface FileService {
 	
 
 	@Transactional
-	public void uploadFile(User curr, String originalFilename, Folder folder,
+	public FilePathInfo uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream) throws IOException;
 	
 

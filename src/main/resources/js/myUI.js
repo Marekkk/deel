@@ -29,6 +29,27 @@ var myUI = (function($, service) {
 		getWrapper : function() {
 			return wrapper;
 		},
+		onNewFile : function (returndata) {
+
+			if (returndata.status != "success")
+			{
+				alert("error uploading");
+				return;
+			}
+			returndata.files.forEach(function(fp) {
+				var oldDiv = $('#FP_'+fp.id);
+				var newDiv = myUI.makeDivFromFilePath(fp);
+				
+				if (oldDiv.length > 0) {
+					oldDiv.replaceWith(newDiv);
+				}
+				else {
+					$('#wrapper').append(newDiv);
+				}
+			});
+				
+			
+		},
 
 		updateSpace : function() {
 
@@ -70,7 +91,7 @@ var myUI = (function($, service) {
 				var inputFile = $("<input type='file'></input>");
 				inputFile.on('change', function(e) {
 					service.uploadFilesFromInput(this.files, myUI
-							.getCurrentFolder());
+							.getCurrentFolder(), myUI.onNewFile);
 				});
 
 				inputFile.hide();
@@ -143,6 +164,7 @@ var myUI = (function($, service) {
 			var now = new Date();
 			var div = $("<div></div>");
 			
+			div.attr("id", "FP_"+fp.id);
 
 			if (fp.hidden) {
 				div.addClass("hidden");
@@ -183,7 +205,7 @@ var myUI = (function($, service) {
 				var img = $("<img></img>");
 				img.prop('src', opsImageUrls[op]);
 				img.click(function() {
-					service[op](fp);
+					service[op](fp, myUI[op]);
 				});
 				ops.append(img);
 			});
@@ -195,10 +217,38 @@ var myUI = (function($, service) {
 			return div;
 
 		},
-
+		
+		remove: function(fp, data) {
+			$('#FP_'+fp.id).remove();			
+		},
+		
+		removeFolder: function(f, data) {
+			$('#F_'+f.id).remove();			
+		},
+		
+		
+		share: function(fp) {
+			console.log("fp callback" + fp);
+		},
+		revision: function(fp, returndata) {
+			
+				var dates = new Array();
+				var idRevs = new Array();
+				for ( var i in returndata) {
+					// i is the id of current revision
+					d = new Date(returndata[i].date);
+					var currPos = dates.length;
+					dates[currPos] = d;
+					idRevs[currPos] = i;
+				}
+				createRevisionsTable(fp, idRevs, dates);
+				$('#revision').dialog("open");
+			},
 		makeDivFromFolder : function(f) {
-
+			
 			var div = $("<div></div>");
+			
+			div.attr("id", "F_"+f.id);
 
 			if (f.hidden) {
 				div.addClass("hidden");
@@ -224,7 +274,7 @@ var myUI = (function($, service) {
 			var img = $("<img></img>");
 			img.prop('src', opsImageUrls["remove"]);
 			img.click(function() {
-				service.removeFolder(f);
+				service.removeFolder(f, myUI.removeFolder);
 			});
 			ops.append(img);
 
@@ -454,7 +504,7 @@ var myUI = (function($, service) {
 			holder.on('drop', function(e) {
 				e.preventDefault();
 				this.className = cssClass;
-				service.uploadFiles(e, myUI.getCurrentFolder());
+				service.uploadFiles(e, myUI.getCurrentFolder(), myUI.onNewFile);
 			});
 			return holder;
 

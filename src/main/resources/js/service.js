@@ -2,7 +2,7 @@ var service = (function ($) {
 	
 	var idown;  
 	
-	function _uploadFiles(files, currentFolder) {
+	function _uploadFiles(files, currentFolder, cb) {
 		var fd = new FormData();
 		
 
@@ -21,21 +21,19 @@ var service = (function ($) {
 			contentType : false,
 			async : false,
 			processData : false,
-			success : function(returndata) { 
-					myUI.updateSpace();
-			}
+			success : cb,
 		});
 	}
 	
 	return {
-		uploadFiles : function (e, currentFolder) {
+		uploadFiles : function (e, currentFolder, cb) {
 			var files = e.dataTransfer.files;
-			_uploadFiles(files, currentFolder);
+			_uploadFiles(files, currentFolder, cb);
 			 
 		},
 		
-		uploadFilesFromInput : function (files, currentFolder) {
-			return _uploadFiles(files, currentFolder);
+		uploadFilesFromInput : function (files, currentFolder, cb) {
+			return _uploadFiles(files, currentFolder, cb);
 		},
 		
 		downloadFile: function (fp) {
@@ -48,32 +46,25 @@ var service = (function ($) {
 				
 			},
 			
-		removeFolder : function (f) {
-			$.get('folder/remove', {id:f.id}, function(){myUI.updateSpace();});
+		removeFolder : function (f, cb) {
+			$.get('folder/remove', {id:f.id}, function(data){
+				cb(f, data);}
+			);
 		},
 		
-		remove : function (fp) {
-			$.get('file/remove', {id:fp.id}, function(){myUI.updateSpace();});
+		remove : function (fp, cb) {
+			$.get('file/remove', {id:fp.id}, function(data){
+				cb(fp, data);
+				});
 		},
-		revision : function (fp) {
+		revision : function (fp, cb) {
 			/* stub */
 			$.get("file/revision/list",
 					{id:fp.id}, function(returndata) {
-					var dates = new Array();
-					var idRevs = new Array();
-					for ( var i in returndata) {
-						// i is the id of current revision
-						d = new Date(returndata[i].date);
-						var currPos = dates.length;
-						dates[currPos] = d;
-						idRevs[currPos] = i;
-					}
-					createRevisionsTable(fp, idRevs, dates);
-				});
-
-			$('#revision').dialog("open");	
+						cb(fp, returndata);
+					});
 		},
-		share : function (fp) {
+		share : function (fp, cb) {
 			
 			var ul = document.getElementById("slist");
 			$(ul).remove();
