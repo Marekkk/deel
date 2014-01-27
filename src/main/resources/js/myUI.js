@@ -31,8 +31,9 @@ var myUI = (function ($, service) {
 		},
 		
 		updateSpace : function() {
-			wrapper.empty();	
+	
 			
+			var newWrapper = $('<div id="wrapper"></div>');
 			
 			var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder().id : "");
 			$.get(url, function(data) {
@@ -50,16 +51,20 @@ var myUI = (function ($, service) {
 				} 
 					
 				controls.append(uploadDiv);
-				wrapper.append(controls);
+				newWrapper.append(controls);
 				data.folders.forEach(function(f) {
-					wrapper.append(myUI.makeDivFromFolder(f));
+					newWrapper.append(myUI.makeDivFromFolder(f));
 				});
 				
 				data.filePaths.forEach(function(f){
-					wrapper.append(myUI.makeDivFromFilePath(f));
+					newWrapper.append(myUI.makeDivFromFilePath(f));
 				});
 				
 			});
+			
+			
+			wrapper.replaceWith(newWrapper);
+			wrapper = newWrapper;
 		},
 		
 		makeDivFromFilePath : function(fp) {
@@ -72,6 +77,11 @@ var myUI = (function ($, service) {
 			
 			div.addClass("file");
 			ops.addClass("ops");
+			
+			var icon = $("<img></img>");
+			icon.prop('src', "/deel/resources/img/file.png");
+			
+			div.append(icon);
 			
 			name.html(fp.name);
 			name.css("cursor", "pointer");
@@ -122,7 +132,10 @@ var myUI = (function ($, service) {
 			name.css("cursor", "pointer");
 			name.click(function() {myUI.setCurrentFolder(f);myUI.updateSpace();});
 			
-		
+			var icon = $("<img></img>");
+			icon.prop('src', "/deel/resources/img/folder.png");
+			div.append(icon);
+			
 		    var img = $("<img></img>");
 			img.prop('src', opsImageUrls["remove"]);
 			img.click(function() {

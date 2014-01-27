@@ -2,6 +2,11 @@
 	margin : 0;
 	padding : 0;
 }
+
+body {
+	background-color: #d0d7de;
+}
+
 #wrapper {
 	margin-left: 100px;
 	margin-right:100px;
@@ -24,7 +29,15 @@
 
 .file {
 	overflow: auto;
-	background:  linear-gradient(#1e5799 0%,#48abbf 0%,#7db9e8 99%);
+	background:  #fff;
+	border-top: 1px solid #ccc;
+	border-bottow: 1px solid #ccc;
+	border-collapse:collapse;
+	min-height: 50px;
+}
+
+.file:hover {
+	background: #ccc;
 }
 
 .file div {
