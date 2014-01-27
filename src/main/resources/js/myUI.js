@@ -142,6 +142,7 @@ var myUI = (function($, service) {
 		makeDivFromFilePath : function(fp) {
 			var now = new Date();
 			var div = $("<div></div>");
+			
 
 			if (fp.hidden) {
 				div.addClass("hidden");
@@ -269,11 +270,10 @@ var myUI = (function($, service) {
 						tr.append(opts.cbRow(r));
 					else if (r instanceof Object)
 						tr.append(myUI.createDivGeneral(r));
-					t.append(tr);
+					body.append(tr);
 				});
 
 			if ("dataCB" in opts) {
-			
 				opts.dataCB(body);
 			}
 			
@@ -342,7 +342,8 @@ var myUI = (function($, service) {
 			});
 
 			tr.append(div);
-			var erase = $("<a>X</a>");
+			var erase = $("<button>remove</button>");
+			erase.css('margin-left', '10px');
 			div.append(erase);
 			erase.click(function() {
 				$.ajax({
@@ -365,53 +366,61 @@ var myUI = (function($, service) {
 		},
 
 		createFirstRowForCompany : function() {
-			debugger;
 			var div = $("<div></div>");
-			var newC = $("<span> Add... </span>");
+			var newC = $("<button> Add </button>");
 			var input = $("<input type='text'></input>");
-
+			var button = $("<button>Add</button>");
+			
+			
 			div.append(newC);
 			div.append(input.hide());
+			div.append(button.hide());
+			
+			input.prop("disable", true);
+
+			button.click(function() {
+				
+				$.ajax({
+					url : 'new',
+					type : 'POST',
+					data : JSON.stringify({
+						id : null,
+						name : input.val()
+					}),
+					contentType : "application/json",
+					dataType : "json",
+					success : function(
+							returndata) {
+						if (returndata.status == "success") {
+							var tr = $("<tr></tr>");
+							var nr = myUI.createRowForCompanyAdmin(returndata.company);
+							tr.append(nr);
+							input.closest('tbody').append(tr);
+							newC.show();
+							button.hide();
+							input.hide();
+						}
+					}
+				});
+				
+			});
+			
 
 			newC.click(function() {
 						input.show();
+						button.show();
 						input.focus();
 						newC.hide();
 
 						input.keyup(function(e) {
 									if (e.keyCode == 27) {
 										input.hide();
+										button.hide();
 										newC.show();
 									}
-									if (e.keyCode == 13) {
-										input.prop("disable", true);
-
-									$.ajax({
-													url : 'new',
-													type : 'POST',
-													data : JSON.stringify({
-														id : null,
-														name : input.val()
-													}),
-													contentType : "application/json",
-													dataType : "json",
-													success : function(
-															returndata) {
-														if (returndata.status == "success") {
-															var nr = myUI
-																	.createRowForCompanyAdmin(returndata.company);
-															input.closest(
-																	'table')
-																	.append(nr);
-															newC.show();
-															input.hide();
-														}
-													}
-												});
-									}
-								});
-
-					});
+									});
+						});
+			
 			var tr = $("<tr></tr>");
 			var td = $("<td></td>");
 			td.append(div);
