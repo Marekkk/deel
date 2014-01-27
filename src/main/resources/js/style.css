@@ -23,6 +23,7 @@ body {
 
 .controls img {
 	margin-bottom: 20px;
+	margin-left: 3px;
 }
 
 .upload {
@@ -46,7 +47,7 @@ body {
 }
 
 .file:hover {
-	background: #ccc;
+	background: #ddd;
 }
 
 .file div {
@@ -61,6 +62,11 @@ body {
 
 .ops {
 	cursor: pointer;
+}
+
+.hidden {
+	display: none;
+	background: #bbb;
 }
 
 .file:hover .ops {

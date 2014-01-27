@@ -188,6 +188,7 @@ public class FileServiceImpl implements FileService {
 		fileRevisionDAO.insert(fileRevision);
 		filePathDao.insertFilePath(fp);
 
+		System.out.println(fp.getId());
 		FSUtils.saveFile(fileRevision, inputStream);
 
 	}
