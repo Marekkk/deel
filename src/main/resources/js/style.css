@@ -101,7 +101,16 @@ nav {
 	list-style:none;
 }
 
+#mainav a {
+	color: black;
+}
+
+#mainav a:link {
+	text-decoration: none;
+}
+
 #mainav li {
+	color: black;
 	display: inline;
 	background-image: url(box.png);
 	background-repeat: no-repeat;
@@ -111,4 +120,8 @@ nav {
 
 #mainav li:hover {
 	background-image: url(openbox.png);
+}
+
+.hidden {
+	display:none;
 }
