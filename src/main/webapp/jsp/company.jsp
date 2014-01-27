@@ -9,6 +9,7 @@
 <link rel="stylesheet" href=<c:url value="/resources/css/style.css"/> media="screen">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="<c:url value='/resources/js/service.js'/>"></script>
 <script src="<c:url value='/resources/js/myUI.js'/>"></script>
 <title></title>
 </head>
@@ -24,7 +25,7 @@
 									tableClassName: "companyTable",
 									data: returndata.companies,
 									cbRow: myUI.createRowForCompanyAdmin,
-									firstRow: myUI.createFirstRowForCompany,
+									firstRow: myUI.createFirstRowForCompany(),
 									});
 					$("#tableContainer").append(t);
 				}

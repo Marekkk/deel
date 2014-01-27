@@ -243,7 +243,7 @@ var myUI = (function($, service) {
 		},
 
 		createTable : function(opts, data) {
-
+			debugger;
 			var t = $("<table></table>");
 
 			if (opts["tableClassName"])
@@ -273,10 +273,11 @@ var myUI = (function($, service) {
 				});
 
 			if ("dataCB" in opts) {
-				t.append(body);
+			
 				opts.dataCB(body);
 			}
-
+			
+			t.append(body);
 			console.log(t);
 			return t;
 		},
@@ -364,7 +365,7 @@ var myUI = (function($, service) {
 		},
 
 		createFirstRowForCompany : function() {
-
+			debugger;
 			var div = $("<div></div>");
 			var newC = $("<span> Add... </span>");
 			var input = $("<input type='text'></input>");
@@ -372,14 +373,12 @@ var myUI = (function($, service) {
 			div.append(newC);
 			div.append(input.hide());
 
-			newC
-					.click(function() {
+			newC.click(function() {
 						input.show();
 						input.focus();
 						newC.hide();
 
-						input
-								.keyup(function(e) {
+						input.keyup(function(e) {
 									if (e.keyCode == 27) {
 										input.hide();
 										newC.show();
@@ -387,8 +386,7 @@ var myUI = (function($, service) {
 									if (e.keyCode == 13) {
 										input.prop("disable", true);
 
-										$
-												.ajax({
+									$.ajax({
 													url : 'new',
 													type : 'POST',
 													data : JSON.stringify({
