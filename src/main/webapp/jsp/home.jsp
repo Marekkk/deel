@@ -699,21 +699,21 @@
 		<ul>
 			<li><a href="<c:url value="/home" />"
 				onclick="javascript:goRoot()" class="active">home</a></li>
-			<li><a href=<c:url value="/logout"/>>logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
 			<li><a href="javascript:teamDialog()">team</a></li>
 			<li><a href="javascript:trashDialog()">trash</a></li>
+			<li><a href=<c:url value="/logout"/>>logout</a></li>
 		</ul>
 		</nav>
 
 		<div id="wrapper"></div>
+		<!-- 
 		<div id="filesContainer">
 			<table id="dataTable">
 				<tr>
 					<th>name</th>
 				</tr>
 				<tr>
-					<!-- Adding folder -->
 					<td><form:form method="POST"
 							action="javascript:createFolder();" id="addingFolder">
 							<a href="javascript:sendFolderName()"
@@ -725,6 +725,7 @@
 				</tr>
 			</table>
 		</div>
+		 -->
 
 		<div id="uploadContainer">
 			<form:form method="POST" commandName="fileForm" action="file/upload"
