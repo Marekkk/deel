@@ -10,7 +10,7 @@ body {
 #wrapper {
 	margin-left: 100px;
 	margin-right:100px;
-	
+	margin-top:30px;
 }
 
 .first {
@@ -66,4 +66,71 @@ body {
 .file:hover .ops {
 	float:right;
 	display : inline-block;
+}
+
+footer {
+	position: fixed;
+	bottom: 10px;
+	font-size: 12px;
+}
+
+#footerSection {
+	color: #d0d7de;
+	margin-left: 35px;
+	background-color: #555353;
+	padding: .2em;
+	text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+#mainheader {
+	margin-top: 1.5em;
+	font-family: helvetica;
+}
+
+#title {
+	font-weight: normal;
+	color: #d0d7de;
+	margin-left: 35px;
+	padding: 0 5px 5px 5px;
+	font-size: 2.5em;
+	background-color: #555353;
+	text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+span {
+	font-style: italic;
+}
+
+nav {
+	margin-left:40px;
+	margin-top: 20px;
+}
+
+#personalInfo > ul {
+	list-style:none;
+}
+
+#mainav a {
+	color: black;
+}
+
+#mainav a:link {
+	text-decoration: none;
+}
+
+#mainav li {
+	color: black;
+	display: inline;
+	background-image: url(box.png);
+	background-repeat: no-repeat;
+	padding-left: 1.5em;
+	padding-top: 1.0em;
+}
+
+#mainav li:hover {
+	background-image: url(openbox.png);
+}
+
+.hidden {
+	display:none;
 }

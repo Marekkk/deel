@@ -18,22 +18,6 @@
 <script type="text/javascript">
 
 	$(function() {
-		$('#trash').dialog({
-			autoOpen : false,
-			show : {
-				effect : "blind"
-			},
-			hide : {
-				effect : "explode"
-			},
-			modal : true,
-
-			close : function() {
-				cleanTable("trashTable");
-			},
-
-			title : "File in your trash:"
-		});
 		
 		$('#team').dialog({
 			autoOpen : false,
@@ -649,28 +633,9 @@
 	function uploadDialog() {
 		$('#uploadContainer').dialog("open");
 	}
-	function trashDialog() {
-		createDeletedTable();
-		$('#trash').dialog("open");
-	}
 	
 	function teamDialog() {
 		createTeam();
-	}
-	
-	function createDeletedTable() {
-		var table = document.getElementById("trashTable");
-		for (var i in filesHidden) {
-			var r = document.createElement("tr");
-			var c = document.createElement("td");
-			var a = document.createElement("a");
-			a.style = "color:black";
-			a.href = "#";
-			a.innerHTML = filesHidden[i];
-			c.appendChild(a);
-			r.appendChild(c);
-			table.appendChild(r);
-		}
 	}
 </script>
 <title>Home</title>
@@ -699,21 +664,20 @@
 		<ul>
 			<li><a href="<c:url value="/home" />"
 				onclick="javascript:goRoot()" class="active">home</a></li>
-			<li><a href=<c:url value="/logout"/>>logout</a></li>
 			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
 			<li><a href="javascript:teamDialog()">team</a></li>
-			<li><a href="javascript:trashDialog()">trash</a></li>
+			<li><a href=<c:url value="/logout"/>>logout</a></li>
 		</ul>
 		</nav>
 
 		<div id="wrapper"></div>
+		<!-- 
 		<div id="filesContainer">
 			<table id="dataTable">
 				<tr>
 					<th>name</th>
 				</tr>
 				<tr>
-					<!-- Adding folder -->
 					<td><form:form method="POST"
 							action="javascript:createFolder();" id="addingFolder">
 							<a href="javascript:sendFolderName()"
@@ -725,6 +689,7 @@
 				</tr>
 			</table>
 		</div>
+		 -->
 
 		<div id="uploadContainer">
 			<form:form method="POST" commandName="fileForm" action="file/upload"
@@ -745,14 +710,6 @@
 			<table id="revisionTable">
 				<tr>
 					<th>Date</th>
-				<tr>
-			</table>
-		</div>
-
-		<div id="trash">
-			<table id="trashTable">
-				<tr>
-					<th>Name</th>
 				<tr>
 			</table>
 		</div>

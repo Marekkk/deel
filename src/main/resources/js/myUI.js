@@ -133,6 +133,10 @@ var myUI = (function ($, service) {
 			var now = new Date();
 			var div = $("<div></div>");
 			
+			if (fp.hidden) {
+				div.addClass("hidden");
+			}
+			
 			var name = $("<div></div>");
 			var info = $("<div></div>");
 			var ops = $("<div></div>");
