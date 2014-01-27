@@ -228,11 +228,12 @@ public class FileController {
 			fileService.createNewFolder(u, folder, folderName);
 		} catch (IOException e) {
 			System.out.println("Error during creation of folder. \n" + e);
-			result.put("Success", "error");
+			result.put("status", "error");
 			return result;
 		}
 
-		result.put("Success", "success");
+		result.put("status", "success");
+		
 
 		return result;
 	}

@@ -2,33 +2,40 @@ var service = (function ($) {
 	
 	var idown;  
 	
+	function _uploadFiles(files, currentFolder) {
+		var fd = new FormData();
+		
+
+		for (var i = 0; i < files.length; i++) 
+		      fd.append('files', files[i]);
+		
+		fd.append('path', currentFolder.id);
+		
+		$.ajax({
+			/* TODO set correct URL */
+			//url : "<c:url value="/file/upload"/>",
+			url : "file/upload",
+			type : 'POST',
+			data : fd,
+			cache : false,
+			contentType : false,
+			async : false,
+			processData : false,
+			success : function(returndata) { 
+					myUI.updateSpace();
+			}
+		});
+	}
 	
 	return {
 		uploadFiles : function (e, currentFolder) {
 			var files = e.dataTransfer.files;
-			var fd = new FormData();
-			
-
-			for (var i = 0; i < files.length; i++) 
-			      fd.append('files', files[i]);
-			
-			fd.append('path', currentFolder.id);
-			
-			$.ajax({
-				/* TODO set correct URL */
-				//url : "<c:url value="/file/upload"/>",
-				url : "file/upload",
-				type : 'POST',
-				data : fd,
-				cache : false,
-				contentType : false,
-				async : false,
-				processData : false,
-				success : function(returndata) { 
-						myUI.updateSpace();
-				}
-			});
+			_uploadFiles(files, currentFolder);
 			 
+		},
+		
+		uploadFilesFromInput : function (files, currentFolder) {
+			return _uploadFiles(files, currentFolder);
 		},
 		
 		downloadFile: function (fp) {
@@ -108,6 +115,14 @@ var service = (function ($) {
 
 			});
 			$('#sharingList').dialog("open");
+		},
+		
+		newFolder : function (folderName, currentFolder, cb) {
+	
+			$.get('file/addFolder', 
+					{id: (currentFolder.father)?currentFolder.father.id:null, 
+				    folderName: folderName}, 
+				    cb);
 		},
 		
 	};

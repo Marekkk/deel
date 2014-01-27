@@ -38,20 +38,82 @@ var myUI = (function ($, service) {
 			var url = "file/list" + (myUI.getCurrentFolder() ? "?path=" + myUI.getCurrentFolder().id : "");
 			$.get(url, function(data) {
 				myUI.setCurrentFolder(data.me);
-				var controls = $("<div></div>");
-	
+				
+				var firstRow = $("<div></div>");
+				firstRow.addClass("first");
+				
+				var controls =$("<div></div>");
+				controls.addClass("controls");
+
 				if (data.me.father) {
-					var goBack = $("<div><div>");
-					goBack.addClass("goBack");
-					goBack.click(function() {
+					var img = $("<img></img>");
+
+					img.prop('src', '/deel/resources/img/back.png');
+					img.click(function() {
 						myUI.setCurrentFolder(data.me.father);
 						myUI.updateSpace();
 					});
-					controls.append(goBack);
-				} 
+
+					controls.append(img);
+				}
+				
+				var newFile = $("<img></img>")
+				newFile.prop('src','/deel/resources/img/upload.png');
+				newFile.click(function() {
+					inputFile.trigger('click');
+				});
+				
+				var inputFile = $("<input type='file'></input>");
+				inputFile.on('change', function (e) {
+						service.uploadFilesFromInput(this.files, myUI.getCurrentFolder());
+				});
+				
+				inputFile.hide();
+				
+				controls.append(newFile);
+				controls.append(inputFile);
+				
+				var newFolder = $("<img></img>");
+				newFolder.prop('src', '/deel/resources/img/newfolder.png')
+				
+				var folderName  = $("<input type='text'></input>");
+				folderName.hide();
+				
+				folderName.keyup(function(e){
+					if(e.keyCode == 27) {
+						folderName.val('');
+						folderName.hide();
+						newFolder.show();
+					}
+					if (e.keyCode == 13) {
+						folderName.prop("disable", true);
 					
-				controls.append(uploadDiv);
-				newWrapper.append(controls);
+						service.newFolder(folderName.val(), myUI.getCurrentFolder(), function(returndata) {
+								if (returndata.status == "success") {
+									newFolder.show();
+									folderName.hide();
+								}
+							});
+						
+					}
+				});
+				
+				
+				newFolder.click(function() {
+					newFolder.hide();
+					folderName.show();
+					folderName.focus();
+				});
+				
+				controls.append(newFolder);
+				controls.append(folderName);
+				
+				
+				firstRow.append(controls);
+				firstRow.append(uploadDiv);
+				newWrapper.append(firstRow);
+				
+				
 				data.folders.forEach(function(f) {
 					newWrapper.append(myUI.makeDivFromFolder(f));
 				});
@@ -240,7 +302,7 @@ var myUI = (function ($, service) {
 								input.hide();
 							}
 						}
-					});2
+					});
 				}
 			});
 			
