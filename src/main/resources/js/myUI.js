@@ -305,12 +305,12 @@ var myUI = (function($, service) {
 
 		remove : function(fp, data) {
 			myUI.progressStop();
-			$('#FP_' + fp.id).remove();
+			$('#FP_' + fp.id).addClass("hidden");
 		},
 
 		removeFolder : function(f, data) {
 			myUI.progressStop();
-			$('#F_' + f.id).remove();
+			$('#F_' + f.id).addClass("hidden");
 		},
 
 		
