@@ -132,4 +132,9 @@ public class UserServiceImpl implements UserService {
 	public Team findTeamByName(String name) {
 		return teamDAO.findTeamByName(name);
 	}
+
+	@Override
+	public List<Team> getTeams() {
+		return teamDAO.getTeams();
+	}
 }

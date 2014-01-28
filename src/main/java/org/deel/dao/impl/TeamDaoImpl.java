@@ -1,8 +1,12 @@
 package org.deel.dao.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.deel.dao.TeamDAO;
 import org.deel.domain.Team;
 import org.deel.domain.User;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,5 +49,12 @@ public class TeamDaoImpl implements TeamDAO {
 		return (Team)sessionFactory.getCurrentSession().get(Team.class, t.getId());
 		
 	}
+
+	@Override
+	public List<Team> getTeams() {
+		Criteria crit = sessionFactory.getCurrentSession().createCriteria(Team.class);
+		System.out.println(crit.list());
+		return crit.list();
+	}	
 
 }

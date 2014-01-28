@@ -42,4 +42,6 @@ public interface UserService {
 	@Transactional
 	public Team findTeamByName(String name);
 	
+	@Transactional
+	public List<Team> getTeams();
 }

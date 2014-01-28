@@ -702,8 +702,9 @@
 		</form:form>
 
 		<div id="sharingList">
-			<ul id="slist">
-			</ul>
+			<label>Type for a user or a team :</label>
+			<div id="sharingWith">
+			</div>
 		</div>
 
 		<div id="revision">
