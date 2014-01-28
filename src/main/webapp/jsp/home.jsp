@@ -68,7 +68,12 @@
 			
 			modal : true,
 			
-			title : "Share with:"
+			title : "Share with:",
+			
+			close : function () {
+				$("#sharingWith").remove();
+				$("#sender").remove();
+			}
 		});
 	});
 

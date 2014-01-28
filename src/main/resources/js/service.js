@@ -80,6 +80,7 @@ var service = (function ($) {
 				var insertUser = $("<input></input>");
 				$("#sharingWith").before(insertUser);
 				var sender = $("<button>Share!</button>");
+				sender.attr("id", "sender");
 				sharing.append(sender);
 				var usersSharing = new Array();
 				var teamsSharing = new Array();
