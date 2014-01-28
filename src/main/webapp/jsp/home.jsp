@@ -73,6 +73,7 @@
 			close : function () {
 				$("#sharingWith").remove();
 				$("#sender").remove();
+				$("#inputSharing").remove();
 			}
 		});
 	});
@@ -708,7 +709,6 @@
 
 		<div id="sharingList">
 			<label>Type for a user or a team :</label>
-			<div id="sharingWith">
 			</div>
 		</div>
 

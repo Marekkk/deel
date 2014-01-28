@@ -78,10 +78,14 @@ var service = (function ($) {
 				
 				var sharing = $("#sharingList");
 				var insertUser = $("<input></input>");
-				$("#sharingWith").before(insertUser);
+				insertUser.attr("id", "inputSharing");
+				var sharingWith = $("<div></div");
+				sharing.append(sharingWith);
+				sharingWith.attr("id", "sharingWith");
+				sharingWith.before(insertUser);
 				var sender = $("<button>Share!</button>");
 				sender.attr("id", "sender");
-				sharing.append(sender);
+				sharingWith.append(sender);
 				var usersSharing = new Array();
 				var teamsSharing = new Array();
 				
@@ -107,6 +111,8 @@ var service = (function ($) {
 						var p = $("<p></p>");
 						p.html(ui.item.label);
 						sharingWith.append(p);
+						$("#inputSharing").val("");
+						return false;
 					}
 				});
 					
