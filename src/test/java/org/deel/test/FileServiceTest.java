@@ -295,7 +295,7 @@ public class FileServiceTest {
 		when(filePathDao.getFilePath(any(FilePath.class))).thenReturn(fp);
 		when(userDAO.get(any(User.class))).thenReturn(us);
 		
-		fileService.shareFile(u, fp, ul);
+		fileService.shareFile(u, fp, ul, null);
 		
 		verify(filePathDao).insertFilePath(any(FilePath.class));
 		
