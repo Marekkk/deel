@@ -66,45 +66,73 @@ var service = (function ($) {
 		},
 		share : function (fp, cb) {
 			
-			var ul = document.getElementById("slist");
-			$(ul).remove();
-			var sharingDiv = document.getElementById("sharingList");
-			var nul = document.createElement("ul");
-			nul.id = "slist";
-			sharingDiv.appendChild(nul);
-			$.ajax({
-				url : "user/list",
-				type : 'GET',
-				success : function(returndata) {
-					var users = returndata;
-					createShareBox(users.id, users.Username, fp.id);
-				}
-			});
-			var button = document.createElement("input");
-			button.id = "sendButton";
-			button.type = "button";
-			button.value = "Share File!";
-			button.innerHTML = "Share File!";
-			nul.appendChild(button);
-			$('#sendButton').click(function() {
-				alert("File Shared!");
-				//alert("You' re sharing " + id + " with " + usersWithShare);
-				var message = new Object();
-
-				message.users = usersWithShare;
-				message.file = fp.id;
-
-				$.ajax({
-					url : "file/share",
-					type : 'POST',
-					data : JSON.stringify(message),
-					dataType : "json",
-					contentType : "application/json",
-					success : function(returndata) {
+			var teams;
+			var users;
+			
+			$.when(
+				$.get("team/list"),
+				$.get("user/list")
+			).done(function (teamXHR, userXHR) {
+				teams = teamXHR[0].teams;
+				users = userXHR[0].users;
+				
+				var sharing = $("#sharingList");
+				var insertUser = $("<input></input>");
+				$("#sharingWith").before(insertUser);
+				var sender = $("<button>Share!</button>");
+				sharing.append(sender);
+				var usersSharing = new Array();
+				var teamsSharing = new Array();
+				
+				users.forEach(function (u) {
+					u.label = u.username;
+					u.type = "user";
+				});
+				
+				teams.forEach(function (t) {
+					t.label = t.name;
+					t.type = "team";
+				});
+				
+				insertUser.autocomplete({
+					source : users.concat(teams),
+					select : function(e, ui) {
+						if (ui.item.type == "user")
+							usersSharing.push(ui.item.id);
+						else if (ui.item.type == "team")
+							teamsSharing.push(ui.item.id);
+			
+						var sharingWith = $("#sharingWith");
+						var p = $("<p></p>");
+						p.html(ui.item.label);
+						sharingWith.append(p);
 					}
 				});
+					
+				sender.click(function() {
+					
+					var message = new Object();
 
+					message.users = usersSharing;
+					message.teams = teamsSharing;
+					message.file = fp.id;
+					
+					console.log(message);
+
+					$.ajax({
+						url : "file/share",
+						type : 'POST',
+						data : JSON.stringify(message),
+						dataType : "json",
+						contentType : "application/json",
+						success : function(returndata) {
+							alert("File Shared!");
+						}
+					});
+
+				});
 			});
+			
 			$('#sharingList').dialog("open");
 		},
 		

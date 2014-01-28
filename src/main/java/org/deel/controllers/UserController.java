@@ -10,7 +10,9 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.deel.domain.Team;
+import org.deel.domain.TeamInfo;
 import org.deel.domain.User;
+import org.deel.domain.UserInfo;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,18 +99,20 @@ public class UserController {
 		User curr = userService.findUserByUsername(username);
 
 		List<User> userList = userService.listUser(curr);
-		System.out.println(userList);
-		List<Long> usersId = new LinkedList<Long>();
-		List<String> usernames = new LinkedList<String>();
+//		System.out.println(userList);
+//		List<Long> usersId = new LinkedList<Long>();
+//		List<String> usernames = new LinkedList<String>();
 
+		List<UserInfo> usersInfo = new LinkedList<UserInfo>();
+		
 		for (User user : userList)  {
-			usersId.add(user.getId());
-			usernames.add(user.getUsername());
-			//json.put(user.getId(), user.getUsername());
+			usersInfo.add(new UserInfo(user));
+//			usersId.add(user.getId());
+//			usernames.add(user.getUsername());
 		}
 
-		json.put("id", usersId);
-		json.put("Username", usernames);
+		json.put("status", "success");
+		json.put("users", usersInfo);
 
 		return json;
 	}
@@ -243,6 +247,29 @@ public class UserController {
 		
 		json.put("status", "Team created!");
 		
+		return json;
+	}
+	
+	@RequestMapping("/team/list")
+	public @ResponseBody Map<String, Object> teamList (Principal principal) {
+		Map<String, Object> json = new HashMap<String, Object>();
+
+		List<Team> teamList = userService.getTeams();
+//		System.out.println(teamList);
+//		List<Long> teamsId = new LinkedList<Long>();
+//		List<String> teamsName = new LinkedList<String>();
+		
+		List<TeamInfo> teams = new LinkedList<TeamInfo>();
+
+		for (Team team : teamList)  {
+			teams.add(new TeamInfo(team));
+//			teamsId.add(team.getId());
+//			teamsName.add(team.getName());
+		}
+
+		json.put("status", "success");
+		json.put("teams", teams);
+
 		return json;
 	}
 }
