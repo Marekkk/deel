@@ -120,9 +120,23 @@ public class FileServiceImpl implements FileService {
 		newRevision.setUploadedBy(u);
 
 		fileRevisionDAO.insert(newRevision);
+		
+		
+		
+		
+		File f = fp.getFile();
+		List<FileRevision> fake = new LinkedList<FileRevision>();
+		fake.add(newRevision);
+		
+		f.setRevisions(fake);
+		
+		
+		FilePathInfo fInfo = new FilePathInfo(fp);
+		
+		
 		FSUtils.saveFile(newRevision, data);
 		
-		return new FilePathInfo(fp);
+		return fInfo;
 
 	}
 
@@ -206,9 +220,12 @@ public class FileServiceImpl implements FileService {
 		fp.setFile(file);
 		file.setRevisions(fakeRevisionList);
 		
+		FilePathInfo fInfo = new FilePathInfo(fp);
 		FSUtils.saveFile(fileRevision, inputStream);
 		
-		return new FilePathInfo(fp);
+		
+		
+		return fInfo;
 
 	}
 
