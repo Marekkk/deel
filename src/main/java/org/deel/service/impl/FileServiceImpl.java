@@ -22,12 +22,14 @@ import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
 import org.deel.dao.FileRevisionDAO;
 import org.deel.dao.FolderDAO;
+import org.deel.dao.TeamDAO;
 import org.deel.dao.UserDAO;
 import org.deel.domain.DirectoryListing;
 import org.deel.domain.FilePath;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.FolderInfo;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.utils.FSUtils;
@@ -60,6 +62,16 @@ public class FileServiceImpl implements FileService {
 	}
 
 	private UserDAO userDAO;
+	private TeamDAO teamDAO;
+
+	public TeamDAO getTeamDAO() {
+		return teamDAO;
+	}
+
+	@Autowired
+	public void setTeamDAO(TeamDAO teamDAO) {
+		this.teamDAO = teamDAO;
+	}
 
 	public FileDAO getFileDao() {
 		return fileDao;
@@ -285,7 +297,8 @@ public class FileServiceImpl implements FileService {
 	@Transactional
 	@Override
 	public void shareFile(User currentUser, FilePath filePath,
-			List<User> userList) {
+			List<User> userList, List<Team> teamList) {
+		
 		filePath = filePathDao.getFilePath(filePath);
 		if (filePath == null)
 			throw new RuntimeException(
@@ -295,6 +308,26 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException("User " + currentUser.getUsername()
 					+ " doesn't own filepath " + filePath.getName());
 
+		List<User> pUL = new LinkedList<User>();
+		
+		for (Team team : teamList) {
+			team = teamDAO.get(team);
+			if (team == null)
+				throw new RuntimeException(
+						"Trying to share a file with a non existent user!");
+		
+			pUL.addAll(team.getUsersInTeam());
+
+		}
+
+		for (User user : userList) {
+			user = userDAO.get(user);
+			if (user == null)
+				throw new RuntimeException(
+						"Trying to share a file with a non existent user!");
+			pUL.add(user);
+		}
+		
 		for (User user : userList) {
 			user = userDAO.get(user);
 			if (user == null)

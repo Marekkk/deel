@@ -40,4 +40,10 @@ public class TeamDaoImpl implements TeamDAO {
 		return team;
 	}
 
+	@Override
+	public Team get(Team t) {
+		return (Team)sessionFactory.getCurrentSession().get(Team.class, t.getId());
+		
+	}
+
 }

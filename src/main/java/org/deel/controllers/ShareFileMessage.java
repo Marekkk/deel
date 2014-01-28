@@ -7,7 +7,14 @@ import org.deel.domain.User;
 public class ShareFileMessage {
 	private Long file;
 	private List<Long> users;
+	private List<Long> teams;
 	
+	public List<Long> getTeams() {
+		return teams;
+	}
+	public void setTeams(List<Long> teams) {
+		this.teams = teams;
+	}
 	public Long getFile() {
 		return file;
 	}

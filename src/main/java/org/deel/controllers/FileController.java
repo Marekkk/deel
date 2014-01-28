@@ -23,6 +23,7 @@ import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.FolderInfo;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
@@ -288,8 +289,15 @@ public class FileController {
 			user.setId(id);
 			users.add(user);
 		}
+		
+		List<Team> teams = new LinkedList<Team>();
+		for (Long id : message.getTeams()) {
+			Team team = new Team();
+			team.setId(id);
+			teams.add(team);
+		}
 
-		fileService.shareFile(u, fp, users);
+		fileService.shareFile(u, fp, users, teams);
 
 		json.put("status", "sucess");
 

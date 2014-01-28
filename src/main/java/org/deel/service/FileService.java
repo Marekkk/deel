@@ -14,6 +14,7 @@ import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 import org.deel.domain.FolderInfo;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public interface FileService {
 	public FilePathInfo updateFile(User owner, FilePath filePath, InputStream data) throws IOException;
 	
 	@Transactional
-	public void shareFile(User currentUser, FilePath filePath, List<User> userList);
+	public void shareFile(User currentUser, FilePath filePath, List<User> userList, List<Team> teamList);
 
 	@Transactional
 	public FileInputStream getRevision(User currentUser, FilePath filePath, FileRevision fileRevision) throws FileNotFoundException;
