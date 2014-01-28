@@ -244,9 +244,8 @@
 			url : "<c:url value="/user/list"/>",
 			type : 'GET',
 			success : function(returndata) {
-				var users = returndata;
-				console.log(returndata);
-				createTeamBox(users.id, users.Username);
+				var data = returndata;
+				createTeamBox(data.users);
 			}
 		});
 		var button = document.createElement("input");
@@ -283,23 +282,23 @@
 		$('#team').dialog("open");
 	}
 	
-	function createTeamBox(usersid, usr) {
+	function createTeamBox(users) {
 		usersInTeam = [];
 		var ul = document.getElementById("teamList");
 		ul.style = "list-style-type: none; margin-left: 2px";
 
-		for (var i = 0; i < usr.length; i++) {
+		users.forEach(function(u) {
 			var li = document.createElement("li");
 			var a = document.createElement("a");
-			a.innerHTML = usr[i];
-			a.href = "javascript:addUserInTeam(" + usersid[i] + ")";
+			a.innerHTML = u.username;
+			a.href = "javascript:addUserInTeam(" + u.id + ")";
 			li.appendChild(a);
 			var a2 = document.createElement("a");
-			a2.id = "added" + usersid[i];
+			a2.id = "added" + u.id;
 			a2.innerHTML = "";
 			li.appendChild(a2);
 			ul.appendChild(li);
-		}
+		});
 	}
 
 	function addUserInTeam(userId) {
