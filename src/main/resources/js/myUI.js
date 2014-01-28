@@ -66,9 +66,11 @@ var myUI = (function($, service) {
 
 				var firstRow = $("<div></div>");
 				firstRow.addClass("first");
+				firstRow.attr('id', 'firstRow');
 
 				var controls = $("<div></div>");
 				controls.addClass("controls");
+				controls.attr("id", "controls");
 
 				if (data.me.father) {
 					var img = $("<img></img>");
@@ -119,6 +121,8 @@ var myUI = (function($, service) {
 							if (returndata.status == "success") {
 								newFolder.show();
 								folderName.hide();
+								myUI.onNewFolder(returndata);
+								
 							}
 						});
 
@@ -283,6 +287,17 @@ var myUI = (function($, service) {
 
 			return div;
 
+		},
+		
+		onNewFolder : function(returndata) {
+			var div = myUI.makeDivFromFolder(returndata.folder);
+			$('#firstRow').after(div);
+		},
+		
+		onRemoveFolder : function (f, returndata) {
+			if(returndata.status == "success") {
+				$('#F_'+f.id).remove();
+			}
 		},
 
 		getCurrentFolder : function() {

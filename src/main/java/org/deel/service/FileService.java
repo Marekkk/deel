@@ -13,6 +13,7 @@ import org.deel.domain.FilePath;
 import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
+import org.deel.domain.FolderInfo;
 import org.deel.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +45,7 @@ public interface FileService {
 	public void deleteFolder(User u, Folder folder);
 	
 	@Transactional
-	public void createNewFolder(User u, Folder currentFolder, String string) throws IOException;
+	public FolderInfo createNewFolder(User u, Folder currentFolder, String string) throws IOException;
 
 	@Transactional
 	public void deleteFile(User u, FilePath fdc) throws IOException;

@@ -226,7 +226,7 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	@Transactional
-	public void createNewFolder(User u, Folder currentFolder, String dirName)
+	public FolderInfo createNewFolder(User u, Folder currentFolder, String dirName)
 			throws IOException {
 		currentFolder = populateFolder(u, currentFolder);
 
@@ -258,7 +258,9 @@ public class FileServiceImpl implements FileService {
 		 * TODO validation of this input (skip slash , points )
 		 */
 
+		FolderInfo fInfo = new FolderInfo(newFolder);
 		FSUtils.mkdir(newFolder);
+		return fInfo;
 
 	}
 

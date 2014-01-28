@@ -22,6 +22,7 @@ import org.deel.domain.FilePath;
 import org.deel.domain.FilePathInfo;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
+import org.deel.domain.FolderInfo;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
@@ -230,8 +231,9 @@ public class FileController {
 		folder.setId(id);
 		String username = principal.getName();
 		User u = userService.findUserByUsername(username);
+		FolderInfo ret;
 		try {
-			fileService.createNewFolder(u, folder, folderName);
+			ret = fileService.createNewFolder(u, folder, folderName);
 		} catch (IOException e) {
 			System.out.println("Error during creation of folder. \n" + e);
 			result.put("status", "error");
@@ -239,7 +241,7 @@ public class FileController {
 		}
 
 		result.put("status", "success");
-		
+		result.put("folder", ret);
 
 		return result;
 	}
