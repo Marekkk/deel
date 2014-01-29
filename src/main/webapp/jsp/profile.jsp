@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -56,12 +56,10 @@
 </head>
 <body>
 
-	<header id="mainheader">
-	<h3>
-		<a id="title">drop<span>box</span>~
-		</a>
-	</h3>
-	</header>
+	<div id="mainheader">
+		<img style="margin: 20px;" src="<c:url value="/resources/img/logosmall.png"/>"/>
+	</div>
+
 	
 	<nav id="mainav">
 		<ul style="margin-top:3em;">

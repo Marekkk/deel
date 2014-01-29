@@ -111,7 +111,9 @@ nav {
 	margin-top: 20px;
 	text-align: center;
 }
-
+.file .icon {
+	margin-left: 5px;
+}
 #personalInfo > ul {
 	list-style:none;
 }

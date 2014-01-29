@@ -647,12 +647,9 @@
 
 
 <body>
-	<header id="mainheader">
-	<h3>
-		<a id="title">drop<span>box</span>~
-		</a>
-	</h3>
-	</header>
+	<div id="mainheader">
+		<img src="<c:url value="/resources/img/logo.png"/>"/>
+	</div>
 
 	<div id="page">
 

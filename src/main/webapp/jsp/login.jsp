@@ -17,12 +17,11 @@
 <title>Login Page</title>
 </head>
 <body>
-	<header id="mainheader">
-	<h3>
-		<a id="title">drop<span>box</span>~
-		</a>
-	</h3>
-	</header>
+
+	<div id="mainheader">
+		<img style="margin: 20px;" src="<c:url value="/resources/img/logosmall.png"/>"/>
+	</div>
+
 
 	<div id="loginContainer">
 		<c:url value="loginprocess" var="loginUrl" />

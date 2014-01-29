@@ -270,6 +270,7 @@ var myUI = (function($, service) {
 			ops.addClass("ops");
 
 			var icon = $("<img></img>");
+			icon.addClass("icon");
 			icon.prop('src', "/deel/resources/img/file.png");
 
 			div.append(icon);
@@ -365,6 +366,7 @@ var myUI = (function($, service) {
 
 			var icon = $("<img></img>");
 			icon.prop('src', "/deel/resources/img/folder.png");
+			icon.addClass("icon");
 			div.append(icon);
 
 			var img = $("<img></img>");
