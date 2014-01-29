@@ -93,7 +93,7 @@ public class versioningTest {
 		
 //		when(fileR)
 		
-		fileService.updateFile(u, fp, fIn);
+		fileService.updateFile(u, fp, fIn,(long)1000);
 	}
 	
 

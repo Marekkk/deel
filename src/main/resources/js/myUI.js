@@ -11,6 +11,14 @@ var myUI = (function($, service) {
 		share : '/deel/resources/img/share.png',
 	};
 
+	function _bytesToSize(bytes) {
+	    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+	    if (bytes == 0) return 'n/a';
+	    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+	    if (i == 0) return bytes + ' ' + sizes[i];
+	    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+	};
+	
 	return {
 
 		init : function() {
@@ -282,7 +290,10 @@ var myUI = (function($, service) {
 				time.html(lastModified.toLocaleString());
 
 			info.append(time);
-			info.append($("<span>" + fp.size + "</span>"));
+			
+
+			var size = _bytesToSize(fp.size);
+			info.append($("<span>" + size + "</span>"));
 			info.append($("<span>" + fp.uploadedBy + "</span>"));
 
 			"remove revision share".split(' ').forEach(function(op) {

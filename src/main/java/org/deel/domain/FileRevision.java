@@ -34,6 +34,17 @@ public class FileRevision {
 	@JoinColumn(name="file_id")
 	private File file;
 	
+	@Column(name="size")
+	private Long size;
+	
+	public Long getSize() {
+		return size;
+	}
+
+	public void setSize(Long size) {
+		this.size = size;
+	}
+
 	public Long getId() {
 		return id;
 	}

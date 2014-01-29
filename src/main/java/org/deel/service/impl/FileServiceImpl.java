@@ -101,7 +101,7 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public FilePathInfo updateFile(User u, FilePath fp, InputStream data)
+	public FilePathInfo updateFile(User u, FilePath fp, InputStream data, Long size)
 			throws IOException {
 		fp = filePathDao.getFilePath(fp);
 
@@ -118,6 +118,7 @@ public class FileServiceImpl implements FileService {
 		newRevision.setFsPath(fp.getFolder().getFsPath() + fp.getName());
 		newRevision.setFile(fp.getFile());
 		newRevision.setUploadedBy(u);
+		newRevision.setSize(size);
 
 		fileRevisionDAO.insert(newRevision);
 		
@@ -168,7 +169,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	@Transactional
 	public FilePathInfo uploadFile(User curr, String originalFilename, Folder folder,
-			InputStream inputStream) throws IOException {
+			InputStream inputStream, Long size) throws IOException {
 
 		folder = folderDao.get(folder);
 
@@ -187,13 +188,15 @@ public class FileServiceImpl implements FileService {
 		/* TODO change Filepath.path in FilePath.name */
 		for (FilePath fp : folder.getFilepaths())
 			if (!fp.isHidden() && fp.getName().equals(originalFilename)) {
-				return updateFile(curr, fp, inputStream);
+				return updateFile(curr, fp, inputStream, size);
 			}
 
 		FileRevision fileRevision = new FileRevision();
 		fileRevision.setDate(new Date());
 		fileRevision.setFsPath(folder.getFsPath() + originalFilename);
 		fileRevision.setUploadedBy(curr);
+		fileRevision.setSize(size);
+		
 
 		File file = new File();
 

@@ -166,11 +166,11 @@ public class FileServiceTest {
 		when(folderDao.get(any(Folder.class))).thenReturn(folder);
 		when(fileRevisionDao.insert(any(FileRevision.class))).thenReturn((long)1);
 		
-		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout));
+		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout),(long)1000);
 		
 		when(fileRevisionDao.insert(any(FileRevision.class))).thenReturn((long)2);
 		
-		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout));
+		fileService.uploadFile(u, "/test1", folder, new FileInputStream(fout),(long)1000);
 		
 		File f1 = new File (System.getProperty("user.home") + "/storage/nick/test1.1");
 		File f2 = new File (System.getProperty("user.home") + "/storage/nick/test1.2");
