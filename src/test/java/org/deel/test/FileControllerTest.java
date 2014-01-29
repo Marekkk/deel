@@ -133,7 +133,7 @@ public class FileControllerTest {
 		doThrow(new RuntimeException("asd")).when(fileService).uploadFile(any(User.class), 
 				anyString(), 
 				any(Folder.class),
-				any(InputStream.class));
+				any(InputStream.class),any(Long.class));
 		
 
         mockMvc.perform(
@@ -236,7 +236,8 @@ public class FileControllerTest {
 		verify(fileService, times(2)).uploadFile(any(User.class), 
 				anyString(), 
 				any(Folder.class), 
-				any(InputStream.class));
+				any(InputStream.class)
+				,any(Long.class));
 	
         
 	}

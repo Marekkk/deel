@@ -8,7 +8,7 @@ public class FilePathInfo {
 	private Long id;
 	private String name;
 	private String uploadedBy;
-	private Integer size;
+	private Long size;
 	private Date lastModified;
 	private boolean isHidden;
 
@@ -18,7 +18,7 @@ public class FilePathInfo {
 	public FilePathInfo(FilePath fp) {
 		name = fp.getName();
 		uploadedBy = fp.getFile().getRevisions().get(0).getUploadedBy().getUsername();
-		size = 1000;//dummy TODO
+		size = fp.getFile().getRevisions().get(0).getSize();//dummy TODO
 		lastModified = fp.getFile().getRevisions().get(0).getDate();
 		isHidden = fp.isHidden();
 		id = fp.getId();
@@ -56,11 +56,11 @@ public class FilePathInfo {
 		this.name = name;
 	}
 
-	public Integer getSize() {
+	public Long getSize() {
 		return size;
 	}
 
-	public void setSize(Integer size) {
+	public void setSize(Long size) {
 		this.size = size;
 	}
 

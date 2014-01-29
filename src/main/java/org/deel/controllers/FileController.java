@@ -196,7 +196,8 @@ public class FileController {
 			try {
 				fInfo = fileService.uploadFile(curr,
 						multipartFile.getOriginalFilename(), folder,
-						multipartFile.getInputStream());
+						multipartFile.getInputStream(),
+						multipartFile.getSize());
 				ret.add(fInfo);
 				
 

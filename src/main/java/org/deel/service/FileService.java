@@ -22,7 +22,7 @@ public interface FileService {
 
 	
 	@Transactional
-	public FilePathInfo updateFile(User owner, FilePath filePath, InputStream data) throws IOException;
+	public FilePathInfo updateFile(User owner, FilePath filePath, InputStream data, Long size) throws IOException;
 	
 	@Transactional
 	public void shareFile(User currentUser, FilePath filePath, List<User> userList, List<Team> teamList);
@@ -36,7 +36,7 @@ public interface FileService {
 
 	@Transactional
 	public FilePathInfo uploadFile(User curr, String originalFilename, Folder folder,
-			InputStream inputStream) throws IOException;
+			InputStream inputStream, Long size) throws IOException;
 	
 
 	@Transactional

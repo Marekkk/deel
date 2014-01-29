@@ -72,7 +72,7 @@ var service = (function ($) {
 			$.when(
 				$.get("team/list"),
 				$.get("user/list")
-			).done(function(a,b){cb(fp,a,b)});
+			).done(function(a,b){cb(fp,a,b);});
 		},
 		
 		newFolder : function (folderName, currentFolder, cb) {
