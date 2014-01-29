@@ -21,7 +21,7 @@ var service = (function ($) {
 			contentType : false,
 			async : false,
 			processData : false,
-			success : cb,
+			success : cb
 		});
 	}
 	

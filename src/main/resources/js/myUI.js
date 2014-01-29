@@ -3,6 +3,7 @@ var myUI = (function($, service) {
 
 	var wrapper;
 	var uploadDiv;
+	var progress;
 
 	var opsImageUrls = {
 		remove : '/deel/resources/img/remove.png',
@@ -22,6 +23,14 @@ var myUI = (function($, service) {
 
 		},
 
+		progressStart : function() {
+			progress.show();
+		},
+
+		progressStop : function() {
+			progress.hide();
+		},
+
 		setWrapper : function(w) {
 			wrapper = w;
 		},
@@ -29,35 +38,97 @@ var myUI = (function($, service) {
 		getWrapper : function() {
 			return wrapper;
 		},
-		onNewFile : function (returndata) {
+		onNewFile : function(returndata) {
 
-			if (returndata.status != "success")
-			{
+			myUI.progressStop();
+			if (returndata.status != "success") {
 				alert("error uploading");
 				return;
 			}
 			returndata.files.forEach(function(fp) {
-				var oldDiv = $('#FP_'+fp.id);
+				var oldDiv = $('#FP_' + fp.id);
 				var newDiv = myUI.makeDivFromFilePath(fp);
-				
+
 				if (oldDiv.length > 0) {
 					oldDiv.replaceWith(newDiv);
-				}
-				else {
+				} else {
 					$('#wrapper').append(newDiv);
 				}
 			});
-				
-			
-		},
 
+		},
+		
+		share : function (fp, teamXHR, userXHR) {
+			
+			myUI.progressStop();
+			teams = teamXHR[0].teams;
+			users = userXHR[0].users;
+			
+			var sharing = $("#sharingList");
+			var insertUser = $("<input></input>");
+			$("#sharingWith").before(insertUser);
+			var sender = $("<button>Share!</button>");
+			sender.attr("id", "sender");
+			sharing.append(sender);
+			var usersSharing = new Array();
+			var teamsSharing = new Array();
+			
+			users.forEach(function (u) {
+				u.label = u.username;
+				u.type = "user";
+			});
+			
+			teams.forEach(function (t) {
+				t.label = t.name;
+				t.type = "team";
+			});
+			
+			insertUser.autocomplete({
+				source : users.concat(teams),
+				select : function(e, ui) {
+					if (ui.item.type == "user")
+						usersSharing.push(ui.item.id);
+					else if (ui.item.type == "team")
+						teamsSharing.push(ui.item.id);
+		
+					var sharingWith = $("#sharingWith");
+					var p = $("<p></p>");
+					p.html(ui.item.label);
+					sharingWith.append(p);
+				}
+			});
+				
+			sender.click(function() {
+				
+				var message = new Object();
+
+				message.users = usersSharing;
+				message.teams = teamsSharing;
+				message.file = fp.id;
+			
+
+				$.ajax({
+					url : "file/share",
+					type : 'POST',
+					data : JSON.stringify(message),
+					dataType : "json",
+					contentType : "application/json",
+					success : function(returndata) {
+						alert("File Shared!");
+					}
+				});
+
+			});
+			$('#sharingList').dialog("open");
+		},
+			
 		updateSpace : function() {
 
 			var newWrapper = $('<div id="wrapper"></div>');
-			myUI.createUploadDiv( {
-				div: newWrapper,
+			myUI.createUploadDiv({
+				div : newWrapper,
 			});
-			
+
 			var url = "file/list"
 					+ (myUI.getCurrentFolder() ? "?path="
 							+ myUI.getCurrentFolder().id : "");
@@ -92,6 +163,7 @@ var myUI = (function($, service) {
 
 				var inputFile = $("<input type='file'></input>");
 				inputFile.on('change', function(e) {
+					myUI.progressStart();
 					service.uploadFilesFromInput(this.files, myUI
 							.getCurrentFolder(), myUI.onNewFile);
 				});
@@ -115,14 +187,15 @@ var myUI = (function($, service) {
 					}
 					if (e.keyCode == 13) {
 						folderName.prop("disable", true);
-
+						myUI.progressStart();
 						service.newFolder(folderName.val(), myUI
 								.getCurrentFolder(), function(returndata) {
+							myUI.progressStop();
 							if (returndata.status == "success") {
 								newFolder.show();
 								folderName.hide();
 								myUI.onNewFolder(returndata);
-								
+
 							}
 						});
 
@@ -140,14 +213,21 @@ var myUI = (function($, service) {
 
 				var undelete = $("<img></img>");
 				undelete.prop('src', '/deel/resources/img/undelete.png');
-				
-				undelete.click(function(){
+
+				undelete.click(function() {
 					$('.hidden').toggle();
 				});
-				
+
 				controls.append(undelete);
 
 				firstRow.append(controls);
+
+				progress = $("<img></img>");
+				progress.prop('src', '/deel/resources/img/progress.gif');
+				progress.css("float", "right");
+				progress.hide();
+				firstRow.append(progress);
+
 				newWrapper.append(firstRow);
 
 				data.folders.forEach(function(f) {
@@ -167,8 +247,8 @@ var myUI = (function($, service) {
 		makeDivFromFilePath : function(fp) {
 			var now = new Date();
 			var div = $("<div></div>");
-			
-			div.attr("id", "FP_"+fp.id);
+
+			div.attr("id", "FP_" + fp.id);
 
 			if (fp.hidden) {
 				div.addClass("hidden");
@@ -209,6 +289,7 @@ var myUI = (function($, service) {
 				var img = $("<img></img>");
 				img.prop('src', opsImageUrls[op]);
 				img.click(function() {
+					myUI.progressStart();
 					service[op](fp, myUI[op]);
 				});
 				ops.append(img);
@@ -221,38 +302,37 @@ var myUI = (function($, service) {
 			return div;
 
 		},
-		
-		remove: function(fp, data) {
-			$('#FP_'+fp.id).remove();			
+
+		remove : function(fp, data) {
+			myUI.progressStop();
+			$('#FP_' + fp.id).addClass("hidden");
 		},
-		
-		removeFolder: function(f, data) {
-			$('#F_'+f.id).remove();			
+
+		removeFolder : function(f, data) {
+			myUI.progressStop();
+			$('#F_' + f.id).addClass("hidden");
 		},
+
 		
-		
-		share: function(fp) {
-			console.log("fp callback" + fp);
+		revision : function(fp, returndata) {
+			myUI.progressStop();
+			var dates = new Array();
+			var idRevs = new Array();
+			for ( var i in returndata) {
+				// i is the id of current revision
+				d = new Date(returndata[i].date);
+				var currPos = dates.length;
+				dates[currPos] = d;
+				idRevs[currPos] = i;
+			}
+			createRevisionsTable(fp, idRevs, dates);
+			$('#revision').dialog("open");
 		},
-		revision: function(fp, returndata) {
-			
-				var dates = new Array();
-				var idRevs = new Array();
-				for ( var i in returndata) {
-					// i is the id of current revision
-					d = new Date(returndata[i].date);
-					var currPos = dates.length;
-					dates[currPos] = d;
-					idRevs[currPos] = i;
-				}
-				createRevisionsTable(fp, idRevs, dates);
-				$('#revision').dialog("open");
-			},
 		makeDivFromFolder : function(f) {
-			
+
 			var div = $("<div></div>");
-			
-			div.attr("id", "F_"+f.id);
+
+			div.attr("id", "F_" + f.id);
 
 			if (f.hidden) {
 				div.addClass("hidden");
@@ -262,7 +342,8 @@ var myUI = (function($, service) {
 			var ops = $("<div></div>");
 
 			div.addClass("file");
-			ops.addClass("ops");var holder = $("<div></div>");
+			ops.addClass("ops");
+			var holder = $("<div></div>");
 
 			name.html(f.name);
 			name.css("cursor", "pointer");
@@ -278,6 +359,7 @@ var myUI = (function($, service) {
 			var img = $("<img></img>");
 			img.prop('src', opsImageUrls["remove"]);
 			img.click(function() {
+				myUI.progressStart();
 				service.removeFolder(f, myUI.removeFolder);
 			});
 			ops.append(img);
@@ -288,16 +370,11 @@ var myUI = (function($, service) {
 			return div;
 
 		},
-		
+
 		onNewFolder : function(returndata) {
+			myUI.progressStop();
 			var div = myUI.makeDivFromFolder(returndata.folder);
 			$('#firstRow').after(div);
-		},
-		
-		onRemoveFolder : function (f, returndata) {
-			if(returndata.status == "success") {
-				$('#F_'+f.id).remove();
-			}
 		},
 
 		getCurrentFolder : function() {
@@ -341,7 +418,7 @@ var myUI = (function($, service) {
 			if ("dataCB" in opts) {
 				opts.dataCB(body);
 			}
-			
+
 			t.append(body);
 			console.log(t);
 			return t;
@@ -435,57 +512,57 @@ var myUI = (function($, service) {
 			var newC = $("<button> Add </button>");
 			var input = $("<input type='text'></input>");
 			var button = $("<button>Add</button>");
-			
-			
+
 			div.append(newC);
 			div.append(input.hide());
 			div.append(button.hide());
-			
+
 			input.prop("disable", true);
 
-			button.click(function() {
-				
-				$.ajax({
-					url : 'new',
-					type : 'POST',
-					data : JSON.stringify({
-						id : null,
-						name : input.val()
-					}),
-					contentType : "application/json",
-					dataType : "json",
-					success : function(
-							returndata) {
-						if (returndata.status == "success") {
-							var tr = $("<tr></tr>");
-							var nr = myUI.createRowForCompanyAdmin(returndata.company);
-							tr.append(nr);
-							input.closest('tbody').append(tr);
-							newC.show();
-							button.hide();
-							input.hide();
-						}
-					}
-				});
-				
-			});
-			
+			button
+					.click(function() {
+
+						$
+								.ajax({
+									url : 'new',
+									type : 'POST',
+									data : JSON.stringify({
+										id : null,
+										name : input.val()
+									}),
+									contentType : "application/json",
+									dataType : "json",
+									success : function(returndata) {
+										if (returndata.status == "success") {
+											var tr = $("<tr></tr>");
+											var nr = myUI
+													.createRowForCompanyAdmin(returndata.company);
+											tr.append(nr);
+											input.closest('tbody').append(tr);
+											newC.show();
+											button.hide();
+											input.hide();
+										}
+									}
+								});
+
+					});
 
 			newC.click(function() {
-						input.show();
-						button.show();
-						input.focus();
-						newC.hide();
+				input.show();
+				button.show();
+				input.focus();
+				newC.hide();
 
-						input.keyup(function(e) {
-									if (e.keyCode == 27) {
-										input.hide();
-										button.hide();
-										newC.show();
-									}
-									});
-						});
-			
+				input.keyup(function(e) {
+					if (e.keyCode == 27) {
+						input.hide();
+						button.hide();
+						newC.show();
+					}
+				});
+			});
+
 			var tr = $("<tr></tr>");
 			var td = $("<td></td>");
 			td.append(div);
@@ -496,9 +573,8 @@ var myUI = (function($, service) {
 
 		createUploadDiv : function(opts) {
 			var holder = $("<div></div>");
-			if ("div" in opts) 
-				holder = opts.div; 
-			
+			if ("div" in opts)
+				holder = opts.div;
 
 			var cssClass = "cssClass" in opts ? opts.cssClass : '';
 			var cssClassHover = "cssClassHover" in opts ? opts.cssClassHover
@@ -516,11 +592,14 @@ var myUI = (function($, service) {
 				return false;
 			});
 
-			holder.on('drop', function(e) {
-				e.preventDefault();
-				this.className = cssClass;
-				service.uploadFiles(e, myUI.getCurrentFolder(), myUI.onNewFile);
-			});
+			holder.on('drop',
+					function(e) {
+						e.preventDefault();
+						this.className = cssClass;
+						myUI.progressStart();
+						service.uploadFiles(e, myUI.getCurrentFolder(),
+								myUI.onNewFile);
+					});
 			return holder;
 
 		},
@@ -535,117 +614,5 @@ var myUI = (function($, service) {
 				success : cb(data),
 			});
 		},
-
-	// function addingOps(data, tr) {
-	// var r = tr;
-	// var c = document.createElement("td");
-	// c.style = "background-color: transparent";
-	// var a = document.createElement("a");
-	// var img = document.createElement("img");
-	// img.src = "<c:url value="/resources/img/remove.png"/>";
-	// img.height = "50";
-	// img.width = "75";
-	// a.appendChild(img);
-	// var id = data.id;
-	// var type = data.type;
-	//
-	// a.type = type;
-	// a.id = "opRemove";
-	// a.href = "javascript:removeFile(" + id + ", '" + type + "')";
-	// a.style = "text-decoration: none";
-	// //a.innerHTML = "Remove";
-	// c.appendChild(a);
-	// r.appendChild(c);
-	//
-	//
-	// if (type == "file") {
-	// var cs = document.createElement("td");
-	// cs.style = "background-color: transparent";
-	// var share = document.createElement("a");
-	// var idOpShare = "share_" + id;
-	// share.id = idOpShare;
-	// share.className = "opShare";
-	// share.href = "javascript:sharing(" + id + ")";
-	// share.style = "text-decoration: none";
-	// //share.innerHTML = "Share";
-	// var img = document.createElement("img");
-	// img.src = "<c:url value="/resources/img/share.png"/>";
-	// img.height = "40";
-	// img.width = "40";
-	// share.appendChild(img);
-	// cs.appendChild(share);
-	// r.appendChild(cs);
-	//
-	// var cr = document.createElement("td");
-	// cr.style = "background-color: transparent";
-	// var rev = document.createElement("a");
-	// rev.id = "revision_" + id;
-	// rev.href = "javascript:revision(" + id + ")";
-	// rev.style = "text-decoration:none; color: blue";
-	// var img = document.createElement("img");
-	// img.src = "<c:url value="/resources/img/revision.png"/>";
-	// img.height = "35";
-	// img.width = "40";
-	// rev.appendChild(img);
-	// //rev.innerHTML = "Revisions";
-	// cr.appendChild(rev);
-	// r.appendChild(cr);
-	// }
-	// }
-	// function getFiles() {
-	// cleanTable("dataTable");
-	// if (sessionStorage.getItem("dir") == null
-	// || sessionStorage.getItem("dir") === undefined)
-	// var request = "<c:url value="/file/list"/>";
-	// else
-	// var request = "<c:url value="/file/list?path="/>" +
-	// sessionStorage.getItem("dir");
-	//
-	// makeRequest(request);
-	// }
-	//		
-	// function makeRequest(request) {
-	// var req = request;
-	// $.get(req, function(data, success) {
-	// console.log(success);
-	//
-	// console.log(data);
-	// currentDir = data.currentDir;
-	// if (req == "<c:url value="/file/list"/>") {
-	// sessionStorage.setItem("root", currentDir.id);
-	// sessionStorage.setItem("dir", currentDir.id);
-	// } else {
-	// sessionStorage.setItem("dir", currentDir.id);
-	// }
-	// files = data.files;
-	// directories = data.directories;
-	// filesHidden = data.filesHidden;
-	// console.log(currentDir, filesHidden);
-	// updateTable("dataTable");
-	// });
-	// }
-	//		
-	// function updateTable(tableId) {
-	// for ( var i in directories) {
-	// var a = document.createElement("a");
-	// a.id = i;
-	// a.value = i;
-	// a.style = "color:red";
-	// a.href = "javascript:changeFolder(" + i + ")";
-	// a.innerHTML = directories[i];
-	// a.type = "folder";
-	// addRow(a, i, tableId);
-	// }
-	//
-	// for ( var i in files) {
-	// var a = document.createElement("a");
-	// a.id = i;
-	// a.href = "file/download/" + files[i] + "?id=" + i;
-	// a.innerHTML = files[i];
-	// a.type = "file";
-	// addRow(a, i, tableId);
-	// }
-	// }
-
 	};
 })($, service);
