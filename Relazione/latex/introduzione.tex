@@ -1,8 +1,8 @@
-\chapter{Deel: Applicazione web per l'hosting, la condivisione e il backup dei file}
+%\chapter{Deel: Applicazione web per l'hosting, la condivisione e il backup dei file}
 
-\section{Descrizione generale}
+\chapter{Descrizione}
 
-\subsection{funzionalità:}
+
 
 Deel implementa le funzionalità più comuni ricercate in un servizio di
 hosting di file quali l'upload di file di varie dimensioni, il
@@ -21,21 +21,28 @@ proprio account.
 % client. 
 
 L'applicazione è stata suddivisa in moduli interdipendenti tra loro,
-ognuno dei quali indirizza a precise funzionalità chiave. Ogni modulo
-espone agli altri moduli con cui è in una relazione di dipendenza solo
+ognuno dei quali si occupa di precise funzionalità chiave. Ogni modulo
+espone agli altri moduli  solo
 la propria interfaccia, mantenendo privata l'implementazione, così da aumentare
 la possibilità di riutilizzo e manutenzione del codice. 
-I principali moduli sono mostrati nella figura in basso. 
+I principali moduli sono mostrati nella figura \ref{arc}. 
+
+\begin{figure}
+\center
+  \includegraphics{architecture}
+\caption{}
+  \label{arc}
+\end{figure}
 
 
-Domain : 
+\subsection{Domain}
 Le classi che fanno parte del dominio rappresentano la  modellazione del
 problema svincolata dalle logiche di accesso ai dati, persistenza,
 navigazione ecc. Le classi sono strutturate come semplici POJO (plain
 old java object) così da non dipendere da nessun tipo di framework
-particolare. Le clasi si trovano nel package java org.deel.domain.
+particolare. Le classi si trovano nel package java org.deel.domain.
 
-Data layer : 
+\subsection{Data layer}
 
 Si occupa della persistenza dei dati, e di fornire un mapping
 consistente tra i dati permanenti e i dati manipolati in memoria
@@ -46,8 +53,53 @@ funzionalità di accesso al filesystem del sistema operativo. Per
 consentire il mapping tra oggetti del database e oggetti utilizzati
 dal sistema sono state utilizzate le funzionalità del framework
 Hibernate.
+Lo schema E-R dell' applicazione è definito nella
+figura \ref{ER}. 
 
-Service layer:
+\begin{figure}
+  \includegraphics[scale=0.4]{er}
+  \caption{}
+  \label{ER}
+\end{figure}
+
+%Da vedere
+Per modellare una struttura ad albero rappresentante la struttura
+organizzativa dei file dell? utente sono state utilizzate le tabelle
+Folder e FilePath, dove un filepath appartiene ad ed una sola
+directory e Folder ha una relazione ricorsiva. Ogni FilePath sarˆ
+collegato con un solo File e ci˜ permette una migliore gestione della
+condivisione. Per la configurazione di Hibernate sono state utilizzate
+annotazioni sulle classi del layer Domain.  Le relazioni tra le entità
+sono state mappate in modo bidirezionale, così da consentire la
+navigazione delle relazioni tra entità senza dover codificare
+istruzioni sql manualmente. 
+
+La strategia di caricamento scelta è stata Lazy, per evitare
+catastrofici caricamenti ricorsivi di tutto il Database in memoria e
+eseguire query sql solo quando ve ne sia effettivamente bisogno.
+Hibernate e' stato integrato nell'applicazione attraverso la
+configurazione di due bean di spring, in particolare sessionFactory e
+TransactionManager. Il sessionFactory provede ad istanziare una
+sessionFactory di Hibernate e settarla come proprietà dei Data Access
+Object che andranno poi ad utilizzarla per le comuni operazioni
+CRUD. Il transaction manager consente invece di definire i boundaries
+delle transazioni in modo dichiarativo, tramite l'utilizzo
+dell'annotazione @Transactional.  In questo modo il codice è
+svincolato dal dover far iniziare, committare e rollbackare la
+transazione in modo esplicito. Il layer Service è stato progettato in
+modo tale di aver associato un caso d'uso per ogni metodo,
+rappresentando logicamente una Unit Of Work, che deve preservare, tra
+le altre, la proprietà di atomicità. Questi infatti sono i metodi che
+sono stati annotati come @Transactional, in modo che il transaction
+manager di Spring inizi la transazione al momento della chiamata del
+metodo, committi al suo completamento o faccia il rollback in caso di
+errori. Infine per la propragazione delle operazioni sul DB abbiamo
+deciso, tranne per particolari casi, di non propagare nessuna
+operazione, così da avere maggiore controllo su inserimenti e
+rimozioni a livello di business logic.
+
+
+\subsection{Service layer}
 
 Il service layer si occupa di implementare i principali casi d'uso
 dell' applicazione, manipolando sia oggetti del domain sia interagendo
@@ -57,105 +109,85 @@ l'istanziazione degli oggetti di cui questo layer necessita (ad
 es. gli oggetti con le funzionalità DAO presenti nel datalayer)
 avviene in maniera automatica e il codice non dipende da essa. 
 
-Web Layer : Il web layer si occupa della logica di navigazione e della
-gestione della sicurezza dell'applicazione. Per l'implementazione
-della sicurezza (acesso e autenticazione) è stato utilizzato il modulo
-Spring Security, che tramite filtri serlvet permette una acesso
-selettivo e autenticato al sistema.  Per quanto riguarda la
-navigazione sono state utilizzate le funzionalità offerte dal modulo
-Spring MVC, funzionante su un servlet container (ad
-es. tomcat). Quando una richiesta arriva all'applicazione essa viene
-mappata all'opportuno \emph{Controller}. Il mapping viene definito
-tramite annotazioni sul codice java. Il Controller, nel caso di una
-richiesta HTML, si occupa di validare l'input (anche questo viene
-definito grazie ad annotazioni), di chiamare gli opportuni metodi sul
-layer service, di esporre i dati del modello e di indicare il nome di
-una vista da visualizzare all'utente. Se invece la richiesta è ti tipo
-JSON, dopo la validazione dell'input e le interazione con il layer
-service il controller ritorna le informazioni richieste al client sotto forma di oggetto JSON. In questo modo abbiamo potuto delegare
-parte della logica riguardate la User Interface sul lato client,
-fornendo da una parte una migliore e più reattiva esperienza utente,
-dall'altra diminuendo in qualche modo il carico di lavoro sul lato server.
+\subsection{Web Layer}
 
-User Interface:
+Il web layer si occupa della logica di navigazione e della
+gestione della sicurezza dell'applicazione. 
+
+Per l'implementazione della sicurezza (acesso e autenticazione) è
+stato utilizzato il modulo Spring Security, che tramite filtri serlvet
+permette una acesso selettivo e autenticato al sistema. Le password
+vengono salvate nel db utilizzando l'implementazione java di
+\emph{BCrypt} (le password vengono hashate, saltate e strechate). Sono
+stati implementati due diversi role (USER e ADMIN), in modo da avere
+un'area per la gestione dell'applicazione accessibile sono agli utenti
+amministratore.
+
+
+Per quanto riguarda la navigazione sono state utilizzate le
+funzionalità offerte dal modulo Spring MVC, funzionante su un servlet
+container (ad es. tomcat). Quando una richiesta arriva
+all'applicazione essa viene mappata all'opportuno
+\emph{Controller}. Il mapping viene definito tramite annotazioni sul
+codice java. Il Controller, nel caso di una richiesta HTML, si occupa
+di validare l'input (anche questo viene definito grazie ad
+annotazioni), di chiamare gli opportuni metodi sul layer service, di
+esporre i dati del modello e di indicare il nome di una vista da
+visualizzare all'utente. Se invece la richiesta è ti tipo JSON, dopo
+la validazione dell'input e le interazione con il layer service il
+controller ritorna le informazioni richieste al client sotto forma di
+oggetto JSON. In questo modo abbiamo potuto delegare parte della
+logica riguardate la User Interface sul lato client, fornendo da una
+parte una migliore e più reattiva esperienza utente, dall'altra
+diminuendo in qualche modo il carico di lavoro sul lato server.
+
+\subsection{User Interface}
 
 E' il layer più vicino all'utente e l'unico con cui interagisce
-direttamente. Nel layer Web, il controller indica il nome di
-una vista e i dati da esporre, a questo punto il nome della vista
-viene mappato ad un file jsp, in cui vengono utilizzati i tag JSTL per
-renderizzare i contenuti nel modello in una pagina finale html. In
-questo modo è facile aggiungere nuove tecnologie di rendering senza
-modificare il layer web. Le pagine jsp non sono accessibili dall'esterno.
-Per migliorare l'esperienza utente parte di questa logica è stata
-portata sul lato client tramite l'utilizzo di chiamate asincrone
-AJAX. L'interfaccia utente in questo caso esegue le sue richiesto in
-modo asincrono e tramite un meccanismo di callback si aggiorna dinamicamente.
+direttamente. Una volta che il controller indica il nome il nome di
+una vista e i dati da esporre, in modo totalmente configurabile questo
+nome viene mappato ad una tecnologia di visualizzazione. Nel nostro
+caso abbiamo utilizato i tag JSTL utilizzati per renderizzare i
+contenuti da esporre in una pagina html finale. In questo modo è
+facile aggiungere nuove tecnologie di rendering senza modificare il
+layer web.  Per migliorare l'esperienza utente parte di questa logica
+è stata portata sul lato client. Del codice javascript in questo caso
+esegue le richieste in modo asincrono al server grazie ad AJAX, e, tramite
+un meccanismo di callback, aggiorna dinamicamente il contenuto della
+pagina. Si è utilizzato jQuery come libreria.
+
+
+\chapter{Sviluppo}
+
+\subsection{Ambiente, IDE e testing}
+
+Come ambiente di sviluppo sono stati utilizzati diversi tool e
+strategie.  Si è proceduto nello sviluppo del software anche seguendo
+una metodologia di tipo Test Driven. Si è cioè proceduro prima alla
+creazione di unit test per la funzione da implementare per poi solo in
+un secondo momento scrivere la reale implementazione. L'utilizzo della
+dependecy injection insieme a l'utilizzo di tool per lo unit testing
+come \emph{JUnit}, \emph{Spring Test Framework} e \emph{mockito} hanno consentito di
+scrivere test piccoli, mirati, utili e facili da mettere in piedi.
+
+Come IDE si è scelto di utilizzare \emph{Eclipse}, come
+tool di building e per la gestione delle dipendenze \emph{Maven}.
+
+\subsection{Caso d'uso d'esempio}
+
+In figura \ref{upload} è mostrato il diagramma di sequenza
+semplificato del caso d'uso riguardante l'upload di un file da parte
+dell'utente. E' possibile fare l'upload di un file trascinandolo
+direttamente dal Sistema. Una volta droppato il file, parte una
+richiesta asincrona fatta dal client al server. 
 
 
 
-
-si occupa della logica di navigazione e della gestione della
-sicurezza. Per la realizzazione di questo layer sono state utilizzate
-tecnologie di Spring tra le quali Spring MVC e Spring Security. User
-Interface Layer : ? la parte esposta all? utente e si occupa dell?
-interazione con esso. Per lo sviluppo sono state utilizzate le
-tecnologie JSTL per quanto riguardo il lato server e jQuery lato
-client. Paragrafo 3. DBMS Per la realizzazione del database ? stato
-utilizzato MySQL. Lo schema E-R dell? applicazione ? definito nella
-figura in basso. Per modellare una struttura ad albero rappresentante
-la struttura organizzativa dei file dell? utente sono state utilizzate
-le tabelle Folder e FilePath, dove un filepath appartiene ad ed una
-sola directory e Folder ha una relazione ricorsiva. Ogni FilePath sarˆ
-collegato con un solo File e ci˜ permette una migliore gestione della
-condivisione. Paragrafo 4. ORM Quasi tutte le relazioni sono state
-mappate in modo bidirezionale per motivi di efficienza. E? stato
-inoltre utilizzato il caricamento Lazy in modo di ridurre i tempi di
-caricamento ed evitare un catastrofico caricamento ricorsivo di tutto
-il Database in memoria! Hibernate ? stato configurato per essere
-integrato con Spring. Infatti l? utilizzo del transactionManager(di
-Spring) e della sessionFactory verrˆ fatto attraverso dei Bean e con
-il frequente utilizzo della Dependency Injection. Cascade -> Per un
-controllo maggiore da parte della Business Logic si ? evitate di
-utilizzare inserimenti a cascate. Questo costrutto ? stato utilizzato
-solo in particolari casi che prevedevano una minima
-propagazione. Paragrafo 5. Transaction Strategies and Model Come
-modello di transazione ? stato utilizzato il modello dichiarativo che
-consente di non mischiare codice relativo alla logica del programma
-con codice relativo all? accesso ai dati nonchŽ meno error prone. In
-questo modello il contenitore(nel nostro caso Spring attraverso
-Hibernate) si occupa di iniziare, committare e rollbackare le
-transazioni. Come strategie invece abbiamo definito come Unit Of Work
-nella nostra applicazione un intero caso d? uso, implementato come
-metodo nel modulo Service. Utilizzando quindi l? annotazione
-x@Transactional su questi metodi abbiamo ottenuto una non intrusiva e
-consistente strategia di transazione. Paragrafo 6. Web ed User
-Interface Per migliorare l? interfaccia utente si ? scelto di
-mantenere le funzionalitˆ usate pi? frequentemente sulla stessa pagina
-facendo uso di chiamate asincrone presenti nelle librerie jQuery. Per
-questo la maggior parte della logica di navigazione riguarda quindi
-casi d? uso meno frequenti come la registrazione, il login o l?
-interfaccia amministrazione. Per quanto riguarda autenticazione ed
-access control ? stato usato un modulo Spring denominato Spring
-Security che tramite filtri servlet gestisce l? accesso alle pagine ed
-il login. Quest? ultimo modulo ? configurabile quasi totalmente
-tramite una pagina xml nella quale vengono fatti dei
-settaggi. Paragrafo 7. Note sui test Sono state adottate molte
-tecniche di sviluppo in base ai moduli implementati tra le quali
-Test-driven Development utilizzando i popolari framework di testing
-JUnit e Mockito. Paragrafo 8. Esempio di un caso d? uso In questo
-paragrafo verrˆ descritto un caso d? uso d? esempio. Per l? upload di
-un file l? utente quindi trascinerˆ il file nel div dopodichŽ verrˆ
-mandata una richiesta al controller che tramite il modulo service
-gestirˆ l? inserimento o il revisionamento del file. Andata a buon
-fine la transazione la pagina tramite una callback aggiornerˆ la vista
-dinamicamente senza ricaricare la pagina. Paragrafo 9. Conclusioni Uno
-dei vantaggi di aver utilizzato Spring ed in particolar modo la
-dependency injection ? stato quello di aver reso per quanto pi?
-possibile indipendenti i moduli del sistema che non dovendo conoscere
-nessun dettaglio implementativo possono essere sia migliorati che
-testati singolarmente.
-
-La mia introduzione
+\begin{figure}
+  \includegraphics[scale=0.4]{upload}
+  \caption{}
+  \label{upload}
+\end{figure}
 
 %%% Local Variables: 
 %%% mode: latex

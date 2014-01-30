@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.7.24)  30 JAN 2014 13:09
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.7.24)  30 JAN 2014 18:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -39,12 +39,31 @@ Package babel Warning: No hyphenation patterns were loaded for
 
 \l@italian = a dialect from \language0
 Package babel Info: Making " an active character on input line 94.
-)) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+)) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/utf8x.def
+File: utf8x.def 2004/10/17 UCS: Input encoding UTF-8
+))
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/ucs.sty
+Package: ucs 2004/10/17 UCS: Unicode input support
+
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/data/uni-global.def
+File: uni-global.def 2012/04/20 UCS: Unicode global data
+)
+\uc@secondtry=\count89
+\uc@combtoks=\toks16
+\uc@combtoksb=\toks17
+\uc@temptokena=\toks18
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
-\KV@toks@=\toks14
+\KV@toks@=\toks19
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
@@ -66,29 +85,43 @@ Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count89
+\Gread@gobject=\count90
 ))
 \Gin@req@height=\dimen104
 \Gin@req@width=\dimen105
 )
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2012/02/19 v3.2f Customizing captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2012/01/12 v1.4b caption3 kernel (AR)
+\captionmargin=\dimen106
+\captionmargin@=\dimen107
+\captionwidth=\dimen108
+\caption@indent=\dimen109
+\caption@parindent=\dimen110
+\caption@hangindent=\dimen111
+)
+\c@ContinuedFloat=\count91
+)
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count90
+\lst@mode=\count92
 \lst@gtempboxa=\box26
-\lst@token=\toks15
-\lst@length=\count91
-\lst@currlwidth=\dimen106
-\lst@column=\count92
-\lst@pos=\count93
-\lst@lostspace=\dimen107
-\lst@width=\dimen108
-\lst@newlines=\count94
-\lst@lineno=\count95
-\lst@maxwidth=\dimen109
+\lst@token=\toks20
+\lst@length=\count93
+\lst@currlwidth=\dimen112
+\lst@column=\count94
+\lst@pos=\count95
+\lst@lostspace=\dimen113
+\lst@width=\dimen114
+\lst@newlines=\count96
+\lst@lineno=\count97
+\lst@maxwidth=\dimen115
 
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
-\c@lstnumber=\count96
-\lst@skipnumbers=\count97
+\c@lstnumber=\count98
+\lst@skipnumbers=\count99
 \lst@framebox=\box27
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
@@ -106,51 +139,51 @@ Package: amstext 2000/06/29 v2.01
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks16
-\ex@=\dimen110
+\@emptytoks=\toks21
+\ex@=\dimen116
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d
-\pmbraise@=\dimen111
+\pmbraise@=\dimen117
 )
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count98
+\inf@bad=\count100
 LaTeX Info: Redefining \frac on input line 211.
-\uproot@=\count99
-\leftroot@=\count100
+\uproot@=\count101
+\leftroot@=\count102
 LaTeX Info: Redefining \overline on input line 307.
-\classnum@=\count101
-\DOTSCASE@=\count102
+\classnum@=\count103
+\DOTSCASE@=\count104
 LaTeX Info: Redefining \ldots on input line 379.
 LaTeX Info: Redefining \dots on input line 382.
 LaTeX Info: Redefining \cdots on input line 467.
 \Mathstrutbox@=\box28
 \strutbox@=\box29
-\big@size=\dimen112
+\big@size=\dimen118
 LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
-\macc@depth=\count103
-\c@MaxMatrixCols=\count104
+\macc@depth=\count105
+\c@MaxMatrixCols=\count106
 \dotsspace@=\muskip10
-\c@parentequation=\count105
-\dspbrk@lvl=\count106
-\tag@help=\toks17
-\row@=\count107
-\column@=\count108
-\maxfields@=\count109
-\andhelp@=\toks18
-\eqnshift@=\dimen113
-\alignsep@=\dimen114
-\tagshift@=\dimen115
-\tagwidth@=\dimen116
-\totwidth@=\dimen117
-\lineht@=\dimen118
-\@envbody=\toks19
+\c@parentequation=\count107
+\dspbrk@lvl=\count108
+\tag@help=\toks22
+\row@=\count109
+\column@=\count110
+\maxfields@=\count111
+\andhelp@=\toks23
+\eqnshift@=\dimen119
+\alignsep@=\dimen120
+\tagshift@=\dimen121
+\tagwidth@=\dimen122
+\totwidth@=\dimen123
+\lineht@=\dimen124
+\@envbody=\toks24
 \multlinegap=\skip44
 \multlinetaggap=\skip45
-\mathdisplay@stack=\toks20
+\mathdisplay@stack=\toks25
 LaTeX Info: Redefining \[ on input line 2666.
 LaTeX Info: Redefining \] on input line 2667.
 )
@@ -183,39 +216,43 @@ File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
 ) (./relazione.aux (./introduzione.aux))
 \openout1 = `relazione.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 61.
-LaTeX Font Info:    Try loading font information for LGR+cmr on input line 61.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 64.
+LaTeX Font Info:    Try loading font information for LGR+cmr on input line 64.
 
 (/usr/share/texlive/texmf-dist/tex/generic/babel/lgrcmr.fd
 File: lgrcmr.fd 2008/06/17 v2.3 Greek Computer Modern
 )
-LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    ... okay on input line 64.
 
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/ucsencs.def
+File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
+
+fontencoding LGR patched
+) (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count110
-\scratchdimen=\dimen119
+\scratchcounter=\count112
+\scratchdimen=\dimen125
 \scratchbox=\box30
-\nofMPsegments=\count111
-\nofMParguments=\count112
-\everyMPshowfont=\toks21
-\MPscratchCnt=\count113
-\MPscratchDim=\dimen120
-\MPnumerator=\count114
-\makeMPintoPDFobject=\count115
-\everyMPtoPDFconversion=\toks22
+\nofMPsegments=\count113
+\nofMParguments=\count114
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count115
+\MPscratchDim=\dimen126
+\MPnumerator=\count116
+\makeMPintoPDFobject=\count117
+\everyMPtoPDFconversion=\toks27
 ) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -264,119 +301,85 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count116
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: listings package is loaded.
+Package caption Info: End \AtBeginDocument code.
+\c@lstlisting=\count118
+
+(./title.tex <./logo.png, id=1, 112.04651pt x 63.30627pt>
+File: ./logo.png Graphic file (type png)
+ <use ./logo.png>
+Package pdftex.def Info: ./logo.png used on input line 7.
+(pdftex.def)             Requested size: 58.49762pt x 33.05177pt.
+LaTeX Font Info:    Try loading font information for U+msa on input line 21.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 21.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+) [1
+
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./logo.png>])
 \openout2 = `introduzione.aux'.
 
-
-(./introduzione.tex
+ (./introduzione.tex
 Capitolo 1.
-Missing character: There is no Ã in font cmbx12!
-Missing character: There is no   in font cmbx12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¹ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¬ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¬ in font cmr12!
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/data/uni-0.def
+File: uni-0.def 2012/04/20 UCS: Unicode data U+0000..U+00FF
+)
+<architecture.png, id=12, 197.538pt x 133.298pt>
+File: architecture.png Graphic file (type png)
+ <use architecture.png>
+Package pdftex.def Info: architecture.png used on input line 32.
+(pdftex.def)             Requested size: 197.5375pt x 133.29765pt.
+
 [1
 
 
+] <er.png, id=16, 954.56625pt x 646.415pt>
+File: er.png Graphic file (type png)
+ <use er.png>
+Package pdftex.def Info: er.png used on input line 60.
+(pdftex.def)             Requested size: 381.81973pt x 258.56142pt.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no   in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¹ in font cmr12!
+(/usr/share/texlive/texmf-dist/tex/latex/ucs/data/uni-2.def
+File: uni-2.def 2012/04/20 UCS: Unicode data U+0200..U+02FF
+) [2 <./architecture.png>] [3 <./er.png>] [4] [5]
+Capitolo 2.
+<upload.png, id=32, 1042.89626pt x 576.1525pt>
+File: upload.png Graphic file (type png)
+ <use upload.png>
+Package pdftex.def Info: upload.png used on input line 187.
+(pdftex.def)             Requested size: 417.15112pt x 230.45691pt.
 
-Underfull \vbox (badness 2435) has occurred while \output is active []
-
-
-Overfull \hbox (200.88615pt too wide) has occurred while \output is active
-\OT1/cmr/m/n/12 2 \OT1/cmr/m/sl/12 CAPITOLO 1.  DEEL: APPLICAZIONE WEB PER L'HO
-STING, LA CONDIVISIONE E IL BACKUP DEI FILE
+Overfull \hbox (27.15112pt too wide) in paragraph at lines 187--188
+[][] 
  []
 
-[2]
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¹ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no ¨ in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no œ in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Å in font cmr12!
-Missing character: There is no ½ in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Å in font cmr12!
-Missing character: There is no ½ in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
-Missing character: There is no Ë in font cmr12!
-Missing character: There is no † in font cmr12!
+) [6
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [3]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (200.88615pt too wide) has occurred while \output is active
-\OT1/cmr/m/n/12 4 \OT1/cmr/m/sl/12 CAPITOLO 1.  DEEL: APPLICAZIONE WEB PER L'HO
-STING, LA CONDIVISIONE E IL BACKUP DEI FILE
- []
-
-[4]) [5] (./relazione.aux (./introduzione.aux)) ) 
+] [7 <./upload.png>] (./relazione.aux (./introduzione.aux)) ) 
 Here is how much of TeX's memory you used:
- 3923 strings out of 495059
- 54746 string characters out of 3182030
- 144567 words of memory out of 3000000
- 7058 multiletter control sequences out of 15000+200000
- 6454 words of font info for 23 fonts, out of 3000000 for 9000
+ 6548 strings out of 495059
+ 95401 string characters out of 3182030
+ 170660 words of memory out of 3000000
+ 9628 multiletter control sequences out of 15000+200000
+ 10542 words of font info for 39 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 38i,4n,58p,242b,219s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmti12.pfb>
-Output written on relazione.pdf (5 pages, 63553 bytes).
+ 38i,6n,58p,316b,480s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmti12.pfb>
+Output written on relazione.pdf (8 pages, 228649 bytes).
 PDF statistics:
- 36 PDF objects out of 1000 (max. 8388607)
- 24 compressed objects within 1 object stream
+ 55 PDF objects out of 1000 (max. 8388607)
+ 33 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

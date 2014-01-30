@@ -1,4 +1,4 @@
-\documentclass[12pt,twoside,a4paper,titlepage]{book}
+\documentclass[12pt,oneside,a4paper,titlepage]{book}
 %\oddsidemargin52pt      %commentare se si stampa solo fronte
 %\evensidemargin10pt     %commentare se si stampa solo fronte
 
@@ -6,8 +6,11 @@
 \usepackage[italian]{babel}
 %\usepackage[signatures]{frontespizio}
 %packages
+\usepackage[utf8x]{inputenc}
 
 \usepackage{graphicx}
+\usepackage{caption}
+
 
 \usepackage{listings}
 \usepackage{amsmath}
@@ -68,11 +71,13 @@ stringstyle=\footnotesize,
 %pdflatex tesi
 
 
-\lstset{language=C}
+%\lstset{language=C}
 
 %Per stampare solo fronte correggere i vari clearpage e newpage 
 %neccessari per l'aggiunta di pagine bianche aggiuntive nel fronte-retro.
 
+
+\input{title.tex}
 
 \include{introduzione}
 \end{document}
