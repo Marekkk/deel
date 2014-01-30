@@ -67,13 +67,17 @@ var myUI = (function($, service) {
 		},
 		
 		share : function (fp, teamXHR, userXHR) {
-			
+				
 			myUI.progressStop();
 			teams = teamXHR[0].teams;
 			users = userXHR[0].users;
 			
 			var sharing = $("#sharingList");
 			var insertUser = $("<input></input>");
+			insertUser.attr("id", "insertUser");
+			var sharingWith = $("<div></div>");
+			sharingWith.attr("id", "sharingWith");
+			sharing.append(sharingWith);
 			$("#sharingWith").before(insertUser);
 			var sender = $("<button>Share!</button>");
 			sender.attr("id", "sender");
@@ -123,6 +127,7 @@ var myUI = (function($, service) {
 					contentType : "application/json",
 					success : function(returndata) {
 						alert("File Shared!");
+						$("#insertUser").attr("value", "");
 					}
 				});
 

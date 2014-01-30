@@ -71,9 +71,9 @@
 			title : "Share with:",
 			
 			close : function () {
+				$("#insertUser").remove();
 				$("#sharingWith").remove();
 				$("#sender").remove();
-				$("#inputSharing").remove();
 			}
 		});
 	});

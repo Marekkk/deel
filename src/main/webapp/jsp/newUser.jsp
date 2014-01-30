@@ -8,6 +8,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel=stylesheet href="../resources/css/login.css" media="screen">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <title>Registration</title>
 <script type="text/javascript">
 	function check() {
@@ -56,6 +58,8 @@
 		var psw2 = document.getElementById("psw2");
 		psw2.value = "";
 	}
+	
+	$(document)
 </script>
 </head>
 <body>
@@ -100,6 +104,12 @@
 			<br>
 			<label for="surname">Surname:</label>
 			<form:input path="surname" />
+			<br>
+			<label for="company">Company:</label>
+			<select id="company">
+				<option>RPC</option>
+				<option>C2</option>
+			</select>
 			<br>
 			<div id="lowerRegistration">
 				<input type="submit" value="Register" onclick="return check()">
