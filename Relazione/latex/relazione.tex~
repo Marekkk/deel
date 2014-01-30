@@ -1,0 +1,78 @@
+\documentclass[12pt,twoside,a4paper,titlepage]{book}
+%\oddsidemargin52pt      %commentare se si stampa solo fronte
+%\evensidemargin10pt     %commentare se si stampa solo fronte
+
+
+\usepackage[italian]{babel}
+%\usepackage[signatures]{frontespizio}
+%packages
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+
+%listening
+\lstset{
+basicstyle=\footnotesize,
+language=C++,                % choose the language of the code
+%numbers=left,                   % where to put the line-numbers
+%stepnumber=2,                   % the step between two line-numbers. If it's 1 each line 
+%numbersep=5pt,                  % how far the line-numbers are from the code
+frame=single,                % adds a frame around the code
+tabsize=2,                % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+stringstyle=\footnotesize,
+}
+
+%-----------------------------------------------------------------
+%Intestazione e piè di pagina
+%-----------------------------------------------------------------
+
+%\pagestyle{headings}
+
+% \pagestyle{fancy}
+% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+% \fancyhf{}
+
+% \fancyhead[LE,RO]{\bfseries\thepage}
+% \fancyhead[LO]{\bfseries\rightmark}
+% \fancyhead[RE]{\bfseries\leftmark}
+% \renewcommand{\headrulewidth}{0.3pt}
+% \renewcommand{\footrulewidth}{0pt}
+% \addtolength{\headheight}{0.3pt} % riserva spazio per la linea
+% \fancypagestyle{plain}{
+%     \fancyhead{}                        % ignora, nello stile plain, le intestazioni
+%     \renewcommand{\headrulewidth}{0pt}  % e la linea
+% }
+
+
+%Interlinea
+\linespread{1.3}
+
+%Commands
+\newcommand{\code}[1]{\lstinline$#1$}
+
+\begin{document}
+
+%Frontespizio
+%Per avere il frontespizio compilare tesi.tex, poi tesi-frn.tex e dinuovo tesi.tex:
+
+%pdflatex tesi
+%pdflatex tesi-frn
+%pdflatex tesi
+
+
+\lstset{language=C}
+
+%Per stampare solo fronte correggere i vari clearpage e newpage 
+%neccessari per l'aggiunta di pagine bianche aggiuntive nel fronte-retro.
+
+
+\include{introduzione}
+\end{document}
