@@ -58,15 +58,14 @@
 		var psw2 = document.getElementById("psw2");
 		psw2.value = "";
 	}
-	
-	$(document)
 </script>
 </head>
 <body>
 
 
 	<div id="mainheader">
-		<img style="margin: 20px;" src="<c:url value="/resources/img/logosmall.png"/>"/>
+		<img style="margin: 20px;"
+			src="<c:url value="/resources/img/logosmall.png"/>" />
 	</div>
 
 
@@ -106,10 +105,9 @@
 			<form:input path="surname" />
 			<br>
 			<label for="company">Company:</label>
-			<select id="company">
-				<option>RPC</option>
-				<option>C2</option>
-			</select>
+			<form:select path="company">
+				<form:options items="${companies}"/>
+			</form:select>
 			<br>
 			<div id="lowerRegistration">
 				<input type="submit" value="Register" onclick="return check()">

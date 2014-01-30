@@ -328,4 +328,28 @@ public class FileController {
 
 		return result;
 	}
+	
+	@RequestMapping(value = "/file/removeFromTrash", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<Long, String> removeFileFromTrash(@RequestParam Long id, Principal principal) {
+
+		Map<Long, String> result = new HashMap<Long, String>();
+		System.out.println("We are going to remove filepath with id -> " + id);
+		FilePath f = new FilePath();
+		f.setId(id);
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		try {
+			fileService.deleteFromTrash(f, u);
+		} catch (Exception e) {
+			System.out.println("Error during deleting. \n" + e);
+			e.printStackTrace();
+			result.put(id, "error");
+			return result;
+		}
+
+		result.put(id, "success");
+
+		return result;
+	}
 }

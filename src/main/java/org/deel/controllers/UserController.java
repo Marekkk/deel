@@ -9,10 +9,12 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.deel.domain.Company;
 import org.deel.domain.Team;
 import org.deel.domain.TeamInfo;
 import org.deel.domain.User;
 import org.deel.domain.UserInfo;
+import org.deel.service.CompanyService;
 import org.deel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +36,9 @@ public class UserController {
 
 
 	private UserService userService;
+	
+	@Autowired
+	private CompanyService companyService;
 
 
 	public UserService getUserService() {
@@ -127,6 +132,9 @@ public class UserController {
 		User user = new User();
 		user.setPassword("");
 		map.addAttribute("user", user);
+		List<Company> companies = new LinkedList<Company>();
+		companies = companyService.listCompany();
+		map.addAttribute("companies", companies);
 		return "newUser";
 	}
 
