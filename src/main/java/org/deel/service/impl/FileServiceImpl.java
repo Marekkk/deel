@@ -36,6 +36,8 @@ import org.deel.service.utils.FSUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 public class FileServiceImpl implements FileService {
 	private String storagePath = System.getProperty("user.home") + "/storage/";
 	private FolderDAO folderDao;
@@ -308,10 +310,9 @@ public class FileServiceImpl implements FileService {
 		if (fp.getUser().getId() != u.getId())
 			throw new RuntimeException("User " + u.getUsername()
 					+ "doesn't own file " + fp.getName());
-
+		
 		fp.setHidden(true);
 		filePathDao.updateFilePath(fp);
-
 	}
 
 	@Transactional
@@ -512,5 +513,45 @@ public class FileServiceImpl implements FileService {
 		
 		return FSUtils.getFile(pFileRevision);
 	}
+
+	@Override
+	public void deleteFromTrash(FilePath f, User curr) {
+		f = filePathDao.getFilePath(f);
+
+		if (f == null)
+			throw new RuntimeException("filePath doesn't exists");
+
+		if (f.getUser().getId() != curr.getId())
+			throw new RuntimeException("User " + curr.getUsername()
+					+ " doesn't own filepath " + f.getName());
+		
+		File file = f.getFile();
+		Set<FilePath> paths = file.getPaths();
+		
+		// If I' m the owner delete all
+		if (file.getOwner().getId() == curr.getId()) {
+			List<FileRevision> revisions = file.getRevisions();
+			for (FileRevision fileRevision : revisions) {
+				fileRevisionDAO.delete(fileRevision);
+				
+			}
+			for (FilePath filePath : paths) {
+				filePathDao.deleteFilePath(filePath);
+			}
+			
+			fileDao.deleteFile(file);
+			System.out.println("The file has been deleted.");
+		}
+		if (!(file.getOwner().getId() != curr.getId())) {
+			List<FileRevision> revisions = file.getRevisions();
+			for (FileRevision fileRevision : revisions) {
+				if (fileRevision.getUploadedBy().getId() == curr.getId())
+					fileRevisionDAO.delete(fileRevision);
+			}
+			filePathDao.deleteFilePath(f);
+		}
+	}
+	
+	
 
 }

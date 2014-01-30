@@ -56,4 +56,7 @@ public interface FileService {
 
 	@Transactional
 	public List<FileRevision> getRevisionList(User curr, FilePath fp);
+	
+	@Transactional
+	public void deleteFromTrash(FilePath fp, User curr);
 }
