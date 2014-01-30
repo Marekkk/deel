@@ -47,14 +47,29 @@ var service = (function ($) {
 			},
 			
 		removeFolder : function (f, cb) {
+			if (f.hidden) {
+				$.get('folder/removeFromTrash', {id:f.id}, function(data){
+					cb(f, data);}
+				);
+				return;
+			}
 			$.get('folder/remove', {id:f.id}, function(data){
-				cb(f, data);}
-			);
+				cb(f, data);
+				f.hidden = true;
+			});
 		},
 		
 		remove : function (fp, cb) {
+			if (fp.hidden) {
+				$.get('file/removeFromTrash', {id:fp.id}, function(data){
+					cb(fp, data);
+					});
+				return;
+			}
+			
 			$.get('file/remove', {id:fp.id}, function(data){
 				cb(fp, data);
+				fp.hidden = true;
 				});
 		},
 		revision : function (fp, cb) {
@@ -78,7 +93,7 @@ var service = (function ($) {
 		newFolder : function (folderName, currentFolder, cb) {
 	
 			$.get('file/addFolder', 
-					{id: (currentFolder.father)?currentFolder.father.id:null, 
+					{id: currentFolder.id, 
 				    folderName: folderName}, 
 				    cb);
 		},

@@ -59,4 +59,8 @@ public interface FileService {
 	
 	@Transactional
 	public void deleteFromTrash(FilePath fp, User curr);
+	
+	@Transactional
+	public void deleteFolderFromTrash(Folder folder, User curr);
+	
 }

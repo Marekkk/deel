@@ -352,4 +352,28 @@ public class FileController {
 
 		return result;
 	}
+	
+	@RequestMapping(value = "/folder/removeFromTrash", method = RequestMethod.GET)
+	public @ResponseBody
+	Map<Long, String> removeFolderFromTrash(@RequestParam Long id, Principal principal) {
+
+		Map<Long, String> result = new HashMap<Long, String>();
+		System.out.println("We are going to remove folder with id -> " + id);
+		Folder f = new Folder();
+		f.setId(id);
+		String username = principal.getName();
+		User u = userService.findUserByUsername(username);
+		try {
+			fileService.deleteFolderFromTrash(f, u);
+		} catch (Exception e) {
+			System.out.println("Error during deleting. \n" + e);
+			e.printStackTrace();
+			result.put(id, "error");
+			return result;
+		}
+
+		result.put(id, "success");
+
+		return result;
+	}
 }

@@ -262,7 +262,14 @@ public class FileServiceImpl implements FileService {
 	@Transactional
 	public FolderInfo createNewFolder(User u, Folder currentFolder, String dirName)
 			throws IOException {
-		currentFolder = populateFolder(u, currentFolder);
+		currentFolder = folderDao.get(currentFolder);
+		if (currentFolder == null)
+			throw new RuntimeException("folder doesn't exists");
+
+		if (currentFolder.getUser().getId() != u.getId())
+			throw new RuntimeException("user " + u.getUsername()
+					+ " doesn't own folder " + currentFolder.getFsPath());
+		
 
 		Set<Folder> folderList = currentFolder.getInFolder();
 		for (Folder f : folderList)
@@ -515,6 +522,7 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteFromTrash(FilePath f, User curr) {
 		f = filePathDao.getFilePath(f);
 
@@ -542,16 +550,41 @@ public class FileServiceImpl implements FileService {
 			fileDao.deleteFile(file);
 			System.out.println("The file has been deleted.");
 		}
-		if (!(file.getOwner().getId() != curr.getId())) {
+		else if (file.getOwner().getId() != curr.getId()) {
 			List<FileRevision> revisions = file.getRevisions();
 			for (FileRevision fileRevision : revisions) {
 				if (fileRevision.getUploadedBy().getId() == curr.getId())
 					fileRevisionDAO.delete(fileRevision);
 			}
+			file.getPaths().remove(f);
 			filePathDao.deleteFilePath(f);
 		}
 	}
-	
-	
+
+	@Override
+	@Transactional
+	public void deleteFolderFromTrash(Folder folder, User curr) {
+		folder = folderDao.get(folder);
+		
+		if (folder == null)
+			throw new RuntimeException("folder doesn't exists");
+		
+		if (folder.getUser().getId() != curr.getId())
+			throw new RuntimeException("User " + curr.getUsername()
+					+ " doesn't own folder " + folder.getName());
+		
+		Set<FilePath> paths = folder.getFilepaths();
+		Set<Folder> folders = folder.getInFolder();
+		
+		for (FilePath fp : paths) {
+			this.deleteFromTrash(fp, curr);
+		}
+		
+		for (Folder f : folders) {
+			this.deleteFolderFromTrash(f, curr);
+		}
+		
+		folderDao.deleteFolder(folder);
+	}	
 
 }

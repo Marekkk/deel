@@ -321,11 +321,21 @@ var myUI = (function($, service) {
 		},
 
 		remove : function(fp, data) {
+			if (fp.hidden) {
+				myUI.progressStop();
+				$("#FP_" + fp.id).remove();
+				return;
+			}
 			myUI.progressStop();
 			$('#FP_' + fp.id).addClass("hidden");
 		},
 
 		removeFolder : function(f, data) {
+			if (f.hidden) {
+				myUI.progressStop();
+				$("#F_" + f.id).remove();
+				return;
+			}
 			myUI.progressStop();
 			$('#F_' + f.id).addClass("hidden");
 		},
@@ -396,6 +406,7 @@ var myUI = (function($, service) {
 		},
 
 		getCurrentFolder : function() {
+			debugger;
 			return currentFolder;
 		},
 
