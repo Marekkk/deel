@@ -1,5 +1,9 @@
 package org.deel.domain;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.deel.service.utils.FSUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -86,5 +91,16 @@ public class FileRevision {
 	}
 
 
+	public void save(InputStream in) throws IOException {
+		FSUtils.saveFile(this, in);
+	}
+	
+	public void delete() {
+		FSUtils.deleteFile(this);
+	}
+	
+	public FileInputStream get() throws FileNotFoundException {
+		return FSUtils.getFile(this);
+	}
 	
 }

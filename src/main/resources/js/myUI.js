@@ -5,6 +5,8 @@ var myUI = (function($, service) {
 	var uploadDiv;
 	var progress;
 
+	var showHidden = false;
+	
 	var opsImageUrls = {
 		remove : '/deel/resources/img/remove.png',
 		revision : '/deel/resources/img/revision.png',
@@ -204,9 +206,9 @@ var myUI = (function($, service) {
 						service.newFolder(folderName.val(), myUI
 								.getCurrentFolder(), function(returndata) {
 							myUI.progressStop();
+							newFolder.show();
+							folderName.hide();
 							if (returndata.status == "success") {
-								newFolder.show();
-								folderName.hide();
 								myUI.onNewFolder(returndata);
 
 							}
@@ -228,7 +230,13 @@ var myUI = (function($, service) {
 				undelete.prop('src', '/deel/resources/img/undelete.png');
 
 				undelete.click(function() {
-					$('.hidden').toggle();
+					showHidden = !showHidden;
+					if (showHidden) {
+						$('.hidden').show();
+					}
+					else {
+						$('.hidden').hide();
+					}
 				});
 
 				controls.append(undelete);
@@ -328,6 +336,8 @@ var myUI = (function($, service) {
 			}
 			myUI.progressStop();
 			$('#FP_' + fp.id).addClass("hidden");
+			if (showHidden)
+				$('#FP_' + fp.id).show();
 		},
 
 		removeFolder : function(f, data) {
@@ -338,6 +348,9 @@ var myUI = (function($, service) {
 			}
 			myUI.progressStop();
 			$('#F_' + f.id).addClass("hidden");
+			if (showHidden)
+				$('#F_' + f.id).show();
+
 		},
 
 		
@@ -401,12 +414,13 @@ var myUI = (function($, service) {
 
 		onNewFolder : function(returndata) {
 			myUI.progressStop();
-			var div = myUI.makeDivFromFolder(returndata.folder);
-			$('#firstRow').after(div);
+			if ("status" in returndata && returndata.status == "success") {
+				var div = myUI.makeDivFromFolder(returndata.folder);
+				$('#firstRow').after(div);
+			}
 		},
 
 		getCurrentFolder : function() {
-			debugger;
 			return currentFolder;
 		},
 
@@ -415,7 +429,6 @@ var myUI = (function($, service) {
 		},
 
 		createTable : function(opts, data) {
-			debugger;
 			var t = $("<table></table>");
 
 			if (opts["tableClassName"])

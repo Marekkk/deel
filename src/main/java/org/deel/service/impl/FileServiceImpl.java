@@ -2,20 +2,20 @@ package org.deel.service.impl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.management.RuntimeErrorException;
+
 import javax.transaction.Transactional;
 
-import org.apache.commons.io.IOUtils;
+
 import org.deel.domain.FilePathInfo;
 import org.deel.domain.File;
 import org.deel.dao.FileDAO;
@@ -32,17 +32,15 @@ import org.deel.domain.FolderInfo;
 import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.FileService;
-import org.deel.service.utils.FSUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.sun.xml.internal.bind.v2.TODO;
+
 
 public class FileServiceImpl implements FileService {
-	private String storagePath = System.getProperty("user.home") + "/storage/";
+	private FileDAO fileDao;
 	private FolderDAO folderDao;
 	private FilePathDAO filePathDao;
-	private FileDAO fileDao;
 	private FileRevisionDAO fileRevisionDAO;
 
 	public FileRevisionDAO getFileRevisionDAO() {
@@ -137,7 +135,7 @@ public class FileServiceImpl implements FileService {
 		FilePathInfo fInfo = new FilePathInfo(fp);
 		
 		
-		FSUtils.saveFile(newRevision, data);
+		newRevision.save(data);
 		
 		return fInfo;
 
@@ -165,7 +163,7 @@ public class FileServiceImpl implements FileService {
 
 		
 
-		return FSUtils.getFile(last);
+		return last.get();
 	}
 
 	@Override
@@ -183,7 +181,7 @@ public class FileServiceImpl implements FileService {
 					+ folder.getFsPath() + "with id" + folder.getId());
 
 		for (Folder f : folder.getInFolder())
-			if (f.getName() == originalFilename)
+			if (f.getName().equals(originalFilename))
 				throw new RuntimeException(
 						"Uploaded file has the same name of a directory");
 
@@ -226,7 +224,7 @@ public class FileServiceImpl implements FileService {
 		file.setRevisions(fakeRevisionList);
 		
 		FilePathInfo fInfo = new FilePathInfo(fp);
-		FSUtils.saveFile(fileRevision, inputStream);
+		fileRevision.save(inputStream);
 		
 		
 		
@@ -273,12 +271,12 @@ public class FileServiceImpl implements FileService {
 
 		Set<Folder> folderList = currentFolder.getInFolder();
 		for (Folder f : folderList)
-			if (f.getName() == dirName)
+			if (f.getName().equals(dirName))
 				throw new RuntimeException("Directory " + dirName
 						+ " already exists!");
 
 		for (FilePath fp : currentFolder.getFilepaths())
-			if (fp.getName() == dirName)
+			if (fp.getName().equals(dirName))
 				throw new RuntimeException("A file with name " + dirName
 						+ " already exists!");
 
@@ -300,7 +298,7 @@ public class FileServiceImpl implements FileService {
 		 */
 
 		FolderInfo fInfo = new FolderInfo(newFolder);
-		FSUtils.mkdir(newFolder);
+		newFolder.create();
 		return fInfo;
 
 	}
@@ -518,7 +516,7 @@ public class FileServiceImpl implements FileService {
 					"Not enough permission to download filerevision or filerevision doesn't exists");
 
 		
-		return FSUtils.getFile(pFileRevision);
+		return pFileRevision.get();
 	}
 
 	@Override
@@ -541,6 +539,8 @@ public class FileServiceImpl implements FileService {
 			List<FileRevision> revisions = file.getRevisions();
 			for (FileRevision fileRevision : revisions) {
 				fileRevisionDAO.delete(fileRevision);
+				/* TODO should be moved after all db interaction */
+				fileRevision.delete();
 				
 			}
 			for (FilePath filePath : paths) {
@@ -585,6 +585,7 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		folderDao.deleteFolder(folder);
+		folder.delete();
 	}	
 
 }

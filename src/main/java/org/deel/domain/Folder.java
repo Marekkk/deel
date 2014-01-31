@@ -1,5 +1,6 @@
 package org.deel.domain;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.deel.service.utils.FSUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -134,4 +136,11 @@ public class Folder {
 		return "Folder [id=" + id + ", name=" + name + ", user=" + user + "]";
 	}
 
+	public void create() throws IOException {
+		FSUtils.mkdir(this);
+	}
+	
+	public void delete() {
+		FSUtils.deleteFolder(this);
+	}
 }

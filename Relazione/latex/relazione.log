@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.7.24)  30 JAN 2014 18:28
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.7.24)  31 JAN 2014 18:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -334,7 +334,7 @@ File: uni-0.def 2012/04/20 UCS: Unicode data U+0000..U+00FF
 <architecture.png, id=12, 197.538pt x 133.298pt>
 File: architecture.png Graphic file (type png)
  <use architecture.png>
-Package pdftex.def Info: architecture.png used on input line 32.
+Package pdftex.def Info: architecture.png used on input line 29.
 (pdftex.def)             Requested size: 197.5375pt x 133.29765pt.
 
 [1
@@ -343,43 +343,44 @@ Package pdftex.def Info: architecture.png used on input line 32.
 ] <er.png, id=16, 954.56625pt x 646.415pt>
 File: er.png Graphic file (type png)
  <use er.png>
-Package pdftex.def Info: er.png used on input line 60.
+Package pdftex.def Info: er.png used on input line 57.
 (pdftex.def)             Requested size: 381.81973pt x 258.56142pt.
-
-(/usr/share/texlive/texmf-dist/tex/latex/ucs/data/uni-2.def
-File: uni-2.def 2012/04/20 UCS: Unicode data U+0200..U+02FF
-) [2 <./architecture.png>] [3 <./er.png>] [4] [5]
+ [2 <./architecture.png>] [3 <./er.png>] [4] [5]
 Capitolo 2.
 <upload.png, id=32, 1042.89626pt x 576.1525pt>
 File: upload.png Graphic file (type png)
  <use upload.png>
-Package pdftex.def Info: upload.png used on input line 187.
+Package pdftex.def Info: upload.png used on input line 192.
 (pdftex.def)             Requested size: 417.15112pt x 230.45691pt.
 
-Overfull \hbox (27.15112pt too wide) in paragraph at lines 187--188
+Overfull \hbox (27.15112pt too wide) in paragraph at lines 192--193
 [][] 
  []
 
-) [6
+[6
 
-] [7 <./upload.png>] (./relazione.aux (./introduzione.aux)) ) 
+] [7 <./upload.png>]
+Capitolo 3.
+) [8
+
+] (./relazione.aux (./introduzione.aux)) ) 
 Here is how much of TeX's memory you used:
- 6548 strings out of 495059
- 95401 string characters out of 3182030
+ 6252 strings out of 495059
+ 92273 string characters out of 3182030
  170660 words of memory out of 3000000
- 9628 multiletter control sequences out of 15000+200000
+ 9335 multiletter control sequences out of 15000+200000
  10542 words of font info for 39 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,6n,58p,316b,480s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmti12.pfb>
-Output written on relazione.pdf (8 pages, 228649 bytes).
+</usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmti12.pfb>
+Output written on relazione.pdf (9 pages, 229647 bytes).
 PDF statistics:
- 55 PDF objects out of 1000 (max. 8388607)
- 33 compressed objects within 1 object stream
+ 58 PDF objects out of 1000 (max. 8388607)
+ 35 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

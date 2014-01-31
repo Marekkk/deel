@@ -1,11 +1,8 @@
-%\chapter{Deel: Applicazione web per l'hosting, la condivisione e il backup dei file}
-
 \chapter{Descrizione}
 
 
-
 Deel implementa le funzionalità più comuni ricercate in un servizio di
-hosting di file quali l'upload di file di varie dimensioni, il
+hosting  quali l'upload di file di varie dimensioni, il
 download, lo sharing, l'organizzazione gerarchica in cartelle e il
 versionamento automatico dei file caricati sul sistema, nonchè la gestione del
 proprio account.
@@ -62,13 +59,21 @@ figura \ref{ER}.
   \label{ER}
 \end{figure}
 
-%Da vedere
-Per modellare una struttura ad albero rappresentante la struttura
-organizzativa dei file dell? utente sono state utilizzate le tabelle
-Folder e FilePath, dove un filepath appartiene ad ed una sola
-directory e Folder ha una relazione ricorsiva. Ogni FilePath sarˆ
-collegato con un solo File e ci˜ permette una migliore gestione della
-condivisione. Per la configurazione di Hibernate sono state utilizzate
+
+Ogni utente ha i propri file uplodati organizzati attraverso una
+struttura di tipo file-system, dove file e cartelle sono organizzati
+in una struttura ad albero. Questa struttura è stata implementata nel
+database attraverso le tabelle filePath e folder, separando quindi i
+nodi che non possono avere discendenti (i FilePaths) dal resto
+dell'albero.
+
+Ad ogni filePath è associato un File. Più filePath possono essere
+associati al medesimo File. In questo modo la condivisione avviene
+grazie a diversi FilePath indipendenti, appartenenti a utenti diversi, ma
+che hanno associato il medesimo File. Ogni File avrà poi la propria
+lista di revisioni, anch'esse condivise.
+
+Per la configurazione di Hibernate sono state utilizzate
 annotazioni sulle classi del layer Domain.  Le relazioni tra le entità
 sono state mappate in modo bidirezionale, così da consentire la
 navigazione delle relazioni tra entità senza dover codificare
@@ -80,20 +85,13 @@ eseguire query sql solo quando ve ne sia effettivamente bisogno.
 Hibernate e' stato integrato nell'applicazione attraverso la
 configurazione di due bean di spring, in particolare sessionFactory e
 TransactionManager. Il sessionFactory provede ad istanziare una
-sessionFactory di Hibernate e settarla come proprietà dei Data Access
-Object che andranno poi ad utilizzarla per le comuni operazioni
-CRUD. Il transaction manager consente invece di definire i boundaries
-delle transazioni in modo dichiarativo, tramite l'utilizzo
+sessionFactory di Hibernate e settarla come proprietà delle classi che
+la utilizzeranno per rendere persistenti nel db gli oggetti del
+dominio. Il transaction manager consente invece di definire i
+boundaries delle transazioni in modo dichiarativo, tramite l'utilizzo
 dell'annotazione @Transactional.  In questo modo il codice è
 svincolato dal dover far iniziare, committare e rollbackare la
-transazione in modo esplicito. Il layer Service è stato progettato in
-modo tale di aver associato un caso d'uso per ogni metodo,
-rappresentando logicamente una Unit Of Work, che deve preservare, tra
-le altre, la proprietà di atomicità. Questi infatti sono i metodi che
-sono stati annotati come @Transactional, in modo che il transaction
-manager di Spring inizi la transazione al momento della chiamata del
-metodo, committi al suo completamento o faccia il rollback in caso di
-errori. Infine per la propragazione delle operazioni sul DB abbiamo
+transazione in modo esplicito. Infine per la propragazione delle operazioni sul DB abbiamo
 deciso, tranne per particolari casi, di non propagare nessuna
 operazione, così da avere maggiore controllo su inserimenti e
 rimozioni a livello di business logic.
@@ -103,11 +101,18 @@ rimozioni a livello di business logic.
 
 Il service layer si occupa di implementare i principali casi d'uso
 dell' applicazione, manipolando sia oggetti del domain sia interagendo
-con il data layer. Il service layer, come il layer web, utilizza la
-dependency injection del framework Spring. In questo modo
-l'istanziazione degli oggetti di cui questo layer necessita (ad
-es. gli oggetti con le funzionalità DAO presenti nel datalayer)
-avviene in maniera automatica e il codice non dipende da essa. 
+con il data layer.  Il layer Service è stato progettato in modo tale
+di aver associato un caso d'uso per ogni metodo, rappresentando
+logicamente una Unit Of Work, che deve preservare, tra le altre, la
+proprietà di atomicità. Questi infatti sono i metodi che sono stati
+annotati come @Transactional, in modo che il transaction manager di
+Spring inizi la transazione al momento della chiamata del metodo,
+``committi'' al suo completamento o faccia il rollback in caso di errori.
+Il service layer, come il layer web, utilizza la dependency injection
+del framework Spring. In questo modo l'istanziazione degli oggetti di
+cui questo layer necessita (ad es. gli oggetti con le funzionalità di
+persistenza dei dati presenti nel data layer) avviene in maniera
+automatica e il codice non dipende da essa.
 
 \subsection{Web Layer}
 
@@ -146,15 +151,15 @@ diminuendo in qualche modo il carico di lavoro sul lato server.
 E' il layer più vicino all'utente e l'unico con cui interagisce
 direttamente. Una volta che il controller indica il nome il nome di
 una vista e i dati da esporre, in modo totalmente configurabile questo
-nome viene mappato ad una tecnologia di visualizzazione. Nel nostro
-caso abbiamo utilizato i tag JSTL utilizzati per renderizzare i
-contenuti da esporre in una pagina html finale. In questo modo è
-facile aggiungere nuove tecnologie di rendering senza modificare il
-layer web.  Per migliorare l'esperienza utente parte di questa logica
-è stata portata sul lato client. Del codice javascript in questo caso
-esegue le richieste in modo asincrono al server grazie ad AJAX, e, tramite
-un meccanismo di callback, aggiorna dinamicamente il contenuto della
-pagina. Si è utilizzato jQuery come libreria.
+nome viene mappato ad una tecnologia di visualizzazione. In questo
+modo è facile aggiungere nuove tecnologie di rendering senza
+modificare il layer web. Nel nostro caso abbiamo utilizato i tag JSTL
+utilizzati per renderizzare i contenuti da esporre in una pagina html
+finale.  Per migliorare l'esperienza utente parte di questa logica è
+stata portata sul lato client. Del codice javascript in questo caso
+esegue le richieste in modo asincrono al server grazie ad AJAX, e,
+tramite un meccanismo di callback, aggiorna dinamicamente il contenuto
+della pagina. Si è utilizzato jQuery come libreria.
 
 
 \chapter{Sviluppo}
@@ -188,6 +193,17 @@ richiesta asincrona fatta dal client al server.
   \caption{}
   \label{upload}
 \end{figure}
+
+\chapter{Conclusioni}
+
+L'utilizzo dei framework Spring e Hibernate ci ha consentito di
+utilizzare in poco tempo pattern essenziali nella programmazione di
+applicazioni enterprise quali data mapping, lazy loading, Inversion of
+Control, Unit of Work e altri. Si è cercato per quanto possibile di
+rendere il codice indipendente da tecnologie in particolare,
+utilizzando notazioni JPA dove possibile e non inserendo caratteriste
+dipendendi dal DBMS sottostante. Un approccio modulare che favorisce
+la riusabilità e la manutenzione del codice.
 
 %%% Local Variables: 
 %%% mode: latex

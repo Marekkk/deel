@@ -66,17 +66,32 @@ public class FSUtils {
 					"Can't make dir" + dir.getAbsolutePath());
 	}
 
-	public static void deleteFile(File f) {
-//		java.io.File file = new java.io.File(storagePath
-//				+ f.getOwner().getUsername() + f.getFsPath());
-//
-//		if (!file.exists() || file.isDirectory())
-//			throw new RuntimeException("DB/FS mismatch file "
-//					+ file.getAbsolutePath() + "doesnt exists");
-//
-//		if (!file.delete())
-//			throw new RuntimeException("Can't delete file " + f.getFsPath());
+	public static void deleteFile(FileRevision f) {
+		
+		String finalPath = storagePath
+				+ f.getUploadedBy().getUsername()
+				+ f.getFsPath() + "." + f.getId();
 
+		java.io.File fsF = new java.io.File(finalPath);
+		
+		if (fsF.isDirectory())
+			throw new RuntimeException("DB/FS mismatch path "
+					+ fsF.getAbsolutePath() + " is a directory!");
+		
+		fsF.delete();
+	}
+	
+	public static void deleteFolder(Folder f) {
+		
+		java.io.File dir = new java.io.File(storagePath
+				+ f.getUser().getUsername() + f.getFsPath());
+
+	
+		if (!dir.isDirectory())
+			throw new RuntimeException("DB/FS mismatch path "
+					+ dir.getAbsolutePath() + " is not a directory!");
+		
+		dir.delete();
 	}
 
 	public static void mv(String oldPath, String newPath) throws IOException {
