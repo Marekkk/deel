@@ -1,20 +1,20 @@
 package org.deel.test;
 
-
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.deel.dao.FileDAO;
 import org.deel.dao.FilePathDAO;
 import org.deel.dao.FolderDAO;
 import org.deel.dao.UserDAO;
-import org.deel.domain.Category;
-import org.deel.domain.Category.type;
 import org.deel.domain.File;
-import org.deel.domain.FilePath;
 import org.deel.domain.Folder;
+import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.FileService;
 import org.deel.service.UserService;
+import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:applicationContext.xml")
@@ -46,55 +48,63 @@ public class DBTest {
 	@Autowired
 	FilePathDAO filePathDAO;
 	
-	@Test
-	@Rollback(false)
-	public void test1() {
-		System.out.println("Test1...");
-		User u = userDAO.findUserByUsername("rpiero");
-		if (u == null) {
-			u = new User("piero@gmail.com", "Piero", "Rametta", "rpiero", "abcd", new Category(type.Free, 20));
-			userDAO.insertUser(u);
-		}
-		System.out.println(u);
-	}
+	@Autowired
+	SessionFactory sessionFactory;
 	
-	@Test
-	@Rollback(false)
-	public void test2() {
-		System.out.println("Test2...");
-		User u = userDAO.findUserByUsername("rpiero");
-		File f = new File("ciccio.txt", u);
-		Folder fo = new Folder("abcd", null, u);
-		FilePath fp = new FilePath("ciccio.txt", u, f, fo);
-		filePathDAO.insertFilePath(fp);
-	}
-	
-	@Test
-	@Rollback(false)
-	public void test3() {
-		User u = userDAO.findUserByUsername("rpiero");
-		System.out.println(u.getFiles());
-		System.out.println(u.getPaths());
-		System.out.println(u.getFolders());
-	}
-	
-	@Test
-	@Rollback(false)
-	public void test4() {
-		User u = userDAO.findUserByUsername("rpiero");
-		Set<FilePath> paths = u.getPaths();
-		System.out.println(paths);
-		FilePath fp1 = new FilePath();
-		fp1.setId(new Long(3));
-		FilePath fp2 = filePathDAO.getFilePath(fp1);
-		System.out.println(fp2);
-		filePathDAO.deleteFilePath(fp2);
+	@Before
+	@Transactional
+	public void init() {
+		User u1 = new User("pierpaolo.rametta@gmail.com", "Piero", "Rametta", "rpiero", "abcd", null);
+		User u2 = new User("francesco@gmail.com", "Francesco", "Rametta", "frengo", "abcd", null);
+		userDAO.insertUser(u1);
+		userDAO.insertUser(u2);
+		Folder f = new Folder();
+		f.setFather(null);
+		f.setName("photos");
+		f.setUser(u1);
+		folderDAO.insertFolder(f);
+		File file = new File();
+		file.setName("ciccio.txt");
+		file.setOwner(u1);
+		fileDAO.insertFile(file);
 	}
 	
 	@Test
 	@Rollback(true)
-	public void test5() {
-		User u = userDAO.findUserByUsername("rpiero");
+	public void test1() {
+		System.out.println("Test1...");
+		User u = userService.findUserByUsername("rpiero");
+		assertTrue(userService.listUser(u).size() == 1);
+	}
+	
+	@Test
+	@Rollback(true)
+	public void test2() {
+		User u = userService.findUserByUsername("dasdada");
+		assertNull(u);
+	}
+	
+	@Test
+	@Rollback(true)
+	public void test3() {
+		User u1 = userService.findUserByUsername("rpiero");
+		User u2 = userService.findUserByUsername("frengo");
+		assertNotSame(u1, u2);
+	}
+	
+	@Test
+	@Rollback(true)
+	public void test4() {
+		User u1 = userService.findUserByUsername("rpiero");
+		User u2 = userService.findUserByUsername("frengo");
+		List<User> users = new LinkedList<User>();
+		users.add(u2);
+		Team t = new Team();
+		t.setName("Ramettas");
+		t.setCreatedBy(u1.getId());
+		t.setUsersInTeam(users);
+		userService.addTeam(t);
+		assertFalse(userService.getTeams().isEmpty());
 	}
 }
 
