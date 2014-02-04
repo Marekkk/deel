@@ -49,6 +49,7 @@
 			type : 'GET',
 			success : function(returndata) {
 				console.log(returndata);
+				alert("Password successfully changed!");
 			}
 		});
 	}
