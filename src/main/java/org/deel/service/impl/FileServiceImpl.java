@@ -572,9 +572,7 @@ public class FileServiceImpl implements FileService {
 			file.getPaths().remove(f);
 			filePathDao.deleteFilePath(f);
 		}
-		
-		
-	}
+		}
 
 	@Override
 	@Transactional
