@@ -54,7 +54,7 @@ public class FSRollback {
 			} catch (Exception e) {
 				/* likely also deleteFile will throw an exception */
 				e.printStackTrace();
-				throw new RuntimeException("Failed to recover file " + path + " from a rollback delete transaction");
+				//throw new RuntimeException("Failed to recover file " + path + " from a rollback delete transaction");
 			}
 		}
 
@@ -93,7 +93,9 @@ public class FSRollback {
 
 	private HashMap<String, List<Action>> undoList = new HashMap<String, List<Action>>();
 
-	@Before("execution(* org.deel.service.FileService.*(..))")
+	@Before("execution(* org.deel.service.FileService.deleteFromTrash(..)) || " +
+	        "execution(* org.deel.service.FileService.createNewFolder(..)) || " +
+	        "execution(* org.deel.service.FileService.uploadFile(..))")
 	public void advice() {
 		System.out.println("**** Setting current transaction id *****");
 
@@ -125,7 +127,9 @@ public class FSRollback {
 	}
 
 	
-	@AfterReturning("execution(* org.deel.service.FileService.*(..))")
+	@AfterReturning("execution(* org.deel.service.FileService.deleteFromTrash(..)) || " +
+	        "execution(* org.deel.service.FileService.createNewFolder(..)) || " +
+	        "execution(* org.deel.service.FileService.uploadFile(..))")
 	public void committedAdvice() {
 		System.out.println("****** Removing fro undo list**********");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
@@ -138,7 +142,9 @@ public class FSRollback {
 		
 	}
 
-	@AfterThrowing("execution(* org.deel.service.FileService.*(..))")
+	@AfterThrowing("execution(* org.deel.service.FileService.deleteFromTrash(..)) || " +
+	        "execution(* org.deel.service.FileService.createNewFolder(..)) || " +
+	        "execution(* org.deel.service.FileService.uploadFile(..))")
 	public void rollbackAdvice() {
 		System.out.println("************ trying to undo action *******");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();

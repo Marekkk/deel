@@ -182,8 +182,6 @@ public class FileServiceImpl implements FileService {
 			InputStream inputStream, Long size) throws IOException {
 
  
-		System.out.println("***** transaction name ****");
-		System.out.println(TransactionSynchronizationManager.getCurrentTransactionName());
 		
 		folder = folderDao.get(folder);
 
@@ -554,7 +552,6 @@ public class FileServiceImpl implements FileService {
 			for (FileRevision fileRevision : revisions) {
 				fileRevisionDAO.delete(fileRevision);
 				/* TODO should be moved after all db interaction */
-				//fileRevision.delete();
 				fileSystemMapper.deleteFile(fileRevision.getCompleteFsPath());
 			}
 			for (FilePath filePath : paths) {
@@ -603,7 +600,7 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		folderDao.deleteFolder(folder);
-		folder.delete();
+		fileSystemMapper.deleteFolder(folder.getCompleteFSPath());
 	}	
 
 }
