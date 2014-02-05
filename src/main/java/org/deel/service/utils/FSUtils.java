@@ -9,11 +9,8 @@ import java.io.InputStream;
 import javax.management.RuntimeErrorException;
 
 import org.apache.commons.io.IOUtils;
-import org.deel.domain.File;
-import org.deel.domain.FileRevision;
-import org.deel.domain.Folder;
 
-public class FSUtils {
+public class FSUtils implements FileSystemGateway {
 
 	private static String storagePath = System.getProperty("user.home")
 			+ "/storage/";
@@ -22,13 +19,8 @@ public class FSUtils {
 		return storagePath;
 	}
 
-	public static void saveFile(FileRevision fileRevision,
-			InputStream inputStream) throws IOException {
-
-		String finalPath = storagePath
-				+ fileRevision.getUploadedBy().getUsername()
-				+ fileRevision.getFsPath() + "." + fileRevision.getId();
-
+	public void savePath(String path, InputStream inputStream) throws IOException {
+		String finalPath = storagePath + path;
 		java.io.File fsF = new java.io.File(finalPath);
 
 		if (fsF.isDirectory())
@@ -53,24 +45,39 @@ public class FSUtils {
 		}
 	}
 
-	public static void setStoragePath(String storagePath) {
+
+
+	@Override
+	public  void setStoragePath(String storagePath) {
 		FSUtils.storagePath = storagePath;
 	}
 
-	public static void mkdir(Folder f) throws IOException {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#mkdir(org.deel.domain.Folder)
+	 */
+	@Override
+	public  void mkdir(String path) throws IOException {
 
-		java.io.File dir = new java.io.File(storagePath
-				+ f.getUser().getUsername() + f.getFsPath());
+		java.io.File dir = new java.io.File(storagePath + path);
+		
+		//f.getUser().getUsername() + f.getFsPath()
 		if (!dir.mkdir())
 			throw new RuntimeErrorException(new Error("directory.notcreated"),
 					"Can't make dir" + dir.getAbsolutePath());
 	}
 
-	public static void deleteFile(FileRevision f) {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#deleteFile(org.deel.domain.FileRevision)
+	 */
+	@Override
+	public  void deleteFile(String path) {
 		
-		String finalPath = storagePath
-				+ f.getUploadedBy().getUsername()
-				+ f.getFsPath() + "." + f.getId();
+		System.out.println("***** in delete file ******");
+		
+		String finalPath = storagePath + path;
+//		
+//				+ f.getUploadedBy().getUsername()
+//				+ f.getFsPath() + "." + f.getId();
 
 		java.io.File fsF = new java.io.File(finalPath);
 		
@@ -81,10 +88,15 @@ public class FSUtils {
 		fsF.delete();
 	}
 	
-	public static void deleteFolder(Folder f) {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#deleteFolder(org.deel.domain.Folder)
+	 */
+	@Override
+	public  void deleteFolder(String path) {
 		
 		java.io.File dir = new java.io.File(storagePath
-				+ f.getUser().getUsername() + f.getFsPath());
+				+ path);
+				//f.getUser().getUsername() + f.getFsPath());
 
 	
 		if (!dir.isDirectory())
@@ -94,9 +106,12 @@ public class FSUtils {
 		dir.delete();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#mv(java.lang.String, java.lang.String)
+	 */
 	public static void mv(String oldPath, String newPath) throws IOException {
-		java.io.File f = new java.io.File(storagePath + oldPath);
-		java.io.File nf = new java.io.File(storagePath + newPath);
+		java.io.File f = new java.io.File(oldPath);
+		java.io.File nf = new java.io.File(newPath);
 
 		if (!f.exists())
 			throw new RuntimeException("Error mv " + oldPath
@@ -112,18 +127,25 @@ public class FSUtils {
 		fIn.close();
 		fOut.close();
 
-		f.delete();
+		//f.delete();
 
 	}
 
-	public static FileInputStream getFile(FileRevision last) throws FileNotFoundException {
-		String path = storagePath + last.getUploadedBy().getUsername()
-				+ last.getFsPath() + "." + last.getId();
 
-		java.io.File fsFile = new java.io.File(path);
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#getFile(org.deel.domain.FileRevision)
+	 */
+	@Override
+	public  FileInputStream getFile(String path) throws FileNotFoundException {
+		String finalPath = storagePath + path; 
+				
+		// last.getUploadedBy().getUsername()
+		//		+ last.getFsPath() + "." + last.getId();
+
+		java.io.File fsFile = new java.io.File(finalPath);
 
 		if (!fsFile.exists())
-			throw new RuntimeException("DB/FS mismatch: file " + path
+			throw new RuntimeException("DB/FS mismatch: file " + finalPath
 					+ " doesn't exists");
 
 		FileInputStream fIn = new FileInputStream(fsFile);
