@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.management.RuntimeErrorException;
+import javax.persistence.Transient;
 
 import org.deel.dao.FolderDAO;
 import org.deel.dao.TeamDAO;
@@ -17,6 +18,7 @@ import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.UserService;
 import org.deel.service.utils.FSUtils;
+import org.deel.service.utils.FileSystemGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,16 @@ public class UserServiceImpl implements UserService {
 	private UserDAO userDAO;
 	private FolderDAO folderDAO;
 	private TeamDAO teamDAO;
+	private FileSystemGateway fileSystemMapper;
 
+	public FileSystemGateway getFileSystemGateway() {
+		return fileSystemMapper;
+	}
+
+	@Autowired
+	public void setFileSystemMapper(FileSystemGateway fileSystemMapper) {
+		this.fileSystemMapper = fileSystemMapper;
+	}
 	public TeamDAO getTeamDao() {
 		return teamDAO;
 	}
@@ -74,8 +85,8 @@ public class UserServiceImpl implements UserService {
 		//userDAO.updateUser(user);
 		
 		folderDAO.insertFolder(f);
-		//FSUtils.mkdir(f); //TODO
-		
+		fileSystemMapper.mkdir(f.getCompleteFSPath());
+				
 	}
 
 	 
@@ -134,6 +145,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public List<Team> getTeams() {
 		return teamDAO.getTeams();
 	}

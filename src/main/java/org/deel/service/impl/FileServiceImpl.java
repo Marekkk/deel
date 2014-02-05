@@ -144,7 +144,7 @@ public class FileServiceImpl implements FileService {
 		FilePathInfo fInfo = new FilePathInfo(fp);
 		
 		
-		fileSystemMapper.savePath(newRevision.getFsPath(), data);
+		fileSystemMapper.savePath(newRevision.getCompleteFsPath(), data);
 		
 		
 		return fInfo;
@@ -173,7 +173,7 @@ public class FileServiceImpl implements FileService {
 
 		
 		
-		return fileSystemMapper.getFile(last.getFsPath());
+		return fileSystemMapper.getFile(last.getCompleteFsPath());
 	}
 
 	@Override
@@ -530,7 +530,7 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException(
 					"Not enough permission to download filerevision or filerevision doesn't exists");
 
-		return fileSystemMapper.getFile(pFileRevision.getFsPath());
+		return fileSystemMapper.getFile(pFileRevision.getCompleteFsPath());
 	}
 
 	@Override
@@ -567,14 +567,16 @@ public class FileServiceImpl implements FileService {
 		else if (file.getOwner().getId() != curr.getId()) {
 			List<FileRevision> revisions = file.getRevisions();
 			for (FileRevision fileRevision : revisions) {
-				if (fileRevision.getUploadedBy().getId() == curr.getId())
+				if (fileRevision.getUploadedBy().getId() == curr.getId()) {
 					fileRevisionDAO.delete(fileRevision);
+					fileSystemMapper.deleteFile(fileRevision.getCompleteFsPath());
+				}
 			}
 			file.getPaths().remove(f);
 			filePathDao.deleteFilePath(f);
 		}
 		
-		throw new RuntimeException();
+		
 	}
 
 	@Override

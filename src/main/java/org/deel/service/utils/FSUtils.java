@@ -72,6 +72,8 @@ public class FSUtils implements FileSystemGateway {
 	@Override
 	public  void deleteFile(String path) {
 		
+		System.out.println("***** in delete file ******");
+		
 		String finalPath = storagePath + path;
 //		
 //				+ f.getUploadedBy().getUsername()
@@ -108,8 +110,8 @@ public class FSUtils implements FileSystemGateway {
 	 * @see org.deel.service.utils.FileSystemGateway#mv(java.lang.String, java.lang.String)
 	 */
 	public static void mv(String oldPath, String newPath) throws IOException {
-		java.io.File f = new java.io.File(storagePath + oldPath);
-		java.io.File nf = new java.io.File(storagePath + newPath);
+		java.io.File f = new java.io.File(oldPath);
+		java.io.File nf = new java.io.File(newPath);
 
 		if (!f.exists())
 			throw new RuntimeException("Error mv " + oldPath

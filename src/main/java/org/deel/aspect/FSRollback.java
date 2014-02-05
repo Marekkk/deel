@@ -1,6 +1,8 @@
 package org.deel.aspect;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.aspectj.lang.annotation.AfterReturning;
@@ -39,11 +41,15 @@ public class FSRollback {
 		private String path;
 		private String tmpPath;
 
-		public DeleteAction(String path) {
-			this.path = FSUtils.getStoragePath() + path;
+		public DeleteAction(String p) {
+			path =  p;
 
 			try {
+				System.out.println("******** creating tmp file ********");
 				this.tmpPath = path + ".removed";
+				java.io.File debug = new java.io.File(path);
+				if(!debug.exists())
+					System.out.println("****** file do not exists ****");
 				FSUtils.mv(path, tmpPath);
 			} catch (Exception e) {
 				/* likely also deleteFile will throw an exception */
@@ -55,6 +61,7 @@ public class FSRollback {
 
 		@Override
 		public void undo() {
+			System.out.println("************* restoring file ***********");
 			if (tmpPath != null) {
 				java.io.File f = new java.io.File(this.path);
 				java.io.File tmpFile = new java.io.File(this.tmpPath);
@@ -84,7 +91,7 @@ public class FSRollback {
 		}
 	}
 
-	private HashMap<String, Action> undoList = new HashMap<String, Action>();
+	private HashMap<String, List<Action>> undoList = new HashMap<String, List<Action>>();
 
 	@Before("execution(* org.deel.service.FileService.*(..))")
 	public void advice() {
@@ -92,32 +99,56 @@ public class FSRollback {
 
 		UUID uuid = UUID.randomUUID();
 		TransactionSynchronizationManager.setCurrentTransactionName(uuid.toString());
+		undoList.put(uuid.toString(), new LinkedList<FSRollback.Action>());
 	}
 
 	@AfterReturning("args(path, ..) && (execution(* *savePath(..)) || execution(* *mkdir(..)))")
 	public void setIdAdvice(String path) {
 		System.out.println("***** Putting action in undo list*******");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
-		undoList.put(uuid.toString(), new SaveAction(FSUtils.getStoragePath() + path));
+		if (uuid == null)
+			return;
+		
+		List<Action> al = undoList.get(uuid);
+		
+		if (al == null)
+			return;
+		
+		al.add(new SaveAction(FSUtils.getStoragePath() + path));
 	}
 
+	@Before("args(path, ..) && execution(* *deleteFile(..))")
+	public void deleteAdvice(String path) {
+		System.out.println("***** Putting action in undo list*******");
+		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
+		undoList.get(uuid).add(new DeleteAction(FSUtils.getStoragePath() + path));
+	}
+
+	
 	@AfterReturning("execution(* org.deel.service.FileService.*(..))")
 	public void committedAdvice() {
 		System.out.println("****** Removing fro undo list**********");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
-		Action a = undoList.remove(uuid);
+		List<Action> list = undoList.remove(uuid);
 		
-		if (a != null)
-			a.andFinally();
+		for (Action a : list) {
+			if (a != null)
+				a.andFinally();
+		}
+		
 	}
 
 	@AfterThrowing("execution(* org.deel.service.FileService.*(..))")
 	public void rollbackAdvice() {
 		System.out.println("************ trying to undo action *******");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
-		Action a = undoList.get(uuid);
-		if (a != null)
-			a.undo();
+
+		List<Action> list = undoList.remove(uuid);
+		
+		for (Action a : list) {
+			if (a != null)
+				a.undo();
+		}
 	}
 
 }
