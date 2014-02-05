@@ -2,19 +2,15 @@ package org.deel.service.impl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-
 import javax.transaction.Transactional;
-
 
 import org.deel.domain.FilePathInfo;
 import org.deel.domain.File;
@@ -32,8 +28,10 @@ import org.deel.domain.FolderInfo;
 import org.deel.domain.Team;
 import org.deel.domain.User;
 import org.deel.service.FileService;
+import org.deel.service.utils.FileSystemGateway;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
 
@@ -42,6 +40,17 @@ public class FileServiceImpl implements FileService {
 	private FolderDAO folderDao;
 	private FilePathDAO filePathDao;
 	private FileRevisionDAO fileRevisionDAO;
+	
+	private FileSystemGateway fileSystemMapper;
+
+	public FileSystemGateway getFileSystemGateway() {
+		return fileSystemMapper;
+	}
+
+	@Autowired
+	public void setFileSystemMapper(FileSystemGateway fileSystemMapper) {
+		this.fileSystemMapper = fileSystemMapper;
+	}
 
 	public FileRevisionDAO getFileRevisionDAO() {
 		return fileRevisionDAO;
@@ -135,7 +144,8 @@ public class FileServiceImpl implements FileService {
 		FilePathInfo fInfo = new FilePathInfo(fp);
 		
 		
-		newRevision.save(data);
+		fileSystemMapper.savePath(newRevision.getCompleteFsPath(), data);
+		
 		
 		return fInfo;
 
@@ -162,8 +172,8 @@ public class FileServiceImpl implements FileService {
 		//
 
 		
-
-		return last.get();
+		
+		return fileSystemMapper.getFile(last.getCompleteFsPath());
 	}
 
 	@Override
@@ -171,6 +181,8 @@ public class FileServiceImpl implements FileService {
 	public FilePathInfo uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream, Long size) throws IOException {
 
+ 
+		
 		folder = folderDao.get(folder);
 
 		if (folder == null)
@@ -224,7 +236,8 @@ public class FileServiceImpl implements FileService {
 		file.setRevisions(fakeRevisionList);
 		
 		FilePathInfo fInfo = new FilePathInfo(fp);
-		fileRevision.save(inputStream);
+		
+		fileSystemMapper.savePath(fileRevision.getCompleteFsPath(), inputStream);
 		
 		
 		
@@ -298,7 +311,7 @@ public class FileServiceImpl implements FileService {
 		 */
 
 		FolderInfo fInfo = new FolderInfo(newFolder);
-		newFolder.create();
+		fileSystemMapper.mkdir(newFolder.getCompleteFSPath());
 		return fInfo;
 
 	}
@@ -515,8 +528,7 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException(
 					"Not enough permission to download filerevision or filerevision doesn't exists");
 
-		
-		return pFileRevision.get();
+		return fileSystemMapper.getFile(pFileRevision.getCompleteFsPath());
 	}
 
 	@Override
@@ -540,8 +552,7 @@ public class FileServiceImpl implements FileService {
 			for (FileRevision fileRevision : revisions) {
 				fileRevisionDAO.delete(fileRevision);
 				/* TODO should be moved after all db interaction */
-				fileRevision.delete();
-				
+				fileSystemMapper.deleteFile(fileRevision.getCompleteFsPath());
 			}
 			for (FilePath filePath : paths) {
 				filePathDao.deleteFilePath(filePath);
@@ -553,13 +564,15 @@ public class FileServiceImpl implements FileService {
 		else if (file.getOwner().getId() != curr.getId()) {
 			List<FileRevision> revisions = file.getRevisions();
 			for (FileRevision fileRevision : revisions) {
-				if (fileRevision.getUploadedBy().getId() == curr.getId())
+				if (fileRevision.getUploadedBy().getId() == curr.getId()) {
 					fileRevisionDAO.delete(fileRevision);
+					fileSystemMapper.deleteFile(fileRevision.getCompleteFsPath());
+				}
 			}
 			file.getPaths().remove(f);
 			filePathDao.deleteFilePath(f);
 		}
-	}
+		}
 
 	@Override
 	@Transactional
@@ -585,7 +598,7 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		folderDao.deleteFolder(folder);
-		folder.delete();
+		fileSystemMapper.deleteFolder(folder.getCompleteFSPath());
 	}	
 
 }

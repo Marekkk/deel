@@ -136,11 +136,7 @@ public class Folder {
 		return "Folder [id=" + id + ", name=" + name + ", user=" + user + "]";
 	}
 
-	public void create() throws IOException {
-		FSUtils.mkdir(this);
-	}
-	
-	public void delete() {
-		FSUtils.deleteFolder(this);
+	public String getCompleteFSPath() {
+		return getUser().getUsername() + getFsPath();
 	}
 }

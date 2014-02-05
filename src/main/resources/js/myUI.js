@@ -228,7 +228,8 @@ var myUI = (function($, service) {
 
 				var undelete = $("<img></img>");
 				undelete.prop('src', '/deel/resources/img/undelete.png');
-
+				
+				showHidden = false;
 				undelete.click(function() {
 					showHidden = !showHidden;
 					if (showHidden) {

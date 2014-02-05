@@ -330,7 +330,7 @@
 			var a = document.createElement("a");
 			a.style = "color:black";
 			//a.href = "javascript:requestRevision("+idFile+","+idRevisions[i]+")";
-			a.href = "file/revision/" + file.name + "?id=" + file.id2
+			a.href = "file/revision/" + file.name + "?id=" + file.id
 					+ "&revision=" + idRevisions[i];
 			a.innerHTML = datesRevisions[i];
 			c.appendChild(a);

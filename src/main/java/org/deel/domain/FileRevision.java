@@ -91,16 +91,10 @@ public class FileRevision {
 	}
 
 
-	public void save(InputStream in) throws IOException {
-		FSUtils.saveFile(this, in);
+	public String getCompleteFsPath() {
+		return getUploadedBy().getUsername()
+				+ getFsPath() + "." + getId();
 	}
 	
-	public void delete() {
-		FSUtils.deleteFile(this);
-	}
-	
-	public FileInputStream get() throws FileNotFoundException {
-		return FSUtils.getFile(this);
-	}
-	
+
 }
