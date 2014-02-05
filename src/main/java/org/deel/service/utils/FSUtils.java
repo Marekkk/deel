@@ -72,10 +72,10 @@ public class FSUtils implements FileSystemGateway {
 	 * @see org.deel.service.utils.FileSystemGateway#mkdir(org.deel.domain.Folder)
 	 */
 	@Override
-	public  void mkdir(Folder f) throws IOException {
+	public  void mkdir(String path) throws IOException {
 
 		java.io.File dir = new java.io.File(storagePath
-				+ f.getUser().getUsername() + f.getFsPath());
+				+ path);
 		if (!dir.mkdir())
 			throw new RuntimeErrorException(new Error("directory.notcreated"),
 					"Can't make dir" + dir.getAbsolutePath());
@@ -120,8 +120,7 @@ public class FSUtils implements FileSystemGateway {
 	/* (non-Javadoc)
 	 * @see org.deel.service.utils.FileSystemGateway#mv(java.lang.String, java.lang.String)
 	 */
-	@Override
-	public  void mv(String oldPath, String newPath) throws IOException {
+	public static void mv(String oldPath, String newPath) throws IOException {
 		java.io.File f = new java.io.File(storagePath + oldPath);
 		java.io.File nf = new java.io.File(storagePath + newPath);
 
@@ -139,7 +138,7 @@ public class FSUtils implements FileSystemGateway {
 		fIn.close();
 		fOut.close();
 
-		f.delete();
+		//f.delete();
 
 	}
 

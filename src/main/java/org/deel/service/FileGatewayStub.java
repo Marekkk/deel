@@ -41,7 +41,7 @@ public class FileGatewayStub implements FileSystemGateway {
 	}
 
 	@Override
-	public void mkdir(Folder f) throws IOException {
+	public void mkdir(String path) throws IOException {
 		// TODO Auto-generated method stub
 
 	}

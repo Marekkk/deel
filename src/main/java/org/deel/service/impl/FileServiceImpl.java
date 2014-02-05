@@ -2,19 +2,16 @@ package org.deel.service.impl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-
+import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
-
 
 import org.deel.domain.FilePathInfo;
 import org.deel.domain.File;
@@ -316,7 +313,7 @@ public class FileServiceImpl implements FileService {
 		 */
 
 		FolderInfo fInfo = new FolderInfo(newFolder);
-		newFolder.create();
+		fileSystemMapper.mkdir(newFolder.getCompleteFSPath());
 		return fInfo;
 
 	}
@@ -558,8 +555,8 @@ public class FileServiceImpl implements FileService {
 			for (FileRevision fileRevision : revisions) {
 				fileRevisionDAO.delete(fileRevision);
 				/* TODO should be moved after all db interaction */
-				fileRevision.delete();
-				
+				//fileRevision.delete();
+				fileSystemMapper.deleteFile(fileRevision.getCompleteFSPath());
 			}
 			for (FilePath filePath : paths) {
 				filePathDao.deleteFilePath(filePath);
@@ -577,6 +574,8 @@ public class FileServiceImpl implements FileService {
 			file.getPaths().remove(f);
 			filePathDao.deleteFilePath(f);
 		}
+		
+		throw new RuntimeException();
 	}
 
 	@Override

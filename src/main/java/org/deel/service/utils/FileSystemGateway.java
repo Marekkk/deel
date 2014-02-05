@@ -15,13 +15,11 @@ public interface FileSystemGateway {
 
 	public void setStoragePath(String storagePath);
 
-	public void mkdir(Folder f) throws IOException;
+	public void mkdir(String path) throws IOException;
 
 	public void deleteFile(FileRevision f);
 
 	public void deleteFolder(Folder f);
-
-	public void mv(String oldPath, String newPath) throws IOException;
 
 	public FileInputStream getFile(FileRevision last)
 			throws FileNotFoundException;
