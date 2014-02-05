@@ -18,9 +18,11 @@
 	<context:annotation-config  />
 
 
-	<aop:aspectj-autoproxy/>
+	<aop:aspectj-autoproxy>
+		<aop:include name="FSRollback"/>
+	</aop:aspectj-autoproxy>
 	
-	<bean id="fileSystemMapper" class="org.deel.service.utils.FSUtils"/>
+	<bean id="fileSystemMapper" class="org.deel.service.FileGatewayStub"/>
 	<bean id="FSRollback" class="org.deel.aspect.FSRollback"></bean>
 
 	<bean id="teamDAO" class="org.deel.dao.impl.TeamDaoImpl" autowire="byName" />
@@ -38,7 +40,7 @@
 	<bean id="userDAO" class="org.deel.dao.impl.UserDaoImpl" autowire="byName" />
 	
 
-	<bean id="fileService" class="org.deel.service.impl.FileServiceImpl"
+	<bean id="fileService" class="org.deel.service.FileServiceStub"
 		autowire="byName" />
 	<bean id="userService" class="org.deel.service.impl.UserServiceImpl"
 		autowire="byName" />

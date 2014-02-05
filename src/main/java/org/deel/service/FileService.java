@@ -33,12 +33,11 @@ public interface FileService {
 	@Transactional
 	public FileInputStream getFile(User currentUser, FilePath filePath) throws FileNotFoundException;
 	
+
+	@Transactional
 	public FilePathInfo uploadFile(User curr, String originalFilename, Folder folder,
 			InputStream inputStream, Long size) throws IOException;
 	
-	@Transactional
-	public FilePathInfo _uploadFile(User curr, String originalFilename, Folder folder,
-			InputStream inputStream, Long size, Long id) throws IOException;
 
 	@Transactional
 	public Folder populateFolder(User currentUser, Folder folder);

@@ -13,7 +13,7 @@ import org.deel.domain.File;
 import org.deel.domain.FileRevision;
 import org.deel.domain.Folder;
 
-public class FSUtils {
+public class FSUtils implements FileSystemGateway {
 
 	private static String storagePath = System.getProperty("user.home")
 			+ "/storage/";
@@ -22,14 +22,8 @@ public class FSUtils {
 		return storagePath;
 	}
 
-	public static void saveFile(FileRevision fileRevision,
-			InputStream inputStream) throws IOException {
-
-		String finalPath = storagePath
-				+ fileRevision.getUploadedBy().getUsername()
-				+ fileRevision.getFsPath() + "." + fileRevision.getId();
-
-		java.io.File fsF = new java.io.File(finalPath);
+	public void savePath(String path, InputStream inputStream) throws IOException {
+		java.io.File fsF = new java.io.File(path);
 
 		if (fsF.isDirectory())
 			throw new RuntimeException("DB/FS mismatch path "
@@ -52,12 +46,33 @@ public class FSUtils {
 
 		}
 	}
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#saveFile(org.deel.domain.FileRevision, java.io.InputStream)
+	 */
+	@Override
+	public  void saveFile(FileRevision fileRevision,
+			InputStream inputStream) throws IOException {
 
-	public static void setStoragePath(String storagePath) {
+		String finalPath = storagePath
+				+ fileRevision.getUploadedBy().getUsername()
+				+ fileRevision.getFsPath() + "." + fileRevision.getId();
+
+		savePath(finalPath, inputStream);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#setStoragePath(java.lang.String)
+	 */
+	@Override
+	public  void setStoragePath(String storagePath) {
 		FSUtils.storagePath = storagePath;
 	}
 
-	public static void mkdir(Folder f) throws IOException {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#mkdir(org.deel.domain.Folder)
+	 */
+	@Override
+	public  void mkdir(Folder f) throws IOException {
 
 		java.io.File dir = new java.io.File(storagePath
 				+ f.getUser().getUsername() + f.getFsPath());
@@ -66,7 +81,11 @@ public class FSUtils {
 					"Can't make dir" + dir.getAbsolutePath());
 	}
 
-	public static void deleteFile(FileRevision f) {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#deleteFile(org.deel.domain.FileRevision)
+	 */
+	@Override
+	public  void deleteFile(FileRevision f) {
 		
 		String finalPath = storagePath
 				+ f.getUploadedBy().getUsername()
@@ -81,7 +100,11 @@ public class FSUtils {
 		fsF.delete();
 	}
 	
-	public static void deleteFolder(Folder f) {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#deleteFolder(org.deel.domain.Folder)
+	 */
+	@Override
+	public  void deleteFolder(Folder f) {
 		
 		java.io.File dir = new java.io.File(storagePath
 				+ f.getUser().getUsername() + f.getFsPath());
@@ -94,7 +117,11 @@ public class FSUtils {
 		dir.delete();
 	}
 
-	public static void mv(String oldPath, String newPath) throws IOException {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#mv(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public  void mv(String oldPath, String newPath) throws IOException {
 		java.io.File f = new java.io.File(storagePath + oldPath);
 		java.io.File nf = new java.io.File(storagePath + newPath);
 
@@ -116,7 +143,11 @@ public class FSUtils {
 
 	}
 
-	public static FileInputStream getFile(FileRevision last) throws FileNotFoundException {
+	/* (non-Javadoc)
+	 * @see org.deel.service.utils.FileSystemGateway#getFile(org.deel.domain.FileRevision)
+	 */
+	@Override
+	public  FileInputStream getFile(FileRevision last) throws FileNotFoundException {
 		String path = storagePath + last.getUploadedBy().getUsername()
 				+ last.getFsPath() + "." + last.getId();
 

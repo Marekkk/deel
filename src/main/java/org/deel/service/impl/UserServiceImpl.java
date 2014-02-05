@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 		//userDAO.updateUser(user);
 		
 		folderDAO.insertFolder(f);
-		FSUtils.mkdir(f);
+		//FSUtils.mkdir(f); //TODO
 		
 	}
 

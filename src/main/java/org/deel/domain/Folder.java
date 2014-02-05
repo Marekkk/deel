@@ -137,10 +137,10 @@ public class Folder {
 	}
 
 	public void create() throws IOException {
-		FSUtils.mkdir(this);
+		//FSUtils.mkdir(this);
 	}
 	
 	public void delete() {
-		FSUtils.deleteFolder(this);
+		//FSUtils.deleteFolder(this);
 	}
 }

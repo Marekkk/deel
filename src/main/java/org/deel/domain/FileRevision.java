@@ -13,9 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.deel.service.utils.FSUtils;
+import org.deel.service.utils.FileSystemGateway;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 
 @Entity
 @Table(name="FileRevision")
@@ -42,6 +47,20 @@ public class FileRevision {
 	@Column(name="size")
 	private Long size;
 	
+	
+	@Transient
+	private FileSystemGateway fileSystemGateway;
+	
+	public FileSystemGateway getFileSystemGateway() {
+		return fileSystemGateway;
+	}
+
+	@Autowired
+	public void setFileSystemGateway(FileSystemGateway fileSystemGateway) {
+		System.out.println("when??");
+		this.fileSystemGateway = fileSystemGateway;
+	}
+
 	public Long getSize() {
 		return size;
 	}
@@ -92,15 +111,15 @@ public class FileRevision {
 
 
 	public void save(InputStream in) throws IOException {
-		FSUtils.saveFile(this, in);
+		//fileSystemGateway.saveFile(this, in);
 	}
 	
 	public void delete() {
-		FSUtils.deleteFile(this);
+		//FSUtils.deleteFile(this);
 	}
 	
 	public FileInputStream get() throws FileNotFoundException {
-		return FSUtils.getFile(this);
+		return null;//FSUtils.getFile(this);
 	}
 	
 }
