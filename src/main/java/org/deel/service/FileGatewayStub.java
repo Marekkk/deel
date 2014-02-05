@@ -27,7 +27,7 @@ public class FileGatewayStub implements FileSystemGateway {
 		return;
 		
 	}
-	@Override
+
 	public void saveFile(FileRevision fileRevision, InputStream inputStream)
 			throws IOException {
 		savePath("/home/garulf/test/" + fileRevision.getFsPath(), inputStream);
@@ -40,33 +40,57 @@ public class FileGatewayStub implements FileSystemGateway {
 
 	}
 
-	@Override
+
 	public void mkdir(Folder f) throws IOException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+
 	public void deleteFile(FileRevision f) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+
 	public void deleteFolder(Folder f) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+
 	public void mv(String oldPath, String newPath) throws IOException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+
 	public FileInputStream getFile(FileRevision last)
 			throws FileNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void mkdir(String path) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteFile(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteFolder(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public FileInputStream getFile(String path) throws FileNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}

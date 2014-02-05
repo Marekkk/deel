@@ -10,20 +10,17 @@ import org.deel.domain.Folder;
 
 public interface FileSystemGateway {
 
-	public void saveFile(FileRevision fileRevision, InputStream inputStream)
-			throws IOException;
+
 
 	public void setStoragePath(String storagePath);
 
-	public void mkdir(Folder f) throws IOException;
+	public void mkdir(String path) throws IOException;
 
-	public void deleteFile(FileRevision f);
+	public void deleteFile(String path);
 
-	public void deleteFolder(Folder f);
+	public void deleteFolder(String path);
 
-	public void mv(String oldPath, String newPath) throws IOException;
-
-	public FileInputStream getFile(FileRevision last)
+	public FileInputStream getFile(String path)
 			throws FileNotFoundException;
 	
 	public void savePath(String path, InputStream in) throws IOException;
