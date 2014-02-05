@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import org.deel.domain.FilePathInfo;
@@ -145,7 +144,8 @@ public class FileServiceImpl implements FileService {
 		FilePathInfo fInfo = new FilePathInfo(fp);
 		
 		
-		newRevision.save(data);
+		fileSystemMapper.savePath(newRevision.getFsPath(), data);
+		
 		
 		return fInfo;
 
@@ -172,8 +172,8 @@ public class FileServiceImpl implements FileService {
 		//
 
 		
-
-		return last.get();
+		
+		return fileSystemMapper.getFile(last.getFsPath());
 	}
 
 	@Override
@@ -238,8 +238,8 @@ public class FileServiceImpl implements FileService {
 		file.setRevisions(fakeRevisionList);
 		
 		FilePathInfo fInfo = new FilePathInfo(fp);
-		//fileRevision.save(inputStream);
-		fileSystemMapper.saveFile(fileRevision, inputStream);
+		
+		fileSystemMapper.savePath(fileRevision.getCompleteFsPath(), inputStream);
 		
 		
 		
@@ -530,8 +530,7 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException(
 					"Not enough permission to download filerevision or filerevision doesn't exists");
 
-		
-		return pFileRevision.get();
+		return fileSystemMapper.getFile(pFileRevision.getFsPath());
 	}
 
 	@Override
@@ -556,7 +555,7 @@ public class FileServiceImpl implements FileService {
 				fileRevisionDAO.delete(fileRevision);
 				/* TODO should be moved after all db interaction */
 				//fileRevision.delete();
-				fileSystemMapper.deleteFile(fileRevision.getCompleteFSPath());
+				fileSystemMapper.deleteFile(fileRevision.getCompleteFsPath());
 			}
 			for (FilePath filePath : paths) {
 				filePathDao.deleteFilePath(filePath);
