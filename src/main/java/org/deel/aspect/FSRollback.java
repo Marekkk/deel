@@ -123,7 +123,13 @@ public class FSRollback {
 	public void deleteAdvice(String path) {
 		System.out.println("***** Putting action in undo list*******");
 		String uuid = TransactionSynchronizationManager.getCurrentTransactionName();
-		undoList.get(uuid).add(new DeleteAction(FSUtils.getStoragePath() + path));
+		
+		List<Action> al = undoList.get(uuid);
+		
+		if (al == null)
+			return;
+		
+		al.add(new DeleteAction(FSUtils.getStoragePath() + path));
 	}
 
 	
