@@ -574,7 +574,6 @@ public class FileServiceImpl implements FileService {
 			filePathDao.deleteFilePath(f);
 		}
 		
-		throw new RuntimeException();
 	}
 
 	@Override
