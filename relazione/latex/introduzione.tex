@@ -97,22 +97,42 @@ operazione, così da avere maggiore controllo su inserimenti e
 rimozioni a livello di business logic.
 
 
+
+
 \subsection{Service layer}
 
 Il service layer si occupa di implementare i principali casi d'uso
 dell' applicazione, manipolando sia oggetti del domain sia interagendo
 con il data layer.  Il layer Service è stato progettato in modo tale
-di aver associato un caso d'uso per ogni metodo, rappresentando
-logicamente una Unit Of Work, che deve preservare, tra le altre, la
-proprietà di atomicità. Questi infatti sono i metodi che sono stati
-annotati come @Transactional, in modo che il transaction manager di
-Spring inizi la transazione al momento della chiamata del metodo,
-``committi'' al suo completamento o faccia il rollback in caso di errori.
-Il service layer, come il layer web, utilizza la dependency injection
-del framework Spring. In questo modo l'istanziazione degli oggetti di
-cui questo layer necessita (ad es. gli oggetti con le funzionalità di
-persistenza dei dati presenti nel data layer) avviene in maniera
-automatica e il codice non dipende da essa.
+di aver associato un caso d'uso per ogni metodo, rappresentando l'area
+di responsabilità di una Unit Of Work, che deve quindi preservare, tra
+le altre, la proprietà di atomicità. Questi infatti sono i metodi che
+sono stati annotati come @Transactional, in modo che il transaction
+manager di Spring inizi la transazione al momento della chiamata del
+metodo, ``committi'' al suo completamento o faccia il rollback in caso
+di errori.Il service layer, come il layer web, utilizza la
+dependency injection del framework Spring. In questo modo
+l'istanziazione degli oggetti di cui questo layer necessita (ad
+es. gli oggetti con le funzionalità di persistenza dei dati presenti
+nel data layer) avviene in maniera automatica e il codice non dipende
+da essa.
+
+\subsubsection{Consistenza tra Database e Filesystem}
+La gestione delle transazioni è dichiarativa. Un errore, e quindi il
+lancio di un eccezione, da parte delle operazioni sul filesystem
+causerà quindi il rollback della transazione sul database. Se è invece
+è la transazione a non poter essere ``committata'' deve essere
+previsto un meccanismo per mantenere la consistenza tra Database e
+Filesystem. Nella nostra applicazione questa funzionalità è stata
+implementata tramite la \emph{programmazione orientata agli aspetti}.
+In particolare è stato utilizzato il modulo \emph{Spring AOP} e sono
+stati inseriti gli opportuni \emph{advice} affinchè l'aspetto tenga
+traccia delle modifiche effettuate sul filesystem e nel caso avvenga
+un rollback da parte della transazioni ripristini lo stato dello
+stesso. Per quanto riguarda la concorrenza, le operazioni effettuate
+da un singolo utente sono seriali, ogni utente ha la propria area e
+quindi non vi possono essere errori dovuti ad un accesso concorrente
+allo stesso file o cartella.
 
 \subsection{Web Layer}
 
