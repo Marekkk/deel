@@ -159,6 +159,7 @@ public class FileServiceImpl implements FileService {
 
 		if (fp == null)
 			throw new RuntimeException("Filepath doesn't exists");
+		
 		if (fp.getUser().getId() != currentUser.getId())
 			throw new RuntimeException("Filepath " + fp.getName()
 					+ "doesn't belongs to user " + currentUser.getUsername());
@@ -192,16 +193,13 @@ public class FileServiceImpl implements FileService {
 			throw new RuntimeException("User doesn't own the folder "
 					+ folder.getFsPath() + "with id" + folder.getId());
 
-		for (Folder f : folder.getInFolder())
-			if (f.getName().equals(originalFilename))
-				throw new RuntimeException(
+		if(folder.existsFolder(originalFilename))
+			throw new RuntimeException(
 						"Uploaded file has the same name of a directory");
 
-		/* TODO change Filepath.path in FilePath.name */
-		for (FilePath fp : folder.getFilepaths())
-			if (!fp.isHidden() && fp.getName().equals(originalFilename)) {
-				return updateFile(curr, fp, inputStream, size);
-			}
+		FilePath filepath = folder.getFilePathByName(originalFilename);
+		if (filepath != null)
+			return updateFile(curr, filepath, inputStream, size);
 
 		FileRevision fileRevision = new FileRevision();
 		fileRevision.setDate(new Date());
@@ -238,7 +236,6 @@ public class FileServiceImpl implements FileService {
 		FilePathInfo fInfo = new FilePathInfo(fp);
 		
 		fileSystemMapper.savePath(fileRevision.getCompleteFsPath(), inputStream);
-		
 		
 		
 		return fInfo;

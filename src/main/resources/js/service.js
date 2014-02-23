@@ -28,6 +28,13 @@ var service = (function ($) {
 	return {
 		uploadFiles : function (e, currentFolder, cb) {
 			var files = e.dataTransfer.files;
+			
+			if (files.lenght == 0) {
+				console.log("drop event with 0 lenght files");
+				alert("Ci sono alcuni problemi nell'utilizzo del DragAndDrop, fai l'upload cliccando sull'icona in alto a sinistra :)")
+				return;
+			}
+			
 			_uploadFiles(files, currentFolder, cb);
 			 
 		},

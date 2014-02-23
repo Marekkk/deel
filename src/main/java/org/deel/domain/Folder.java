@@ -139,4 +139,20 @@ public class Folder {
 	public String getCompleteFSPath() {
 		return getUser().getUsername() + getFsPath();
 	}
+
+	public boolean existsFolder(String originalFilename) {
+		for (Folder f : getInFolder())
+			if (f.getName().equals(originalFilename))
+				return true;
+		return false;
+	}
+
+	public FilePath getFilePathByName(String originalFilename) {
+		
+		for(FilePath fp: getFilepaths())
+			if (fp.getName().equals(originalFilename))
+				return fp;
+		
+		return null;
+	}
 }
