@@ -100,7 +100,13 @@ public class UserController {
 	public @ResponseBody Map<String, Object> userList(Principal principal) 
 	{
 		Map<String, Object> json = new HashMap<String, Object>();
-		String username = principal.getName();
+		
+		String username;
+		if (principal != null)
+			username = principal.getName();
+		else 
+			username = "Guest";
+		
 		User curr = userService.findUserByUsername(username);
 
 		List<User> userList = userService.listUser(curr);
@@ -193,7 +199,11 @@ public class UserController {
 
 	@RequestMapping("/user/settingsProfile")
 	public String goToUpdate (ModelMap map, Principal principal) {
-		String username = principal.getName();
+		String username;
+		if (principal != null)
+			username = principal.getName();
+		else 
+			username = "Guest";
 		map.addAttribute("user", username);
 		System.out.println("Load page to change password");
 		return "profile";
@@ -203,7 +213,11 @@ public class UserController {
 	public @ResponseBody Map<String, String> updateProfile (@RequestParam String old, @RequestParam String password, Principal principal, ModelMap map) {
 		System.out.println(old);
 		Map<String, String> result = new HashMap<String, String>();
-		String username = principal.getName();
+		String username;
+		if (principal != null)
+			username = principal.getName();
+		else 
+			username = "Guest";
 		User u = userService.findUserByUsername(username);
 		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		String oldpsw = u.getPassword();
@@ -227,7 +241,11 @@ public class UserController {
 		Map<String, String> json = new HashMap<String, String>();
 		String name = message.getName();
 		List<Long> usersId = message.getUsers();
-		String username = principal.getName();
+		String username;
+		if (principal != null)
+			username = principal.getName();
+		else 
+			username = "Guest";
 		User user = userService.findUserByUsername(username);
 		Team t = userService.findTeamByName(name);
 		if (t != null) {

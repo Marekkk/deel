@@ -101,11 +101,12 @@
 
 		<security:intercept-url pattern="/resources/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER" />
-		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:intercept-url pattern="/**" access="ROLE_USER, IS_AUTHENTICATED_ANONYMOUSLY" />
 		<security:form-login login-page='/login'
 			login-processing-url="/loginprocess" default-target-url="/default" />
 		<security:logout logout-url="/logout" logout-success-url="/default"/>
 		<security:form-login />
+		<security:anonymous username="Guest" granted-authority="ROLE_USER"/>
 	</security:http>
 
 	<security:authentication-manager>
