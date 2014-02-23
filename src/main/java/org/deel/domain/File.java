@@ -17,8 +17,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
@@ -35,6 +37,8 @@ public class File {
 	private Long id;
 
 	@Column(name="name")
+	@NotEmpty
+	@Pattern(regexp="^(?!\\.$)(?=.{1,40}$)([^\\\\:\\.*?<>\"|]*|\\.(?!\\.))*$")
 	private String name;
 	
 	@ManyToOne()

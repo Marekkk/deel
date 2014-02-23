@@ -183,7 +183,6 @@ public class FileServiceImpl implements FileService {
 			InputStream inputStream, Long size) throws IOException {
 
  
-		
 		folder = folderDao.get(folder);
 
 		if (folder == null)
@@ -201,6 +200,7 @@ public class FileServiceImpl implements FileService {
 		if (filepath != null)
 			return updateFile(curr, filepath, inputStream, size);
 
+		/*TODO we should do better hibernaete mapping of relations*/		
 		FileRevision fileRevision = new FileRevision();
 		fileRevision.setDate(new Date());
 		fileRevision.setFsPath(folder.getFsPath() + originalFilename);
