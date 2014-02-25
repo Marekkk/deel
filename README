@@ -1,0 +1,5 @@
+How to setup a guest account.
+
+Create a user Guest trought registration form.
+Add Is_Authenticated_ANONYMOUSLY in applicationContext intercept-url pattern=/**
+

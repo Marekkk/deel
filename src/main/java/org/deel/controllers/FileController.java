@@ -42,18 +42,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-public class FileController {
+public class FileController extends ControllerSuper{
 	private FileService fileService;
-	private UserService userService;
 
-	public UserService getUserService() {
-		return userService;
-	}
-
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
 
 	public FileService getFileService() {
 		return fileService;
@@ -68,13 +59,10 @@ public class FileController {
 	public @ResponseBody
 	Map<String, Object> getRevisionList(@RequestParam Long id,
 			Principal principal) {
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
+		
 		Map<String, Object> jsonRet = new HashMap<String, Object>();
-		User curr = userService.findUserByUsername(username);
+		
+		User curr = getUser(principal);
 
 		FilePath fp = new FilePath();
 		fp.setId(id);
@@ -100,15 +88,9 @@ public class FileController {
 			Principal principal) {
 		
 		
-		/* If user isn't authenticated Guest user is used */
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
 		
 		Map<String, Object> jsonRet = new HashMap<String, Object>();
-		User curr = userService.findUserByUsername(username);
+		User curr = getUser(principal);
 
 		Folder folder = new Folder();
 		folder.setId(path);
@@ -123,12 +105,7 @@ public class FileController {
 			HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
 
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User curr = userService.findUserByUsername(username);
+		User curr = getUser(principal);
 
 		FilePath filePath = new FilePath();
 		filePath.setId(id);
@@ -155,12 +132,8 @@ public class FileController {
 			HttpServletResponse response) {
 		response.setContentType("application/octet-stream");
 
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User curr = userService.findUserByUsername(username);
+
+		User curr = getUser(principal);
 
 		FilePath filePath = new FilePath();
 		filePath.setId(id);
@@ -202,12 +175,8 @@ public class FileController {
 	Map<String, Object> fileUploadJSON(@ModelAttribute FileForm fileForm,
 			BindingResult result, Principal principal, ModelMap model) {
 
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User curr = userService.findUserByUsername(username);
+
+		User curr = getUser(principal);
 
 		Folder folder = new Folder();
 		folder.setId(fileForm.getPath());
@@ -256,12 +225,8 @@ public class FileController {
 		System.out.println(id + " " + folderName);
 		Folder folder = new Folder();
 		folder.setId(id);
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 		FolderInfo ret;
 		try {
 			ret = fileService.createNewFolder(u, folder, folderName);
@@ -283,12 +248,8 @@ public class FileController {
 		Folder f = new Folder();
 		f.setId(id);
 
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 
 		fileService.deleteFolder(u, f);
 
@@ -312,12 +273,8 @@ public class FileController {
 			return json;
 		}
 
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 
 		FilePath fp = new FilePath();
 		fp.setId(message.getFile());
@@ -351,12 +308,8 @@ public class FileController {
 		System.out.println("We are going to remove filepath with id -> " + id);
 		FilePath f = new FilePath();
 		f.setId(id);
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 		try {
 			fileService.deleteFile(u, f);
 		} catch (IOException e) {
@@ -378,12 +331,8 @@ public class FileController {
 		System.out.println("We are going to remove filepath with id -> " + id);
 		FilePath f = new FilePath();
 		f.setId(id);
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 		try {
 			fileService.deleteFromTrash(f, u);
 		} catch (Exception e) {
@@ -406,12 +355,8 @@ public class FileController {
 		System.out.println("We are going to remove folder with id -> " + id);
 		Folder f = new Folder();
 		f.setId(id);
-		String username;
-		if (principal != null)
-			username = principal.getName();
-		else 
-			username = "Guest";
-		User u = userService.findUserByUsername(username);
+
+		User u = getUser(principal);
 		try {
 			fileService.deleteFolderFromTrash(f, u);
 		} catch (Exception e) {
