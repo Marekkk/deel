@@ -17,18 +17,18 @@
 			alert("Please enter your username!");
 			return false;
 		}
-		if (form1.email.value == "") {
-			alert("Please enter your email adress!");
-			return false;
-		}
-		if (form1.name.value == "") {
-			alert("Please enter your name!");
-			return false;
-		}
-		if (form1.surname.value == "") {
-			alert("Please enter your surname!");
-			return false;
-		}
+// 		if (form1.email.value == "") {
+// 			alert("Please enter your email adress!");
+// 			return false;
+// 		}
+// 		if (form1.name.value == "") {
+// 			alert("Please enter your name!");
+// 			return false;
+// 		}
+// 		if (form1.surname.value == "") {
+// 			alert("Please enter your surname!");
+// 			return false;
+// 		}
 
 		if (form1.password.value != form1.psw2.value) {
 			alert("Password doesn' t matching!");
@@ -94,20 +94,7 @@
 			<div id="checkpass"
 				style="position: absolute; margin-left: -145px; font-family: Helvetica, sans-serif; left: 50%; color: red;">
 			</div>
-			<br>
-			<label for="email">Email: </label>
-			<form:input path="email" />
-			<br>
-			<label for="name">Name:</label>
-			<form:input path="name" />
-			<br>
-			<label for="surname">Surname:</label>
-			<form:input path="surname" />
-			<br>
-			<label for="company">Company:</label>
-			<form:select path="company">
-				<form:options items="${companies}"/>
-			</form:select>
+	
 			<br>
 			<div id="lowerRegistration">
 				<input type="submit" value="Register" onclick="return check()">

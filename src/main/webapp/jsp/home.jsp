@@ -666,9 +666,10 @@
 		<ul>
 			<li><a href="<c:url value="/home" />"
 				onclick="javascript:goRoot()" class="active">home</a></li>
-			<li><a href="javascript:uploadDialog()" id="uploadButton">upload</a></li>
 			<li><a href="javascript:teamDialog()">team</a></li>
 			<li><a href=<c:url value="/logout"/>>logout</a></li>
+			<li><a href=<c:url value="/login"/>>login</a></li>
+			<li><a href=<c:url value="/user/new"/>>registrati</a></li>
 		</ul>
 		</nav>
 

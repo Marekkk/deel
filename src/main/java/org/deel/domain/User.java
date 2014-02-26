@@ -29,13 +29,13 @@ public class User {
 	@GenericGenerator(name="increment", strategy="increment")
 	private Long id;
 	
-	@Column(name="name")
-	@NotEmpty
-	private String name;
-	
-	@Column(name="surname")
-	@NotEmpty
-	private String surname;
+//	@Column(name="name")
+//	@NotEmpty
+//	private String name;
+//	
+//	@Column(name="surname")
+//	@NotEmpty
+//	private String surname;
 	
 
 	@Column(name="username", unique=true)
@@ -43,11 +43,11 @@ public class User {
 	@Size(max=10)
 	private String username;
 	
-	/* TODO make constrain with top level domain */
-	@Email
-	@NotEmpty
-	@Column(name="email")
-	private String email;
+//	/* TODO make constrain with top level domain */
+//	@Email
+//	@NotEmpty
+//	@Column(name="email")
+//	private String email;
 	
 	@Column(name="password")
 	private String password;
@@ -55,9 +55,9 @@ public class User {
 	@Column(name="role", nullable=false)
 	private Integer role = 0;
 	
-	@ManyToOne()
-	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Category category;
+//	@ManyToOne()
+//	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+//	private Category category;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="user")
 	private Set<FilePath> paths = new HashSet<FilePath>(0);
@@ -69,10 +69,10 @@ public class User {
 	 * In a company can work multiple user, using CascadeType.ALL when we insert a new user with a new company 
 	 * automatically the new company will be added to the DB
 	 */
-	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Company company;
-	
+//	@ManyToOne(fetch=FetchType.LAZY)
+//	@Cascade(value={org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+//	private Company company;
+//	
 	@ManyToMany(mappedBy="usersInTeam")
 	private Set<Team> teams = new HashSet<Team>(0);
 	
@@ -117,29 +117,30 @@ public class User {
 	}
 	
 	public User(String email, String name, String surname, String username, String password, Category category) {
-		this.email = email;
-		this.name = name;
-		this.surname = surname;
+//		this.email = email;
+//		this.name = name;
+//		this.surname = surname;
+//		this.category = category;
 		this.username = username;
 		this.password = password;
-		this.category = category;
-	}
-	
-	public Category getCategory() {
-		return category;
-	}
-	
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-	
-	public Company getCompany() {
-		return company;
-	}
 
-	public void setCompany(Company company) {
-		this.company = company;
 	}
+	
+//	public Category getCategory() {
+//		return category;
+//	}
+//	
+//	public void setCategory(Category category) {
+//		this.category = category;
+//	}
+//	
+//	public Company getCompany() {
+//		return company;
+//	}
+//
+//	public void setCompany(Company company) {
+//		this.company = company;
+//	}
 
 	public Long getId() {
 		return id;
@@ -149,21 +150,21 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setName(String name) {
+//		this.name = name;
+//	}
+//
+//	public String getSurname() {
+//		return surname;
+//	}
+//
+//	public void setSurname(String surname) {
+//		this.surname = surname;
+//	}
 
 	public String getUsername() {
 		return username;
@@ -189,13 +190,13 @@ public class User {
 		this.folders = folders;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+//	public String getEmail() {
+//		return email;
+//	}
+//
+//	public void setEmail(String email) {
+//		this.email = email;
+//	}
 
 	@Override
 	public String toString() {
