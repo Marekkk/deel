@@ -25,10 +25,7 @@ public class UserServiceTest {
 	@Test
 	public void loadExistingUserTest() throws Exception {
 		User u = new User();
-		
-		u.setName("asd");
-		u.setSurname("asd");
-		u.setEmail("asd@asd");
+
 		u.setPassword("asdasd");
 		u.setUsername("asda");
 		

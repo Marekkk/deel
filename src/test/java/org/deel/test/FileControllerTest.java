@@ -93,7 +93,7 @@ public class FileControllerTest {
 	@Test
 	public void listFilesTest() throws Exception {
 		User u = new User();
-		u.setName("nick");
+		
 		
 		Folder f = new Folder();
 		f.setId((long)1);
@@ -152,7 +152,7 @@ public class FileControllerTest {
 	public void principalMockTest() throws Exception {
 		
 		User u = new User();
-		u.setName("nick");
+		
 		when(userService.findUserByUsername("nick")).thenReturn(u);
 		
 

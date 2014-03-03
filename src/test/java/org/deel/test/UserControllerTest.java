@@ -89,8 +89,7 @@ public class UserControllerTest {
 	@Test
 	public void passwordEncodingTest() throws Exception {
 		User u = new User();
-		u.setName("asd");
-		u.setSurname("asd");
+
 		u.setPassword("miau");
 		u.setUsername("nick");
 

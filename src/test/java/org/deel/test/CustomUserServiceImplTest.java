@@ -34,9 +34,7 @@ public class CustomUserServiceImplTest {
 		User u = new User();
 		
 		u.setUsername("marco");
-		u.setName("asd");
-		u.setSurname("asd");
-		u.setEmail("asd@asd");
+		
 		u.setPassword("asd");
 		
 		userService.registerNewUser(u);

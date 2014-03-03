@@ -8,7 +8,6 @@ public class UserInfo {
 	public UserInfo(User u) {
 		this.username = u.getUsername();
 		this.id = u.getId();
-		this.name = u.getName();
 	}
 	
 	public String getUsername() {
